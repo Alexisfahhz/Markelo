@@ -1,0 +1,22 @@
+# Markelo is a design working folder, not a product repo. Track the source of
+# truth (docs, scaffold source, research) and nothing that can be regenerated.
+# Without these rules the repo is 361 MB; with them it is a few MB.
+
+node_modules/
+.next/
+dist/
+build/
+out/
+.vite/
+*.tsbuildinfo
+
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+*.log
+npm-debug.log*
+.env
+.env.*
+!.env.example

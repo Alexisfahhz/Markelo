@@ -1,0 +1,280 @@
+@import "tailwindcss";
+
+/*
+  MARKELO DESIGN TOKENS
+  ---------------------------------------------------------------
+  Every value below is drawn verbatim from the Markelo Design
+  System PDF (v1.0). The token NAMES are chosen to mirror what the
+  Figma variables should be called, so translation is 1:1:
+      Tailwind: bg-brand        Figma variable: color/brand
+      Tailwind: text-muted      Figma variable: color/muted
+      Tailwind: rounded-card    Figma variable: radius/card
+  Nothing here is invented. If it's not in the PDF, it's not a token.
+*/
+
+@theme {
+  /* ---- Colour: primary ---- */
+  --color-brand: #1a56a0;          /* primary/blue, buttons, links, active */
+  --color-brand-light: #e8f1fb;    /* primary/blue-light, hover bg, tints */
+  --color-brand-dark: #0c3d7a;     /* primary/blue-dark, dark headers, sidebar */
+
+  /* ---- Colour: semantic ---- */
+  --color-success: #1a7a4a;
+  --color-success-light: #e6f4ed;
+  --color-error: #c0392b;
+  --color-error-light: #fdecea;
+  --color-warning: #c47d00;
+  --color-warning-light: #fff3cd;
+
+  /* ---- Colour: neutral ---- */
+  --color-text: #1a1a1a;           /* neutral/text, all body text */
+  --color-muted: #666666;          /* neutral/muted, labels, captions */
+  --color-border: #cccccc;         /* neutral/border, all borders */
+  --color-bg: #f5f5f5;             /* neutral/background, page bg */
+  --color-card: #fafafa;           /* neutral/card, card bg */
+  --color-on-dark: #f0f4fa;        /* neutral/text-on-dark */
+  --color-border-control: #8a8a8a; /* control boundary, WCAG 3:1-passing grey */
+
+  /* status-badge text tokens (paired colours from the PDF) */
+  --color-badge-graded-text: #1a7a4a;
+  --color-badge-progress-text: #0c3d7a;
+  --color-badge-pending-text: #7a4f00;
+  --color-badge-missing-text: #8b1a1a;
+  --color-badge-notstarted-text: #444441;
+
+  /* ---- Type: one family only ---- */
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* ---- Type scale (PDF §2) ---- */
+  --text-title: 28px;      --text-title--line-height: 1.2;   --text-title--font-weight: 700;
+  --text-section: 22px;    --text-section--line-height: 1.3; --text-section--font-weight: 600;
+  --text-card: 18px;       --text-card--line-height: 1.4;    --text-card--font-weight: 600;
+  --text-sub: 16px;        --text-sub--line-height: 1.5;     --text-sub--font-weight: 500;
+  --text-body: 14px;       --text-body--line-height: 1.6;    --text-body--font-weight: 400;
+  --text-caption: 12px;    --text-caption--line-height: 1.5; --text-caption--font-weight: 400;
+  --text-label: 11px;      --text-label--line-height: 1.4;   --text-label--font-weight: 500;
+
+  /* ---- Spacing scale (PDF §3): 4/8/12/16/24/32/48 only ---- */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-12: 48px;
+
+  /* ---- Radius (PDF §4) ---- */
+  --radius-badge: 4px;     /* badges, tags, chips */
+  --radius-control: 8px;   /* buttons, inputs, dropdowns */
+  --radius-card: 12px;     /* cards, modals, panels */
+  --radius-pill: 100px;    /* pill status badges only */
+
+  /*
+    ---- Layout: Desktop Grid ----
+    Confirmed in Figma 28 July 2026. Style name "Desktop Grid",
+    description "For desktop view only".
+
+      Count   12
+      Type    Stretch
+      Margin  120
+      Gutter  24
+
+    Markelo is DESKTOP ONLY. There is no tablet or mobile grid, and no
+    breakpoints. PRD §4 lists native mobile as a non-goal and KingFizzy
+    confirmed desktop-only scope on 28 July. Do not add a second grid.
+
+    "Stretch" means the columns are fluid: the content area is the viewport
+    minus 2 x 120px margin, and the 12 columns divide whatever is left after
+    11 x 24px gutters. At a 1440px frame that resolves to a 1200px content
+    area and a 78px column.
+  */
+  --grid-columns: 12;
+  --grid-margin: 120px;   /* page margin, left and right */
+  --grid-gutter: 24px;    /* space between columns */
+
+  /*
+    The app shell is NOT on the page grid. The sidebar is fixed chrome that sits
+    outside every grid, and the content region beside it gets its own inset.
+    Ruled by KingFizzy 28 July 2026.
+
+      Sidebar        236px, fixed
+      Content inset   32px, left and right
+      Gutter          24px, same as the page grid
+
+    At a 1440 frame: 1440 − 236 = 1204 content region, − 64 inset = 1140,
+    − (11 × 24 gutters) = 876, ÷ 12 = a clean 73px column.
+  */
+  --content-inset: 32px;
+}
+
+/*
+  Tailwind v4 tree-shakes any @theme variable it cannot see used, so tokens that
+  exist purely as documented design decisions must live in a plain :root block
+  or they silently vanish from the built stylesheet.
+*/
+:root {
+  --sidebar-width: 236px;
+
+  /*
+    ---- Border ---- PROPOSED 28 July 2026, awaiting KingFizzy's approval.
+
+    Borders matter more in Markelo than in most systems. The design system PDF
+    says this is a FLAT product. Shadows are not used, borders do all the
+    separating. A single border colour used everywhere collapses hierarchy into
+    mush, which is why there are three neutral weights below, not one.
+
+    WCAG 2.2 note, and this is a real failure not a nitpick: the existing
+    #CCCCCC border is 1.6:1 against white. Success Criterion 1.4.11 requires
+    3:1 for the boundary of any control a user must identify, so #CCCCCC is
+    fine for a divider but FAILS as an input or checkbox border. --border-control
+    (#8A8A8A, 3.45:1) exists to fix that.
+  */
+  --border-hairline: 1px;   /* everything, by default */
+  --border-emphasis: 2px;   /* focus ring, selected state, active tab */
+  --border-accent: 4px;     /* the left bar on alert panels */
+
+  --border-default: #cccccc;  /* card edges, table cells, page dividers */
+  --border-subtle: #e5e5e5;   /* dividers INSIDE a card, so they don't
+                                 compete with the card's own edge */
+  --border-control: #8a8a8a;  /* inputs, selects, checkboxes at rest, the
+                                 only neutral that passes 3:1 non-text contrast */
+  --border-interactive: #1a56a0;          /* focused, selected, active */
+  --border-on-dark: rgb(255 255 255 / 0.15);  /* dividers in the sidebar */
+
+  /* Status borders reuse the existing status colours. No new tokens needed:
+     error #C0392B, success #1A7A4A, warning #C47D00. */
+
+  /*
+    ---- Motion ---- PROPOSED 28 July 2026, awaiting KingFizzy's approval.
+    These are my recommendation, not a confirmed part of the system. Three
+    durations and three curves is the whole vocabulary. Markelo is exam
+    software used under unstable power on modest machines, so motion confirms
+    that something happened and never decorates.
+
+    Only ever animate opacity and transform. Never animate a table's rows.
+  */
+  --motion-instant: 100ms;    /* feedback on the thing you just touched */
+  --motion-quick: 200ms;      /* most UI: dropdown, tooltip, toast, tab */
+  --motion-moderate: 300ms;   /* large surfaces: modal, side panel, overlay */
+  --motion-loop: 1200ms;      /* skeletons and indeterminate progress */
+
+  --motion-enter: cubic-bezier(0, 0, 0.2, 1);      /* things arriving */
+  --motion-exit: cubic-bezier(0.4, 0, 1, 1);       /* things leaving */
+  --motion-move: cubic-bezier(0.4, 0, 0.2, 1);     /* things moving in place */
+}
+
+/* Global page defaults from the PDF: page bg #F5F5F5, body text #1A1A1A,
+   one font, never pure black/white. */
+html, body, #root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Markelo is FLAT design. The PDF states shadows are not used; borders
+   separate. This utility is the single allowed elevation: none. Kept as a
+   named class so the intent is explicit in markup. */
+.flat { box-shadow: none; }
+
+/* Visible focus ring for accessibility (WCAG). Brand-tinted, never removed. */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/*
+  Desktop Grid utilities: the code mirror of the Figma "Desktop Grid" style.
+  Use `.page-grid` on any full-canvas surface (sign-in, onboarding, marketing).
+  Children opt into a span with `.col-1` … `.col-12`.
+
+  OPEN QUESTION, do not resolve by guessing: inside `AppFrame` the content
+  region already sits behind a 236px sidebar. Applying the full 120px page
+  margin there would leave roughly 964px of usable width at a 1440px frame,
+  which is tight for a product built around thousands of table rows. The app
+  region currently uses a 32px inset instead. KingFizzy must rule on whether
+  the 120px margin applies inside the app shell or only to full-canvas screens.
+*/
+.page-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  padding-inline: var(--grid-margin);
+  width: 100%;
+}
+
+.col-1  { grid-column: span 1; }
+.col-2  { grid-column: span 2; }
+.col-3  { grid-column: span 3; }
+.col-4  { grid-column: span 4; }
+.col-5  { grid-column: span 5; }
+.col-6  { grid-column: span 6; }
+.col-7  { grid-column: span 7; }
+.col-8  { grid-column: span 8; }
+.col-9  { grid-column: span 9; }
+.col-10 { grid-column: span 10; }
+.col-11 { grid-column: span 11; }
+.col-12 { grid-column: span 12; }
+
+/*
+  The app-shell content grid. Same 12 columns and same 24px gutter as the page
+  grid, but a 32px inset instead of the 120px page margin, because the sidebar
+  already provides the left-hand breathing room.
+*/
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  padding-inline: var(--content-inset);
+  width: 100%;
+}
+
+/*
+  Reduced motion is not optional. WCAG 2.2 and user stories K1/K2 require it. Movement is
+  removed; a plain opacity change is allowed to survive so state changes are
+  still legible.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
+  Grid overlay for visual checking against Figma. Add `data-grid` to any
+  `.page-grid` element to see the columns. Matches the Figma style's
+  FF0000 at 10%. Review aid only. Never ship it on a real screen.
+*/
+.page-grid[data-grid] > * { position: relative; }
+.page-grid[data-grid]::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline: var(--grid-margin);
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to right,
+    rgb(255 0 0 / 0.1) 0,
+    rgb(255 0 0 / 0.1) calc((100% - (var(--grid-columns) - 1) * var(--grid-gutter)) / var(--grid-columns)),
+    transparent 0,
+    transparent calc(((100% - (var(--grid-columns) - 1) * var(--grid-gutter)) / var(--grid-columns)) + var(--grid-gutter))
+  );
+}
+
+.uppercase-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}

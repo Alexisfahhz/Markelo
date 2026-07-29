@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Markelo, Lark Base reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --brand:#1A56A0; --brand-light:#E8F1FB; --brand-dark:#0C3D7A;
+    --success:#1A7A4A; --success-light:#E6F4ED;
+    --error:#C0392B; --error-light:#FDECEA;
+    --warning:#C47D00; --warning-light:#FFF3CD;
+    --text:#1A1A1A; --muted:#666666; --border:#CCCCCC; --bg:#F5F5F5; --card:#FAFAFA;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--text); font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1360px; margin:0 auto; padding:40px 24px 80px; }
+  .mono { font-family:'JetBrains Mono',monospace; }
+  .lbl { font-size:11px; font-weight:500; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+  h1 { font-size:28px; font-weight:700; }
+  h2 { font-size:22px; font-weight:700; margin-top:8px; }
+  h3 { font-size:16px; font-weight:600; }
+  p.sub { color:var(--muted); max-width:760px; margin-top:8px; }
+
+  /* base chrome */
+  .basebar { display:flex; align-items:center; gap:12px; margin-top:28px; padding:12px 16px; background:#fff; border:1px solid var(--border); border-radius:12px 12px 0 0; }
+  .basebar .logo { width:28px; height:28px; border-radius:8px; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; }
+  .tabs { display:flex; gap:4px; margin-left:8px; }
+  .tab { border:none; background:transparent; font:inherit; font-size:13px; font-weight:500; color:var(--muted); padding:6px 12px; border-radius:8px; cursor:pointer; }
+  .tab.active { background:var(--brand-light); color:var(--brand); }
+  .count { margin-left:auto; font-size:12px; color:var(--muted); }
+
+  .panel { background:#fff; border:1px solid var(--border); border-top:none; border-radius:0 0 12px 12px; overflow:hidden; }
+
+  /* grid view */
+  table { width:100%; border-collapse:collapse; text-align:left; }
+  thead th { background:var(--card); border-bottom:1px solid var(--border); padding:10px 14px; font-size:11px; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+  tbody td { border-bottom:1px solid #e8e8e8; padding:10px 14px; vertical-align:middle; font-size:13px; }
+  tbody tr:last-child td { border-bottom:none; }
+  tbody tr:hover { background:#f0f5fb; }
+  .usid { font-family:'JetBrains Mono',monospace; font-weight:500; color:var(--text); }
+
+  /* chips */
+  .chip { display:inline-flex; align-items:center; gap:5px; border-radius:100px; padding:2px 10px; font-size:11px; font-weight:500; white-space:nowrap; }
+  .dot { width:7px; height:7px; border-radius:100px; display:inline-block; }
+  .sq-officer { background:var(--brand-light); color:var(--brand-dark); }
+  .sq-marking { background:var(--success-light); color:var(--success); }
+  .sq-mod { background:var(--warning-light); color:#7a4f00; }
+  .sq-admin { background:#efe9fb; color:#5b3aa8; }
+  .sq-cross { background:#eeeeee; color:#444; }
+
+  .st-backlog { background:#eeeeee; color:#555; }
+  .st-design { background:var(--brand-light); color:var(--brand-dark); }
+  .st-critique { background:var(--warning-light); color:#7a4f00; }
+  .st-ready { background:var(--success-light); color:var(--success); }
+
+  /* states pills */
+  .states { display:inline-flex; gap:3px; }
+  .sp { width:9px; height:9px; border-radius:2px; background:#e0e0e0; }
+  .sp.on { background:var(--success); }
+  .states-legend .sp { vertical-align:middle; }
+
+  .link { color:var(--brand); text-decoration:none; font-size:12px; }
+  .link:hover { text-decoration:underline; }
+  .owner { display:inline-flex; align-items:center; gap:6px; }
+  .avatar { width:22px; height:22px; border-radius:100px; background:var(--brand-dark); color:#fff; font-size:10px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; }
+
+  /* kanban */
+  .kanban { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:16px; }
+  .kcol { background:var(--bg); border-radius:12px; padding:10px; }
+  .kcol h4 { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); padding:4px 6px 10px; display:flex; justify-content:space-between; }
+  .kcard { background:#fff; border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:8px; }
+  .kcard .usid { font-size:11px; }
+  .kcard .title { font-size:13px; font-weight:600; margin:3px 0 8px; line-height:1.35; }
+  .kcard .meta { display:flex; align-items:center; justify-content:space-between; }
+
+  .hide { display:none; }
+
+  /* schema + secondary sections */
+  section { margin-top:44px; }
+  .schema td:first-child { font-weight:600; width:190px; }
+  .schema .type { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--brand-dark); width:150px; }
+  .note { background:var(--brand-light); border-radius:12px; padding:16px 18px; margin-top:20px; font-size:13px; }
+  .note b { color:var(--brand-dark); }
+  .cols2 { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  @media (max-width:900px){ .kanban{grid-template-columns:1fr 1fr;} .cols2{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="lbl">Lark Base reference · for recreation</p>
+  <h1>Markelo, team task board</h1>
+  <p class="sub">This is a picture of the Base to build in Lark: one table, <b>Markelo App Screens</b>, one record per user story (US-01 to US-21). Recreate the fields from the schema at the bottom, then rebuild these views. Sample owners and statuses are placeholders. The <b>States covered</b> field is the quality gate, a screen isn't “Ready for dev” until all five squares are green.</p>
+
+  <!-- BASE -->
+  <div class="basebar">
+    <div class="logo">M</div>
+    <strong style="font-size:15px;">Markelo App Screens</strong>
+    <div class="tabs">
+      <button class="tab active" data-view="grid">▤ Grid, all screens</button>
+      <button class="tab" data-view="kanban">▦ Kanban, by status</button>
+    </div>
+    <span class="count">21 records</span>
+  </div>
+
+  <!-- GRID VIEW -->
+  <div class="panel" id="view-grid">
+    <table>
+      <thead>
+        <tr>
+          <th>US-ID</th><th>Screen</th><th>Squad</th><th>Owner</th><th>Status</th><th>States covered</th><th>Figma</th>
+        </tr>
+      </thead>
+      <tbody id="grid-body"></tbody>
+    </table>
+  </div>
+
+  <!-- KANBAN VIEW -->
+  <div class="panel hide" id="view-kanban">
+    <div class="kanban" id="kanban"></div>
+  </div>
+
+  <!-- VIEWS TO CREATE -->
+  <div class="note">
+    <b>Views to create in Lark (same records, different lens):</b><br>
+    1. <b>Grid, all screens</b> (default, above). &nbsp; 2. <b>Kanban, by status</b> (group by Status). &nbsp;
+    3. <b>By squad</b> (group by Squad, or one filtered Grid per squad so each squad sees only theirs). &nbsp;
+    4. <b>Ready for dev</b> (filter Status = Ready for dev). This is the handoff view engineering pulls from).
+  </div>
+
+  <!-- FIELD SCHEMA -->
+  <section>
+    <p class="lbl">Table 1 · fields to create</p>
+    <h2>Schema, Markelo App Screens</h2>
+    <div class="panel" style="border-radius:12px; border-top:1px solid var(--border); margin-top:14px;">
+      <table class="schema">
+        <thead><tr><th>Field</th><th>Type</th><th>Options / notes</th></tr></thead>
+        <tbody>
+          <tr><td>US-ID</td><td class="type">Text</td><td>US-01 … US-21. Primary field.</td></tr>
+          <tr><td>Screen</td><td class="type">Text</td><td>Screen name, match the PRD Part B3 name exactly (Figma files use the same name).</td></tr>
+          <tr><td>Squad</td><td class="type">Single select</td><td>Exam Officer · Marking · Moderation &amp; Audit · Admin &amp; Analytics · Cross-cutting</td></tr>
+          <tr><td>Owner</td><td class="type">Person</td><td>The designer responsible.</td></tr>
+          <tr><td>Status</td><td class="type">Single select</td><td>Backlog · In design · In critique · Ready for dev</td></tr>
+          <tr><td>States covered</td><td class="type">Multi select</td><td>Empty · Loading · Error · Success · Denied (403). The gate for “Ready for dev”.</td></tr>
+          <tr><td>Figma link</td><td class="type">URL</td><td>Deep link to the frame.</td></tr>
+          <tr><td>Primary role(s)</td><td class="type">Multi select</td><td>Exam Officer · Lecturer · TA · Moderator/HOD · Institution Admin · Senior Mgmt</td></tr>
+          <tr><td>Notes</td><td class="type">Text</td><td>Open questions, dependencies.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECONDARY TABLE -->
+  <section>
+    <div class="cols2">
+      <div>
+        <p class="lbl">Table 2 · optional</p>
+        <h2>Component library checklist</h2>
+        <p class="sub" style="margin-bottom:14px;">Track the design-system build the same way. One row per component category.</p>
+        <div class="panel" style="border-radius:12px; border-top:1px solid var(--border);">
+          <table>
+            <thead><tr><th>Component</th><th>Steward</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Buttons</td><td class="owner"><span class="avatar">AO</span>Amaka</td><td><span class="chip st-ready"><span class="dot" style="background:var(--success)"></span>Done</span></td></tr>
+              <tr><td>Status badges</td><td class="owner"><span class="avatar">AO</span>Amaka</td><td><span class="chip st-ready"><span class="dot" style="background:var(--success)"></span>Done</span></td></tr>
+              <tr><td>Form inputs</td><td class="owner"><span class="avatar">TB</span>Tunde</td><td><span class="chip st-critique"><span class="dot" style="background:var(--warning)"></span>In critique</span></td></tr>
+              <tr><td>Data table</td><td class="owner"><span class="avatar">TB</span>Tunde</td><td><span class="chip st-design"><span class="dot" style="background:var(--brand)"></span>In design</span></td></tr>
+              <tr><td>Navigation</td><td class="owner"><span class="avatar">ZB</span>Zainab</td><td><span class="chip st-design"><span class="dot" style="background:var(--brand)"></span>In design</span></td></tr>
+              <tr><td>Feedback</td><td class="owner"><span class="avatar">ZB</span>Zainab</td><td><span class="chip st-backlog"><span class="dot" style="background:#999"></span>Backlog</span></td></tr>
+              <tr><td>Overlays</td><td class="owner"><span class="avatar">EN</span>Emeka</td><td><span class="chip st-backlog"><span class="dot" style="background:#999"></span>Backlog</span></td></tr>
+              <tr><td>Progress</td><td class="owner"><span class="avatar">EN</span>Emeka</td><td><span class="chip st-backlog"><span class="dot" style="background:#999"></span>Backlog</span></td></tr>
+              <tr><td>States</td><td class="owner"><span class="avatar">HY</span>Halima</td><td><span class="chip st-backlog"><span class="dot" style="background:#999"></span>Backlog</span></td></tr>
+              <tr><td>App composites</td><td class="owner"><span class="avatar">HY</span>Halima</td><td><span class="chip st-backlog"><span class="dot" style="background:#999"></span>Backlog</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <p class="lbl">reading the States covered field</p>
+        <h2>The five squares</h2>
+        <p class="sub" style="margin-bottom:14px;">Each record shows five squares in this order. Green = built. A screen is only “Ready for dev” when all five are green, US v2 added the Denied (403) requirement to every role-gated story.</p>
+        <div class="panel" style="border-radius:12px; border-top:1px solid var(--border); padding:16px;">
+          <div class="states-legend" style="display:flex; flex-direction:column; gap:10px; font-size:13px;">
+            <div><span class="sp on"></span> &nbsp;<b>Empty</b>, nothing to show yet, with a way to populate</div>
+            <div><span class="sp on"></span> &nbsp;<b>Loading</b>, skeleton matching the final shape</div>
+            <div><span class="sp on"></span> &nbsp;<b>Error</b>, something failed, marking is safe</div>
+            <div><span class="sp on"></span> &nbsp;<b>Success</b>, the happy path</div>
+            <div><span class="sp on"></span> &nbsp;<b>Denied</b>, 403, role not allowed (identity is officer-only)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p style="margin-top:44px; font-size:12px; color:var(--muted); border-top:1px solid var(--border); padding-top:16px;">
+    Reference only, recreate in Lark Base. Data (owners, statuses) is sample. US-01…US-21 titles are from Markelo User Stories v2. Palette &amp; type match the Markelo Design System.
+  </p>
+</div>
+
+<script>
+  const rows = [
+    ["US-01","Public Waitlist & Pilot Signup","cross","Cross-cutting","Bimpe Salami","BS","ready","Ready for dev",[1,1,1,1,1]],
+    ["US-02","Role-Based Login & Authentication","cross","Cross-cutting","Bimpe Salami","BS","critique","In critique",[1,1,1,1,1]],
+    ["US-03","Institution Academic Structure Setup","admin","Admin & Analytics","Sadiq Abubakar","SA","design","In design",[0,0,0,1,1]],
+    ["US-04","Examination Creation","officer","Exam Officer","Amaka Okeke","AO","design","In design",[1,0,1,1,0]],
+    ["US-05","Student Roster Upload & Validation","officer","Exam Officer","Amaka Okeke","AO","critique","In critique",[1,1,1,1,1]],
+    ["US-06","Control Sheet Generation & Export","officer","Exam Officer","Tunde Bakare","TB","backlog","Backlog",[0,0,0,0,0]],
+    ["US-07","Scanned Script Batch Upload & Auto-Matching","officer","Exam Officer","Tunde Bakare","TB","backlog","Backlog",[0,0,0,0,0]],
+    ["US-08","Script Match Review Queue","officer","Exam Officer","Zainab Bello","ZB","backlog","Backlog",[0,0,0,0,0]],
+    ["US-09","Course TA Management & Script Allocation","marking","Marking","Emeka Nwachukwu","EN","design","In design",[1,0,0,1,1]],
+    ["US-10","Anonymous Script Marking","marking","Marking","Emeka Nwachukwu","EN","critique","In critique",[1,1,1,1,1]],
+    ["US-11","Offline Marking & Sync Reliability","marking","Marking","Halima Yusuf","HY","backlog","Backlog",[0,0,1,0,0]],
+    ["US-12","Flag Script for Review","marking","Marking","Halima Yusuf","HY","backlog","Backlog",[0,0,0,0,0]],
+    ["US-13","Marking Progress Dashboard","marking","Marking","Emeka Nwachukwu","EN","design","In design",[1,1,0,1,0]],
+    ["US-14","Moderation Workspace","mod","Moderation & Audit","Chinedu Obi","CO","design","In design",[1,0,0,1,1]],
+    ["US-15","Result Processing & Finalization","officer","Exam Officer","Zainab Bello","ZB","backlog","Backlog",[0,0,0,0,0]],
+    ["US-16","Result Correction Workflow","mod","Moderation & Audit","Chinedu Obi","CO","backlog","Backlog",[0,0,0,0,0]],
+    ["US-17","Audit Trail Viewer","mod","Moderation & Audit","Funke Adeyemi","FA","design","In design",[1,1,0,1,1]],
+    ["US-18","Institution Admin Settings","admin","Admin & Analytics","Sadiq Abubakar","SA","design","In design",[1,0,0,1,1]],
+    ["US-19","Reports & Analytics Dashboard","admin","Admin & Analytics","Ngozi Okafor","NO","backlog","Backlog",[0,0,0,0,0]],
+    ["US-20","Demo Mode Walkthrough","cross","Cross-cutting","Bimpe Salami","BS","backlog","Backlog",[0,0,0,0,0]],
+    ["US-21","Lecturer & TA Course Workspace","marking","Marking","Halima Yusuf","HY","design","In design",[1,0,0,1,0]],
+  ];
+  const sqClass = {officer:"sq-officer",marking:"sq-marking",mod:"sq-mod",admin:"sq-admin",cross:"sq-cross"};
+  const stClass = {backlog:"st-backlog",design:"st-design",critique:"st-critique",ready:"st-ready"};
+  const stDot = {backlog:"#999",design:"var(--brand)",critique:"var(--warning)",ready:"var(--success)"};
+
+  function statesHtml(arr){ return '<span class="states">'+arr.map(v=>'<span class="sp'+(v?' on':'')+'"></span>').join('')+'</span>'; }
+
+  // grid
+  document.getElementById('grid-body').innerHTML = rows.map(r=>{
+    const [id,screen,sq,sqName,owner,initials,st,stName,states]=r;
+    return `<tr>
+      <td class="usid">${id}</td>
+      <td>${screen}</td>
+      <td><span class="chip ${sqClass[sq]}">${sqName}</span></td>
+      <td><span class="owner"><span class="avatar">${initials}</span>${owner.split(' ')[0]}</span></td>
+      <td><span class="chip ${stClass[st]}"><span class="dot" style="background:${stDot[st]}"></span>${stName}</span></td>
+      <td>${statesHtml(states)}</td>
+      <td><a class="link" href="#">Open ↗</a></td>
+    </tr>`;
+  }).join('');
+
+  // kanban
+  const cols = [["backlog","Backlog"],["design","In design"],["critique","In critique"],["ready","Ready for dev"]];
+  document.getElementById('kanban').innerHTML = cols.map(([key,name])=>{
+    const cards = rows.filter(r=>r[6]===key);
+    return `<div class="kcol">
+      <h4>${name}<span>${cards.length}</span></h4>
+      ${cards.map(r=>`<div class="kcard">
+        <div class="usid">${r[0]}</div>
+        <div class="title">${r[1]}</div>
+        <div class="meta"><span class="chip ${sqClass[r[2]]}">${r[3]}</span>${statesHtml(r[8])}</div>
+      </div>`).join('')}
+    </div>`;
+  }).join('');
+
+  // tabs
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const v=t.dataset.view;
+    document.getElementById('view-grid').classList.toggle('hide', v!=='grid');
+    document.getElementById('view-kanban').classList.toggle('hide', v!=='kanban');
+  }));
+</script>
+</body>
+</html>

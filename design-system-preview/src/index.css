@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+/*
+  MARKELO DESIGN TOKENS
+  ---------------------------------------------------------------
+  Every value below is drawn verbatim from the Markelo Design
+  System PDF (v1.0). The token NAMES are chosen to mirror what the
+  Figma variables should be called, so translation is 1:1:
+      Tailwind: bg-brand        Figma variable: color/brand
+      Tailwind: text-muted      Figma variable: color/muted
+      Tailwind: rounded-card    Figma variable: radius/card
+  Nothing here is invented. If it's not in the PDF, it's not a token.
+*/
+
+@theme {
+  /* ---- Colour: primary ---- */
+  --color-brand: #1a56a0;          /* primary/blue, buttons, links, active */
+  --color-brand-light: #e8f1fb;    /* primary/blue-light, hover bg, tints */
+  --color-brand-dark: #0c3d7a;     /* primary/blue-dark, dark headers, sidebar */
+
+  /* ---- Colour: semantic ---- */
+  --color-success: #1a7a4a;
+  --color-success-light: #e6f4ed;
+  --color-error: #c0392b;
+  --color-error-light: #fdecea;
+  --color-warning: #c47d00;
+  --color-warning-light: #fff3cd;
+
+  /* ---- Colour: neutral ---- */
+  --color-text: #1a1a1a;           /* neutral/text, all body text */
+  --color-muted: #666666;          /* neutral/muted, labels, captions */
+  --color-border: #cccccc;         /* neutral/border, all borders */
+  --color-bg: #f5f5f5;             /* neutral/background, page bg */
+  --color-card: #fafafa;           /* neutral/card, card bg */
+  --color-on-dark: #f0f4fa;        /* neutral/text-on-dark */
+
+  /* status-badge text tokens (paired colours from the PDF) */
+  --color-badge-graded-text: #1a7a4a;
+  --color-badge-progress-text: #0c3d7a;
+  --color-badge-pending-text: #7a4f00;
+  --color-badge-missing-text: #8b1a1a;
+  --color-badge-notstarted-text: #444441;
+
+  /* ---- Type: one family only ---- */
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* ---- Type scale (PDF §2) ---- */
+  --text-title: 28px;      --text-title--line-height: 1.2;   --text-title--font-weight: 700;
+  --text-section: 22px;    --text-section--line-height: 1.3; --text-section--font-weight: 600;
+  --text-card: 18px;       --text-card--line-height: 1.4;    --text-card--font-weight: 600;
+  --text-sub: 16px;        --text-sub--line-height: 1.5;     --text-sub--font-weight: 500;
+  --text-body: 14px;       --text-body--line-height: 1.6;    --text-body--font-weight: 400;
+  --text-caption: 12px;    --text-caption--line-height: 1.5; --text-caption--font-weight: 400;
+  --text-label: 11px;      --text-label--line-height: 1.4;   --text-label--font-weight: 500;
+
+  /* ---- Spacing scale (PDF §3), 4/8/12/16/24/32/48 only ---- */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-12: 48px;
+
+  /* ---- Radius (PDF §4) ---- */
+  --radius-badge: 4px;     /* badges, tags, chips */
+  --radius-control: 8px;   /* buttons, inputs, dropdowns */
+  --radius-card: 12px;     /* cards, modals, panels */
+  --radius-pill: 100px;    /* pill status badges only */
+}
+
+/* Global page defaults from the PDF: page bg #F5F5F5, body text #1A1A1A,
+   one font, never pure black/white. */
+html, body, #root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Markelo is FLAT design, the PDF states shadows are not used; borders
+   separate. This utility is the single allowed elevation: none. Kept as a
+   named class so the intent is explicit in markup. */
+.flat { box-shadow: none; }
+
+/* Visible focus ring for accessibility (WCAG). Brand-tinted, never removed. */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+.uppercase-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}

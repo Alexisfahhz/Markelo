@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Markelo, Foundations & Token Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --brand:#1A56A0; --brand-hover:#164A8B; --brand-dark:#0C3D7A; --brand-50:#E8F1FB; --brand-25:#F0F5FB;
+    --success:#1A7A4A; --error:#C0392B; --warning:#C47D00;
+    --text:#1A1A1A; --muted:#666666; --border:#CCCCCC; --bg:#F5F5F5; --card:#FAFAFA; --ondark:#F0F4FA;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1200px;margin:0 auto;padding:40px 24px 100px}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .lbl{font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  h1{font-size:30px;font-weight:700;letter-spacing:-.02em}
+  h2{font-size:22px;font-weight:700;margin-top:6px}
+  p.sub{color:var(--muted);max-width:820px;margin-top:8px}
+  section{margin-top:52px}
+  section>.lbl{margin-bottom:2px}
+  .panel{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:16px}
+  .rule{background:var(--brand-50);border-radius:10px;padding:12px 16px;margin-top:14px;font-size:13px}
+  .rule b{color:var(--brand-dark)}
+
+  /* swatch grid */
+  .swgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .sw{border:1px solid #eee;border-radius:10px;overflow:hidden}
+  .sw .cap{height:60px}
+  .sw .meta{padding:8px 10px}
+  .sw .nm{font-size:12px;font-weight:600}
+  .sw .hx{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+  .tag{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--brand-dark);background:var(--brand-50);border-radius:4px;padding:1px 5px;margin-top:3px}
+
+  /* semantic table */
+  table{width:100%;border-collapse:collapse;text-align:left}
+  th{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--border)}
+  td{padding:8px 10px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  .chipc{display:inline-block;width:20px;height:20px;border-radius:5px;border:1px solid rgba(0,0,0,.08);vertical-align:middle;margin-right:8px}
+  .tok{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500}
+  .ref{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--brand-dark)}
+
+  /* state demos */
+  .states{display:flex;flex-wrap:wrap;gap:20px}
+  .stateblk{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+  .stateblk .lbl{font-size:10px}
+  .btn{height:40px;padding:0 20px;border-radius:8px;font-size:14px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;border:none;font-family:inherit}
+  .inp{height:40px;width:220px;border-radius:8px;border:1px solid var(--border);padding:0 12px;font-size:14px;font-family:inherit;display:flex;align-items:center;color:var(--muted)}
+  .rowdemo{width:280px;border:1px solid #eee;border-radius:8px;overflow:hidden}
+  .rowdemo .r{padding:9px 12px;font-size:13px;border-bottom:1px solid #f0f0f0}
+  .rowdemo .r:last-child{border-bottom:none}
+
+  /* breakpoints */
+  .bpgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .bp{border:1px solid var(--border);border-radius:10px;padding:14px}
+  .bp .n{font-size:16px;font-weight:700}
+  .bp .r{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:2px}
+  .bp .d{font-size:12px;margin-top:8px}
+
+  /* grid diagrams */
+  .cols{display:flex;gap:6px;margin-top:12px}
+  .cols .c{flex:1;height:64px;background:var(--brand-50);border:1px solid #cddff2;border-radius:4px}
+  .shell{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;height:180px;margin-top:12px}
+  .shell .side{width:96px;background:var(--brand-dark)}
+  .shell .main{flex:1;display:flex;flex-direction:column}
+  .shell .top{height:32px;background:#fff;border-bottom:1px solid var(--border)}
+  .shell .body{flex:1;background:var(--bg);padding:14px;display:flex;gap:8px}
+  .shell .body .card{flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px}
+  .dim{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+
+  .steps{counter-reset:s;display:flex;flex-direction:column;gap:12px;margin-top:16px}
+  .step{display:flex;gap:12px;align-items:flex-start}
+  .step .num{counter-increment:s;flex:none;width:26px;height:26px;border-radius:100px;background:var(--brand);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  .step .num::before{content:counter(s)}
+  @media(max-width:820px){.swgrid{grid-template-columns:repeat(2,1fr)}.bpgrid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="lbl">Foundations · build these Monday, before any component</p>
+  <h1>Markelo, Token Architecture</h1>
+  <p class="sub">This closes the audit gaps: a two-tier Variable structure, interaction states, focus ring, breakpoints, and grid. Everything here is anchored to the Design System PDF; derived values (interaction shades, ramp stops) are marked and tunable. <b>The one rule that keeps the system consistent: components only ever bind to <span class="mono">semantic</span> tokens, never to a primitive directly.</b></p>
+
+  <!-- ARCHITECTURE -->
+  <section>
+    <p class="lbl">The model</p>
+    <h2>Two tiers: Primitives → Semantic</h2>
+    <div class="rule">
+      <b>Primitives</b> = the raw palette (<span class="mono">blue/500 = #1A56A0</span>). Never used in a design directly. &nbsp;→&nbsp;
+      <b>Semantic</b> = named by job (<span class="mono">action/primary = {blue/500}</span>). This is what every button, card, and input binds to.<br>
+      Why: when the brand blue changes, you edit <i>one</i> primitive and the whole system follows. When you add dark mode later, you add a mode to the semantic layer without renaming anything.
+    </div>
+  </section>
+
+  <!-- PRIMITIVES -->
+  <section>
+    <p class="lbl">Tier 1 · Figma collection "Primitives"</p>
+    <h2>Primitive palette</h2>
+    <p class="sub">PDF-exact tokens are tagged <span class="tag" style="margin:0">PDF</span>. Untagged stops are derived to support states and ramps, tune freely, they aren't sacred.</p>
+    <div class="panel"><div class="swgrid" id="prim"></div></div>
+  </section>
+
+  <!-- SEMANTIC -->
+  <section>
+    <p class="lbl">Tier 2 · Figma collection "Semantic", components bind here</p>
+    <h2>Semantic token map</h2>
+    <div class="panel" style="padding:0;overflow:hidden">
+      <table><thead><tr><th>Semantic token</th><th>Resolves to</th><th>Value</th><th>Used for</th></tr></thead>
+      <tbody id="sem"></tbody></table>
+    </div>
+  </section>
+
+  <!-- INTERACTION STATES -->
+  <section>
+    <p class="lbl">Audit gap #6, closed</p>
+    <h2>Interaction states</h2>
+    <p class="sub">Every interactive component gets these. Build them as Figma variant properties (State = Default / Hover / Pressed / Focus / Disabled) so a screen just flips the property.</p>
+
+    <div class="panel">
+      <p class="lbl" style="margin-bottom:14px">Primary button</p>
+      <div class="states">
+        <div class="stateblk"><span class="lbl">Default</span><button class="btn" style="background:var(--brand);color:var(--ondark)">Grade scripts</button></div>
+        <div class="stateblk"><span class="lbl">Hover</span><button class="btn" style="background:var(--brand-hover);color:var(--ondark)">Grade scripts</button></div>
+        <div class="stateblk"><span class="lbl">Pressed</span><button class="btn" style="background:var(--brand-dark);color:var(--ondark)">Grade scripts</button></div>
+        <div class="stateblk"><span class="lbl">Focus</span><button class="btn" style="background:var(--brand);color:var(--ondark);outline:2px solid var(--brand);outline-offset:2px">Grade scripts</button></div>
+        <div class="stateblk"><span class="lbl">Disabled</span><button class="btn" style="background:var(--bg);color:var(--border);border:1.5px solid var(--border)">Grade scripts</button></div>
+      </div>
+
+      <p class="lbl" style="margin:24px 0 14px">Secondary · Ghost · Danger</p>
+      <div class="states">
+        <div class="stateblk"><span class="lbl">Secondary default</span><button class="btn" style="background:#fff;color:var(--brand);border:1.5px solid var(--brand)">Export results</button></div>
+        <div class="stateblk"><span class="lbl">Secondary hover</span><button class="btn" style="background:var(--brand-50);color:var(--brand);border:1.5px solid var(--brand)">Export results</button></div>
+        <div class="stateblk"><span class="lbl">Ghost hover</span><button class="btn" style="background:#F0F0F0;color:var(--muted)">Cancel</button></div>
+        <div class="stateblk"><span class="lbl">Danger hover</span><button class="btn" style="background:#A5301F;color:var(--ondark)">Delete script</button></div>
+      </div>
+
+      <p class="lbl" style="margin:24px 0 14px">Input field</p>
+      <div class="states">
+        <div class="stateblk"><span class="lbl">Default</span><div class="inp">Placeholder</div></div>
+        <div class="stateblk"><span class="lbl">Focus</span><div class="inp" style="border-color:var(--brand);outline:2px solid var(--brand);outline-offset:2px;color:var(--text)">Typing…</div></div>
+        <div class="stateblk"><span class="lbl">Error</span><div class="inp" style="border-color:var(--error);color:var(--text)">Invalid matric no.</div></div>
+        <div class="stateblk"><span class="lbl">Disabled</span><div class="inp" style="background:var(--bg);border-color:var(--border);color:var(--border)">Locked</div></div>
+      </div>
+
+      <p class="lbl" style="margin:24px 0 14px">Table row (half the app is tables)</p>
+      <div class="rowdemo">
+        <div class="r">Default row</div>
+        <div class="r" style="background:var(--brand-25)">Hover row &nbsp;<span class="dim">surface/hover</span></div>
+        <div class="r" style="background:var(--brand-50)">Selected row &nbsp;<span class="dim">surface/selected</span></div>
+      </div>
+    </div>
+
+    <div class="rule">
+      <b>Focus ring (accessibility floor, non-negotiable on every interactive element):</b>
+      <span class="mono">2px solid {border/focus} (#1A56A0), 2px offset</span>. Visible on keyboard focus. This is currently missing from the spec and is the #1 accessibility gap.
+    </div>
+  </section>
+
+  <!-- BREAKPOINTS -->
+  <section>
+    <p class="lbl">Audit gap #4, closed</p>
+    <h2>Breakpoints</h2>
+    <p class="sub">Four tiers. Your existing website design frames (390 / 834 / 1440) map onto Mobile / Tablet / Wide.</p>
+    <div class="bpgrid" style="margin-top:16px">
+      <div class="bp"><div class="n">Mobile</div><div class="r">&lt; 640</div><div class="d">Design at <b>390</b>. Base, design mobile-first (PDF frame width).</div></div>
+      <div class="bp"><div class="n">Tablet</div><div class="r">640 – 1023</div><div class="d">Design at <b>834</b>. Scanner-station &amp; TA tablet marking.</div></div>
+      <div class="bp"><div class="n">Desktop</div><div class="r">1024 – 1439</div><div class="d">Design at <b>1280</b>. App minimum, officer/lecturer desktop.</div></div>
+      <div class="bp"><div class="n">Wide</div><div class="r">≥ 1440</div><div class="d">Design at <b>1440</b>. Marketing site max; app content caps at 1200.</div></div>
+    </div>
+  </section>
+
+  <!-- GRID -->
+  <section>
+    <p class="lbl">Audit gap #3, closed</p>
+    <h2>Grid &amp; app shell</h2>
+
+    <div class="panel">
+      <p class="lbl">Responsive column grid</p>
+      <div style="margin-top:6px;font-size:13px">Mobile, <b>4 col</b>, 16 margin, 16 gutter</div>
+      <div class="cols">…4…</div>
+      <div style="margin-top:14px;font-size:13px">Desktop, <b>12 col</b>, 48 margin, 24 gutter, content max 1344</div>
+      <div class="cols" id="cols12"></div>
+    </div>
+
+    <div class="panel">
+      <p class="lbl">App shell, app.markelo.ng</p>
+      <div class="shell">
+        <div class="side"></div>
+        <div class="main"><div class="top"></div><div class="body"><div class="card"></div><div class="card"></div></div></div>
+      </div>
+      <div style="display:flex;gap:24px;margin-top:10px;flex-wrap:wrap">
+        <span class="dim">sidebar 240 (collapsed 72)</span>
+        <span class="dim">topbar 64</span>
+        <span class="dim">content padding 32</span>
+        <span class="dim">content max-width 1200</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FIGMA BUILD ORDER -->
+  <section>
+    <p class="lbl">Monday morning · how to enter this in Figma</p>
+    <h2>Variables build order</h2>
+    <div class="steps">
+      <div class="step"><div class="num"></div><div><b>Create collection "Primitives"</b>, add every raw hex above as a colour variable, plus number variables for spacing (4→48), radius (4/8/12/100), and breakpoints. One mode: "Value".</div></div>
+      <div class="step"><div class="num"></div><div><b>Create collection "Semantic"</b>, add the semantic tokens, each set to <i>alias</i> its primitive (Figma: right-click value → “Create alias”). One mode: "Light" (adding "Dark" later needs no renames).</div></div>
+      <div class="step"><div class="num"></div><div><b>Create text styles</b> from the 7-step scale (28/22/18/16/14/12/11), Plus Jakarta Sans, weights per the PDF.</div></div>
+      <div class="step"><div class="num"></div><div><b>Bind components to Semantic only.</b> If you ever type a hex or pick a primitive inside a component, that's the bug, stop and alias instead. This single rule is what prevents the website inconsistency from recurring.</div></div>
+      <div class="step"><div class="num"></div><div><b>On Starter plan:</b> Variables + styles work fine; you just can't <i>publish</i> a shared library. So keep every design file's components as instances of the master file, or design inside it. Decide this before Tuesday.</div></div>
+    </div>
+  </section>
+
+  <p style="margin-top:52px;font-size:12px;color:var(--muted);border-top:1px solid var(--border);padding-top:16px">
+    Reference only, recreate as Figma Variables. PDF-tagged values are approved; derived values are tunable. Palette &amp; type per Markelo Design System v1.0.
+  </p>
+</div>
+
+<script>
+  const P = 'PDF';
+  const primitives = [
+    // blue
+    ['blue/25','#F0F5FB',''],['blue/50','#E8F1FB',P],['blue/100','#D0E2F6',''],['blue/300','#6E9BD4',''],['blue/500','#1A56A0',P],
+    ['blue/600','#164A8B',''],['blue/700','#0C3D7A',P],['blue/900','#071E3B',''],
+    // neutral
+    ['neutral/0','#FFFFFF',''],['neutral/50','#FAFAFA',P],['neutral/100','#F5F5F5',P],['neutral/200','#F0F0F0',''],['neutral/300','#CCCCCC',P],
+    ['neutral/400','#999999',''],['neutral/500','#666666',P],['neutral/700','#444441',P],['neutral/900','#1A1A1A',P],['neutral/on-dark','#F0F4FA',P],
+    // hues
+    ['green/50','#E6F4ED',P],['green/500','#1A7A4A',P],
+    ['red/50','#FDECEA',P],['red/500','#C0392B',P],['red/600','#A5301F',''],['red/700','#8B1A1A',P],
+    ['amber/50','#FFF3CD',P],['amber/500','#C47D00',P],['amber/700','#7A4F00',P],
+  ];
+  const textDark = ['#FFFFFF','#F0F5FB','#E8F1FB','#D0E2F6','#FAFAFA','#F5F5F5','#F0F0F0','#CCCCCC','#E6F4ED','#FDECEA','#FFF3CD','#F0F4FA'];
+  document.getElementById('prim').innerHTML = primitives.map(([n,h,t])=>{
+    const light = textDark.includes(h.toUpperCase());
+    return `<div class="sw"><div class="cap" style="background:${h}"></div><div class="meta"><div class="nm">${n}</div><div class="hx">${h}</div>${t?'<span class="tag">'+t+'</span>':''}</div></div>`;
+  }).join('');
+
+  const semantic = [
+    [', Text','','',''],
+    ['text/default','{neutral/900}','#1A1A1A','All body text, headings'],
+    ['text/muted','{neutral/500}','#666666','Labels, captions, helper'],
+    ['text/on-brand','{neutral/on-dark}','#F0F4FA','Text on blue / dark bands'],
+    ['text/link','{blue/500}','#1A56A0','Links, "Learn more"'],
+    ['text/disabled','{neutral/300}','#CCCCCC','Disabled labels'],
+    ['text/danger','{red/500}','#C0392B','Error messages, destructive'],
+    [', Surface','','',''],
+    ['surface/page','{neutral/100}','#F5F5F5','Page background'],
+    ['surface/card','{neutral/50}','#FAFAFA','Cards, panels'],
+    ['surface/raised','{neutral/0}','#FFFFFF','Modals, dropdowns, popovers'],
+    ['surface/hover','{blue/25}','#F0F5FB','Row / list-item hover'],
+    ['surface/selected','{blue/50}','#E8F1FB','Selected row, active nav'],
+    ['surface/inverse','{blue/700}','#0C3D7A','Dark bands, sidebar'],
+    [', Border','','',''],
+    ['border/default','{neutral/300}','#CCCCCC','Card + input borders'],
+    ['border/strong','{neutral/400}','#999999','Dividers needing emphasis'],
+    ['border/focus','{blue/500}','#1A56A0','Focus ring'],
+    [', Action','','',''],
+    ['action/primary','{blue/500}','#1A56A0','Primary button bg'],
+    ['action/primary-hover','{blue/600}','#164A8B','Primary hover'],
+    ['action/primary-pressed','{blue/700}','#0C3D7A','Primary pressed'],
+    ['action/danger','{red/500}','#C0392B','Destructive button bg'],
+    ['action/danger-hover','{red/600}','#A5301F','Destructive hover'],
+    [', Status badges','','',''],
+    ['status/graded','{green/50} + {green/500}','bg/text','Graded, complete'],
+    ['status/in-progress','{blue/50} + {blue/700}','bg/text','In progress'],
+    ['status/pending','{amber/50} + {amber/700}','bg/text','Pending, flagged'],
+    ['status/missing','{red/50} + {red/700}','bg/text','Missing pages'],
+    ['status/not-started','{neutral/100} + {neutral/700}','bg/text','Not started'],
+    [', Feedback','','',''],
+    ['feedback/success','{green/50} + {green/500}','bg/text','Success toast/banner'],
+    ['feedback/error','{red/50} + {red/500}','bg/text','Error toast/banner'],
+    ['feedback/warning','{amber/50} + {amber/700}','bg/text','Warning toast/banner'],
+    ['feedback/info','{blue/50} + {blue/700}','bg/text','Info toast/banner'],
+  ];
+  document.getElementById('sem').innerHTML = semantic.map(r=>{
+    if(r[0].startsWith(',')) return `<tr><td colspan="4" style="background:#fafafa"><span class="lbl">${r[0].slice(2)}</span></td></tr>`;
+    const hex = r[2].startsWith('#') ? `<span class="chipc" style="background:${r[2]}"></span><span class="mono">${r[2]}</span>` : `<span class="mono" style="color:#666">${r[2]}</span>`;
+    return `<tr><td class="tok">${r[0]}</td><td class="ref">${r[1]}</td><td>${hex}</td><td>${r[3]}</td></tr>`;
+  }).join('');
+
+  document.getElementById('cols12').innerHTML = Array.from({length:12}).map(()=>'<div class="c"></div>').join('');
+</script>
+</body>
+</html>
