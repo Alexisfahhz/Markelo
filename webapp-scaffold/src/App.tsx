@@ -10,6 +10,7 @@ import * as D from "./screens/dashboards";
 import * as AD from "./screens/admin";
 import * as C from "./screens/components";
 import * as S from "./screens/scanning";
+import * as T from "./screens/triage";
 import { Logo } from "./ui/shell";
 
 type Screen = { id: string; label: string; note?: string; el: React.ReactNode };
@@ -164,6 +165,29 @@ const GROUPS: Group[] = [
       { id: "sc-report-loading", label: "Integrity report: starting", el: <S.IntegrityReportLoading /> },
       { id: "sc-report-error", label: "Integrity report: stopped", el: <S.IntegrityReportError /> },
       { id: "sc-report-denied", label: "Integrity report: denied", el: <S.IntegrityReportDenied /> },
+    ],
+  },
+  {
+    title: "Triage and review",
+    owner: "Designer 6",
+    screens: [
+      /* --- Exception Queue (B3, B4, B5) --- */
+      { id: "eq-pilot", label: "Exception queue: pilot mode", note: "B4, the current reality", el: <T.ExceptionQueuePilot /> },
+      { id: "eq-normal", label: "Exception queue: normal mode", note: "B4, the end state", el: <T.ExceptionQueueNormal /> },
+      { id: "eq-resolve", label: "Exception queue: resolve one", note: "B3, B5", el: <T.ExceptionQueueResolve /> },
+      { id: "eq-empty", label: "Exception queue: empty", el: <T.ExceptionQueueEmpty /> },
+      { id: "eq-loading", label: "Exception queue: loading", el: <T.ExceptionQueueLoading /> },
+      { id: "eq-error", label: "Exception queue: error", el: <T.ExceptionQueueError /> },
+      { id: "eq-denied", label: "Exception queue: denied", el: <T.ExceptionQueueDenied /> },
+
+      /* --- Moderation Workspace (F1) --- */
+      { id: "mod", label: "Moderation: side by side", note: "F1", el: <T.ModerationWorkspace /> },
+      { id: "mod-changed", label: "Moderation: marks changed", note: "F1, score of record", el: <T.ModerationWorkspaceChanged /> },
+      { id: "mod-return", label: "Moderation: return to marker", note: "F1, reason required", el: <T.ModerationWorkspaceReturn /> },
+      { id: "mod-empty", label: "Moderation: empty", el: <T.ModerationWorkspaceEmpty /> },
+      { id: "mod-loading", label: "Moderation: loading", el: <T.ModerationWorkspaceLoading /> },
+      { id: "mod-error", label: "Moderation: not saved", el: <T.ModerationWorkspaceError /> },
+      { id: "mod-denied", label: "Moderation: denied", el: <T.ModerationWorkspaceDenied /> },
     ],
   },
 ];

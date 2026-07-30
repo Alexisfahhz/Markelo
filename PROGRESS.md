@@ -580,3 +580,69 @@ same defect.
 - The `Table`/`Th`/`Td` helpers now exist in three files. Worth extracting into
   `kit.tsx` before a fourth copy appears.
 - The Desktop Grid is still applied to no screen, including these.
+
+---
+
+## 2026-07-29 (seventh entry) : claude-opus-5
+
+**Phase:** Phase 3 continued. Triage and review, stories B3/B4/B5 and F1.
+
+**Checked first: neither screen existed.** Only dashboard cards referenced them
+("Exception queue", "Moderation queue"). Confirmed against Designer 6's
+assignment in the week plan, which pairs both under one owner because they are
+the same pattern, a queue of things a human decides on.
+
+**Built `src/screens/triage.tsx`, 14 screens.** Exception Queue: pilot mode,
+normal mode, the resolve panel, empty, loading, error, denied (7 states, one
+extra for the two required modes). Moderation Workspace: default side-by-side,
+marks-changed, return-to-marker, empty, loading, error, denied (7 states).
+
+**Acceptance criteria verified live, not assumed:**
+- **B4, two modes.** Pilot mode is the default because it is the current
+  reality under §9.2.1's unvalidated thresholds, it lists every script
+  including the ones with nothing flagged. Normal mode shows flagged only. Both
+  built, neither is a stub of the other.
+- **B5, specific reasons.** Five distinct reason strings (extra-sheet mismatch,
+  unreadable field, missing pages, duplicate matric, no cover page), none of
+  them says "needs review". Verified: resolving text states the entry "leaves
+  the queue straight away".
+- **B3, extra sheet never starts a script.** The resolve screen's reason text
+  and notice both state this explicitly, verified by text search.
+- **F1, side by side.** Verified: both "Original mark" and "Your mark" columns
+  render. Changing two marks correctly computed a differing total and the
+  screen labelled it "Score of record" with the original marked "kept
+  permanently". Both totals stay visible together, which is what makes the
+  screen useful as a dispute record later.
+- **F1, return requires a reason.** Verified in the browser: the "Return to the
+  marker" button is `disabled` on the return screen until a reason is entered.
+  This is enforced by the control, not just hinted at.
+
+**Identity decision, flagged rather than made quietly.** The exception queue
+list shows Script IDs only. A candidate student's name and matric number appear
+solely inside the resolve panel, framed as a logged lookup with the same
+contract as the Identity Registry, because B5 cannot be satisfied without
+showing who the candidate is. Moderation never shows a student at all, since it
+is marking-facing, rule 1 applies, and only the Script ID appears. **The
+marker's name does appear in moderation**, which F2 (audit and dispute
+evidence) requires. If KingFizzy wants the queue list itself to preview
+identity before opening an entry, that is a further change to this model and
+needs his ruling.
+
+**Verified:**
+- `npx tsc --noEmit` exit 0. No console errors.
+- 91 screens registered.
+- `ScriptId`'s whitespace-nowrap fix from the last session holds here too:
+  measured 24px in both the queue and moderation screens.
+- At a 1728px window, all criteria above checked true via direct text and DOM
+  assertions, not visual read.
+
+**Not done / blocked:**
+- Remaining Phase 3: Exam Creation, Marking Scheme Setup, Student Data Upload,
+  Identity Registry, Result Processing.
+- Phase 4 (Marking Interface) is the natural next flow and is the product's
+  core; both screens built here feed scripts into it.
+- The two-option mode switch on Exception Queue is a local component. If a
+  second screen ever needs the same pattern, it should move into `kit.tsx`
+  rather than being copied a second time.
+- The shared-Table extraction task flagged last session is still pending,
+  unrelated to this build.
