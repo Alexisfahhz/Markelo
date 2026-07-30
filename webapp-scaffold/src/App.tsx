@@ -118,12 +118,14 @@ const GROUPS: Group[] = [
 
       /* --- Booklet Profile Setup (A1) --- */
       { id: "ad-bp-setup", label: "Booklet setup: default", note: "A1", el: <AD.BookletProfileSetup /> },
+      { id: "ad-bp-setup-empty", label: "Booklet setup: empty", el: <AD.BookletProfileSetupEmpty /> },
       { id: "ad-bp-setup-loading", label: "Booklet setup: loading", el: <AD.BookletProfileSetupLoading /> },
       { id: "ad-bp-setup-error", label: "Booklet setup: error", el: <AD.BookletProfileSetupError /> },
       { id: "ad-bp-setup-denied", label: "Booklet setup: denied", el: <AD.BookletProfileSetupDenied /> },
 
       /* --- Booklet Profile Validation (A2, A3) --- */
       { id: "ad-bp-validate", label: "Booklet validation: default", note: "A2/A3", el: <AD.BookletProfileValidation /> },
+      { id: "ad-bp-validate-empty", label: "Booklet validation: empty", el: <AD.BookletProfileValidationEmpty /> },
       { id: "ad-bp-validate-loading", label: "Booklet validation: loading", el: <AD.BookletProfileValidationLoading /> },
       { id: "ad-bp-validate-error", label: "Booklet validation: error", el: <AD.BookletProfileValidationError /> },
       { id: "ad-bp-validate-denied", label: "Booklet validation: denied", el: <AD.BookletProfileValidationDenied /> },
@@ -144,6 +146,7 @@ const GROUPS: Group[] = [
 
       /* --- Result Correction (G2) --- */
       { id: "ad-correction", label: "Result correction: default", note: "G2", el: <AD.ResultCorrection /> },
+      { id: "ad-correction-editing", label: "Result correction: editing one", note: "the \"Correct\" destination", el: <AD.ResultCorrectionEditing /> },
       { id: "ad-correction-empty", label: "Result correction: empty", el: <AD.ResultCorrectionEmpty /> },
       { id: "ad-correction-loading", label: "Result correction: loading", el: <AD.ResultCorrectionLoading /> },
       { id: "ad-correction-error", label: "Result correction: error", el: <AD.ResultCorrectionError /> },

@@ -292,6 +292,21 @@ function BookletProfileSetupDefault() {
   );
 }
 
+export function BookletProfileSetupEmpty() {
+  return (
+    <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet profile" sub="Teach Markelo what your answer booklet looks like">
+      <div className="max-w-2xl">
+        <EmptyState
+          icon={Upload}
+          title="No booklet profile yet"
+          body="Add a scanned cover page to start. It is the only page Markelo needs, the normal page, extra sheet, and continuation sheet are optional and can be added later."
+          action={<Button icon={FileUp}>Upload a cover page</Button>}
+        />
+      </div>
+    </AppFrame>
+  );
+}
+
 export function BookletProfileSetupLoading() {
   return (
     <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet profile" sub="Uploading your booklet pages…">
@@ -381,6 +396,21 @@ function BookletProfileValidationDefault() {
           <Button variant="secondary">Cancel</Button>
           <Button icon={Check} disabled>Mark as ready to use</Button>
         </div>
+      </div>
+    </AppFrame>
+  );
+}
+
+export function BookletProfileValidationEmpty() {
+  return (
+    <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet profile validation" sub="Markelo checks what it can detect">
+      <div className="max-w-2xl">
+        <EmptyState
+          icon={ScanLine}
+          title="Nothing to validate yet"
+          body="Upload your booklet profile's cover page first. Once it is uploaded, Markelo detects what it can and lists anything you need to confirm by hand."
+          action={<Button icon={FileUp}>Go to booklet profile</Button>}
+        />
       </div>
     </AppFrame>
   );
@@ -610,15 +640,22 @@ function ResultCorrectionDefault() {
           Every correction records the old value, the new value, who made the change, and when.
           Once re-locked, the result has the same permanence guarantee as before.
         </Notice>
-        <Table head={["Course", "Student", "Script", "CA", "Exam", "Total", "Grade", "Status", ""]}>
+        {/*
+          Script ID only, no Student column. This table is visible to the
+          Institution Admin, not a marking-facing role, but identity still
+          only belongs in the Identity Registry (H2). Reserving the reveal
+          for one logged, purpose-built screen is what makes "the only place
+          a name appears" actually true, rather than true everywhere except
+          the screens someone forgot to check.
+        */}
+        <Table head={["Course", "Script", "CA", "Exam", "Total", "Grade", "Status", ""]}>
           {[
-            { c: "CSC 401", s: "Student A", id: "MK-001", ca: 28, ex: 58, tot: 86, g: "A", st: "Finalized" },
-            { c: "CSC 401", s: "Student B", id: "MK-002", ca: 22, ex: 41, tot: 63, g: "C", st: "Finalized" },
-            { c: "CSC 312", s: "Student C", id: "MK-003", ca: 18, ex: 55, tot: 73, g: "B", st: "Finalized" },
+            { c: "CSC 401", id: "MK-001", ca: 28, ex: 58, tot: 86, g: "A", st: "Finalized" },
+            { c: "CSC 401", id: "MK-002", ca: 22, ex: 41, tot: 63, g: "C", st: "Finalized" },
+            { c: "CSC 312", id: "MK-003", ca: 18, ex: 55, tot: 73, g: "B", st: "Finalized" },
           ].map((r) => (
             <tr key={r.id}>
               <Td className="font-medium">{r.c}</Td>
-              <Td className="text-muted">{r.s}</Td>
               <Td><ScriptId id={r.id} /></Td>
               <Td className="tabular-nums">{r.ca}</Td>
               <Td className="tabular-nums">{r.ex}</Td>
@@ -631,6 +668,63 @@ function ResultCorrectionDefault() {
             </tr>
           ))}
         </Table>
+      </div>
+    </AppFrame>
+  );
+}
+
+/*
+  What "Correct" opens. G2's full acceptance criteria: unlocking requires a
+  stated, logged reason; the correction records the old value, the new
+  value, who made it, and when; re-locking restores the same permanence
+  guarantee. All four are visible here, not just the first one.
+*/
+export function ResultCorrectionEditing() {
+  return (
+    <AppFrame role={ROLES.admin} activeLabel="Result correction" title="Result correction" sub="Fix a genuine error in a locked result">
+      <div className="flex max-w-2xl flex-col gap-6">
+        <Notice tone="warning" title="This result is unlocked for correction">
+          It stays unlocked until you save a correction or cancel. While unlocked, the total shown
+          below is not final.
+        </Notice>
+
+        <Card>
+          <div className="mb-4 flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-1">
+              <h2 className="text-card font-semibold text-text">CSC 401</h2>
+              <ScriptId id="MK-002" />
+            </div>
+            <Badge tone="warning" icon={Unlock}>Unlocked</Badge>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-control border border-border bg-bg px-4 py-3">
+              <p className="uppercase-label">Current value, locked</p>
+              <p className="mt-1 text-sub font-semibold text-text">63 <span className="text-caption font-normal text-muted">/ 100</span></p>
+              <p className="text-caption text-muted">CA 22, Exam 41, Grade C</p>
+            </div>
+            <div className="rounded-control border border-brand bg-brand-light px-4 py-3">
+              <p className="uppercase-label !text-brand-dark">New value</p>
+              <div className="mt-1 flex items-center gap-2">
+                <Input defaultValue={22} className="w-16" aria-label="New CA" />
+                <span className="text-caption text-muted">CA</span>
+                <Input defaultValue={51} className="w-16" aria-label="New Exam" />
+                <span className="text-caption text-muted">Exam</span>
+              </div>
+              <p className="mt-2 text-caption text-brand-dark">New total: 73, Grade B</p>
+            </div>
+          </div>
+        </Card>
+
+        <Card>
+          <Field label="Reason for this correction" required hint="Recorded exactly as written, alongside your name and the time">
+            <Input defaultValue="Exam script Q4 was marked against the wrong marking scheme version, remarked and confirmed by the Lecturer" />
+          </Field>
+        </Card>
+
+        <div className="grid grid-cols-2 gap-3">
+          <Button variant="secondary" size="xl" icon={Lock}>Cancel, re-lock unchanged</Button>
+          <Button size="xl" icon={Check}>Save correction and re-lock</Button>
+        </div>
       </div>
     </AppFrame>
   );

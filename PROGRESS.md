@@ -904,3 +904,55 @@ picking a side quietly.
 - The shared-Table extraction (`Table`/`Td`/`Th`/`Row` in `ui/kit.tsx`) from
   earlier this session was reused directly here with no changes needed,
   confirming it covers this shape of screen cleanly.
+
+## 2026-07-30 (twelfth entry) : claude-sonnet-5
+
+**Closed out the three items still open from the 28 July audit of
+`admin.tsx`,** confirmed unresolved this session by reading the live code
+before touching anything, then fixed all three on request.
+
+**1. Result Correction's Student column, removed.** The table (`admin.tsx`,
+`ResultCorrectionDefault`) went from `["Course", "Student", "Script", "CA",
+"Exam", "Total", "Grade", "Status", ""]` to the same list minus `"Student"`,
+and the corresponding `<Td>{r.s}</Td>` cell and `s` field on each row. Left a
+comment explaining why: this table is Institution-Admin-facing, not
+marking-facing, but H2 reserves identity for the Identity Registry
+specifically, "the only place a name appears" only holds if every screen
+respects it, not just the ones an auditor happens to check.
+
+**2. Result Correction's "Correct" button now has a real destination.**
+Added `ResultCorrectionEditing`, a new exported screen showing what G2 asked
+for and nothing more: a locked "current value" panel (CA, Exam, Total,
+Grade, read-only), an editable "new value" panel with live-computed new
+total and grade, a required "Reason for this correction" field with a hint
+that it is recorded alongside the actor and the timestamp, and a two-button
+footer, cancel and re-lock unchanged, or save and re-lock. Registered as
+"Result correction: editing one" in `App.tsx`, same convention as
+`ExceptionQueueResolve`, a state you reach by picking a row, not a fifth
+lifecycle state.
+
+**3. Booklet Setup and Booklet Validation, both given their missing empty
+state.** `BookletProfileSetupEmpty`: no cover page uploaded yet, states
+plainly that the cover page is the only required one. `BookletProfileValidationEmpty`:
+nothing to validate yet, points back to the setup screen rather than
+showing a validation report with nothing in it. Both screens are now five
+states each, matching the Definition of Done.
+
+**Verified:**
+- `npx tsc --noEmit` exit 0.
+- 126 screens registered (123 plus these 3: the two empty states plus the
+  new editing screen for Result Correction).
+- Screenshotted all three fixes live: Result Correction's default table
+  confirmed Script-ID-only with no Student column; the editing panel
+  confirmed showing locked old value, editable new value with live
+  recompute, and the required reason field; both booklet empty states
+  confirmed rendering their EmptyState with correct copy and CTA.
+
+**Not done / blocked:**
+- The editing panel is presentational only, same convention as every screen
+  in this scaffold: the "New value" inputs and the live total/grade shown
+  underneath are not wired to actually recompute from a keystroke, they are
+  a static illustration of what recomputation would show.
+- No further known gaps from the 28 July audit remain in `admin.tsx`. If
+  another one turns up, it should be checked against the live file first,
+  the same way this entry was, rather than trusted from an old summary.
