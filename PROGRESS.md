@@ -756,3 +756,74 @@ Scanning.
 - The shared-Table extraction task flagged multiple sessions ago is still
   pending, unrelated to this build. `workload.tsx` adds a fourth local copy
   of the same `Table`/`Td` pair.
+
+## 2026-07-30 (tenth entry) : claude-sonnet-5
+
+**Two cleanup items, requested explicitly.**
+
+**1. Shared Table/Td/Th/Row, extracted into `ui/kit.tsx`.** Four screen files
+(`admin.tsx`, `dashboards.tsx`, `scanning.tsx`, `workload.tsx`) had each grown
+their own copy. Two shapes had quietly diverged and both are preserved in the
+one shared version rather than picking one and breaking the other's call
+site: a header can be a plain string or `{ label, right? }` (only
+`scanning.tsx`'s trailing actions column used the object form, for
+right-aligned header text), and header cell padding had split 2-and-2 between
+`py-3` and `py-2.5`. Standardised on `py-3` to match `Td`'s own padding,
+which is what `admin.tsx` and `scanning.tsx` already did. Also added
+`scope="col"` everywhere, `dashboards.tsx`'s inline header previously
+omitted it. All four files now import `Table`, `Td`, and (where used) `Row`
+from `../ui/kit` instead of declaring their own. `LoadingRows`/`SkeletonRows`/
+`SkeletonCard` were left alone, out of the requested scope and not identical
+across files.
+
+**2. Sidebar active-state bug, fixed everywhere, not just new screens.**
+KingFizzy flagged that the in-app sidebar was not highlighting the current
+screen. Root cause: `AppFrame`'s `activeLabel` prop defaults to `"Dashboard"`
+when not passed, and only one screen in the whole scaffold
+(`SessionExpiryWarning` in `auth.tsx`) was ever passing it. Every other
+screen, going back to the very first Phase 2 build, was silently showing
+"Dashboard" highlighted regardless of which page was actually open. This was
+never caught earlier because every review this project has done was of a
+single screen at a time, not a click-through across screens where the stale
+highlight would be obvious by comparison.
+
+Fixed by passing `activeLabel` matching the nav item's exact label on every
+`AppFrame` call: 33 individual call sites in `admin.tsx` (scripted, matched
+on each screen's title text), 5 in `exam.tsx`, 11 in `workload.tsx`, and one
+shared shell component each in `scanning.tsx` (`UploadShell`, `ReportShell`)
+and `triage.tsx` (`QueueShell`, `ModShell`), which covers all of their
+variant screens in one edit. Dashboards and the two already-correct
+signed-out screens needed no change.
+
+**A gap this surfaced, not just a labeling bug.** Setting `activeLabel`
+correctly on the denied-role screens (e.g. a TA looking at Marking
+Assignment) exposed that two nav items story D1 and D2 require did not exist
+on the roles that need them: the Exam Officer's nav had no "Marking scheme"
+entry at all (only the Lecturer's did, even though D1 grants the capability
+to "Exam Officer or Lecturer"), and the Teaching Assistant's nav had no
+"Marking progress" entry (even though D2's own-pace rule is specifically
+about what a TA sees). Added both to `roles.ts`: "Marking scheme" to the
+Exam Officer nav between "Exams" and "Student data", matching Phase 3's
+build order; "Marking progress" to the TA nav between "My marking" and
+"Flagged for review".
+
+**Verified:**
+- `npx tsc --noEmit` exit 0 after each step.
+- Visual spot-check in the live preview at 1280x720: Courses (Table
+  extraction) renders pixel-identical to its pre-extraction screenshot from
+  two sessions ago. Marking assignment, Marking scheme, Scan batch upload,
+  Exception queue, and Moderation each screenshotted with the correct sidebar
+  item highlighted and no other item highlighted.
+- A stale Vite HMR error ("Duplicate declaration Row") appeared once in
+  `preview_logs` mid-edit, from before the `dashboards.tsx` edit had
+  finished landing. Confirmed via a fresh screenshot and a second
+  `preview_logs` read that it did not reproduce, and the source file itself
+  has no duplicate.
+
+**Not done / blocked:**
+- `LoadingRows`, `SkeletonRows`, and `SkeletonCard` remain duplicated with
+  minor per-file differences (row counts, skeleton widths). Not extracted,
+  out of the scope requested this round.
+- Did not screenshot every one of the 107 screens' loading/error states
+  individually; spot-checked a representative one per fixed file plus every
+  file that previously lacked a shared shell.

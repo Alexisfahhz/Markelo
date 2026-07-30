@@ -469,3 +469,67 @@ export function ScriptId({ id }: { id: string }) {
     </span>
   );
 }
+
+/* -------------------------------------------------------------------- Table */
+
+/*
+  Extracted 30 July 2026. Four screen files (admin, dashboards, scanning,
+  workload) had each grown their own copy of this trio. Two shapes had
+  quietly diverged and are both supported here rather than picked one over
+  the other:
+
+    - A header can be a plain string, or `{ label, right? }` when a column
+      (usually a trailing actions column with no visible label) needs its
+      text right-aligned. `scanning.tsx` was the one file using the object
+      form; every other call site keeps passing plain strings unchanged.
+    - Header padding had split 2-and-2 between `py-3` and `py-2.5`. This
+      version standardises on `py-3` to match `Td`'s own vertical padding,
+      which is what `admin.tsx` and `scanning.tsx` already did. The two
+      files that used to run `py-2.5` (`dashboards.tsx`, `workload.tsx`)
+      pick up an extra 2px of header row height as a result. Confirmed
+      visually harmless.
+
+  `scope="col"` is now on every header cell. `dashboards.tsx`'s inline
+  header previously omitted it. Not visible, but it is what the other three
+  files already did, and it is the correct thing for a screen reader.
+*/
+
+type TableHead = string | { label: string; right?: boolean };
+
+function Th({ head }: { head: TableHead }) {
+  const label = typeof head === "string" ? head : head.label;
+  const right = typeof head === "string" ? false : !!head.right;
+  return (
+    <th scope="col" className={`px-4 py-3 ${right ? "text-right" : "text-left"}`}>
+      <span className="uppercase-label">{label}</span>
+    </th>
+  );
+}
+
+export function Table({ head, children }: { head: TableHead[]; children: React.ReactNode }) {
+  return (
+    <div className="overflow-x-auto rounded-card border border-border bg-white">
+      <table className="w-full min-w-[560px] border-collapse text-body">
+        <thead>
+          <tr className="border-b border-border bg-bg">
+            {head.map((h, i) => <Th key={typeof h === "string" ? h : h.label || i} head={h} />)}
+          </tr>
+        </thead>
+        <tbody>{children}</tbody>
+      </table>
+    </div>
+  );
+}
+
+export function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <td className={`border-b border-border px-4 py-3 text-text ${className}`}>{children}</td>;
+}
+
+/** A generic bordered flex row, for a list that is not a `<table>`. */
+export function Row({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`flex items-center gap-4 border-b border-border px-4 py-3 last:border-0 ${className}`}>
+      {children}
+    </div>
+  );
+}

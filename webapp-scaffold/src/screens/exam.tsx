@@ -72,7 +72,7 @@ export function MarkingSchemeSetup() { return <MarkingSchemeSetupDefault />; }
 
 function MarkingSchemeSetupDefault() {
   return (
-    <AppFrame role={ROLES.officer} title="Marking scheme" sub="Set the maximum mark for each question">
+    <AppFrame role={ROLES.officer} activeLabel="Marking scheme" title="Marking scheme" sub="Set the maximum mark for each question">
       <div className="flex flex-col gap-6 max-w-2xl">
         <Notice tone="brand" title="No rubric builder in V1">
           Set only the question number and its maximum mark. Marking cannot begin until every
@@ -111,7 +111,7 @@ function MarkingSchemeSetupDefault() {
 
 export function MarkingSchemeSetupEmpty() {
   return (
-    <AppFrame role={ROLES.officer} title="Marking scheme" sub="Set the maximum mark for each question">
+    <AppFrame role={ROLES.officer} activeLabel="Marking scheme" title="Marking scheme" sub="Set the maximum mark for each question">
       <div className="max-w-2xl">
         <Notice tone="error" title="Marking cannot begin until a scheme exists">
           This exam has no marking scheme. Add at least one question and its maximum mark before
@@ -132,7 +132,7 @@ export function MarkingSchemeSetupEmpty() {
 
 export function MarkingSchemeSetupLoading() {
   return (
-    <AppFrame role={ROLES.officer} title="Marking scheme" sub="Loading this exam's marking scheme…">
+    <AppFrame role={ROLES.officer} activeLabel="Marking scheme" title="Marking scheme" sub="Loading this exam's marking scheme…">
       <div className="max-w-2xl">
         <Card>
           <div className="flex flex-col gap-3">
@@ -152,7 +152,7 @@ export function MarkingSchemeSetupLoading() {
 
 export function MarkingSchemeSetupError() {
   return (
-    <AppFrame role={ROLES.officer} title="Marking scheme" sub="Set the maximum mark for each question">
+    <AppFrame role={ROLES.officer} activeLabel="Marking scheme" title="Marking scheme" sub="Set the maximum mark for each question">
       <div className="max-w-2xl">
         <Notice tone="error" title="Could not save the marking scheme">
           Your changes were not saved. Check your connection and try again. Nothing you entered has
@@ -168,7 +168,7 @@ export function MarkingSchemeSetupError() {
 
 export function MarkingSchemeSetupDenied() {
   return (
-    <AppFrame role={ROLES.ta} title="Marking scheme" sub="Set up an exam's marking scheme">
+    <AppFrame role={ROLES.ta} activeLabel="Marking scheme" title="Marking scheme" sub="Set up an exam's marking scheme">
       <Notice tone="error" title="You do not have permission to view this page">
         Only Exam Officers and Lecturers can set up a marking scheme.
       </Notice>

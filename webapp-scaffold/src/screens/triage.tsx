@@ -151,7 +151,7 @@ const CLEAN: Entry[] = [
 
 function QueueShell({ children, role = ROLES.officer }: { children: React.ReactNode; role?: typeof ROLES.officer }) {
   return (
-    <AppFrame role={role} title="Exception queue" sub={EXAM_SUB}>
+    <AppFrame role={role} activeLabel="Exception queue" title="Exception queue" sub={EXAM_SUB}>
       {children}
     </AppFrame>
   );
@@ -441,7 +441,7 @@ const sum = (rows: QRow[], k: "original" | "moderated") => rows.reduce((a, r) =>
 
 function ModShell({ children, role = ROLES.moderator }: { children: React.ReactNode; role?: typeof ROLES.moderator }) {
   return (
-    <AppFrame role={role} title="Moderation" sub="CSC 401, sampled script 7 of 21">
+    <AppFrame role={role} activeLabel="Moderation queue" title="Moderation" sub="CSC 401, sampled script 7 of 21">
       {children}
     </AppFrame>
   );

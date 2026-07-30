@@ -25,7 +25,7 @@
 */
 import React from "react";
 import { AppFrame } from "../ui/shell";
-import { Button, Card, CardHeader, Badge, Notice, Field, Select, EmptyState, Progress, ScriptId } from "../ui/kit";
+import { Button, Card, CardHeader, Badge, Notice, Field, Select, EmptyState, Progress, ScriptId, Table, Td } from "../ui/kit";
 import { ROLES } from "../roles";
 import {
   Upload, FileUp, ScanLine, X, RotateCcw, CircleCheck,
@@ -33,33 +33,6 @@ import {
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ shared */
-
-function Th({ children, right }: { children: React.ReactNode; right?: boolean }) {
-  return (
-    <th scope="col" className={`px-4 py-3 ${right ? "text-right" : "text-left"}`}>
-      <span className="uppercase-label">{children}</span>
-    </th>
-  );
-}
-
-function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <td className={`border-b border-border px-4 py-3 text-text ${className}`}>{children}</td>;
-}
-
-function Table({ head, children }: { head: { label: string; right?: boolean }[]; children: React.ReactNode }) {
-  return (
-    <div className="overflow-x-auto rounded-card border border-border bg-white">
-      <table className="w-full border-collapse text-body">
-        <thead>
-          <tr className="border-b border-border bg-bg">
-            {head.map((h) => <Th key={h.label} right={h.right}>{h.label}</Th>)}
-          </tr>
-        </thead>
-        <tbody>{children}</tbody>
-      </table>
-    </div>
-  );
-}
 
 function SkeletonRows({ rows = 5 }: { rows?: number }) {
   return (
@@ -87,7 +60,7 @@ const STAGED = [
 
 function UploadShell({ children, role = ROLES.officer }: { children: React.ReactNode; role?: typeof ROLES.officer }) {
   return (
-    <AppFrame role={role} title="Scan batch upload" sub={EXAM_SUB}>
+    <AppFrame role={role} activeLabel="Scan batches" title="Scan batch upload" sub={EXAM_SUB}>
       {children}
     </AppFrame>
   );
@@ -271,7 +244,7 @@ const ROWS: Row[] = [
 
 function ReportShell({ children, role = ROLES.officer }: { children: React.ReactNode; role?: typeof ROLES.officer }) {
   return (
-    <AppFrame role={role} title="Processing this batch" sub={EXAM_SUB}>
+    <AppFrame role={role} activeLabel="Scan batches" title="Processing this batch" sub={EXAM_SUB}>
       {children}
     </AppFrame>
   );

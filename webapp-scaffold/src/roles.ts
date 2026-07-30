@@ -78,6 +78,7 @@ export const ROLES: Record<RoleKey, Role> = {
     nav: [
       { label: "Dashboard", icon: LayoutDashboard, screen: "dash-officer" },
       { label: "Exams", icon: ClipboardList },
+      { label: "Marking scheme", icon: ListChecks },
       { label: "Student data", icon: FileSpreadsheet },
       { label: "Scan batches", icon: ScanLine },
       { label: "Exception queue", icon: TriangleAlert, badge: "14" },
@@ -109,6 +110,7 @@ export const ROLES: Record<RoleKey, Role> = {
     nav: [
       { label: "Dashboard", icon: LayoutDashboard, screen: "dash-ta" },
       { label: "My marking", icon: PenLine, badge: "38" },
+      { label: "Marking progress", icon: ChartNoAxesColumn },
       { label: "Flagged for review", icon: Flag, badge: "3" },
     ],
   },

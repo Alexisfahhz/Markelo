@@ -11,7 +11,7 @@ import React from "react";
 import { AppFrame } from "../ui/shell";
 import {
   Button, Card, CardHeader, Badge, Notice, Input, Field,
-  Select, EmptyState, ScriptId,
+  Select, EmptyState, ScriptId, Table, Td,
 } from "../ui/kit";
 import { ROLES } from "../roles";
 import {
@@ -24,27 +24,6 @@ import {
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ helpers */
-
-function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <td className={`border-b border-border px-4 py-3 text-text ${className}`}>{children}</td>;
-}
-
-function Th({ children }: { children: React.ReactNode }) {
-  return <th scope="col" className="px-4 py-3 text-left"><span className="uppercase-label">{children}</span></th>;
-}
-
-function Table({ head, children }: { head: string[]; children: React.ReactNode }) {
-  return (
-    <div className="overflow-x-auto rounded-card border border-border bg-white">
-      <table className="w-full min-w-[560px] border-collapse text-body">
-        <thead>
-          <tr className="border-b border-border bg-bg">{head.map((h) => <Th key={h}>{h}</Th>)}</tr>
-        </thead>
-        <tbody>{children}</tbody>
-      </table>
-    </div>
-  );
-}
 
 function LoadingRows({ rows = 4 }: { rows?: number }) {
   return (
@@ -78,7 +57,7 @@ export function InstitutionCourses() { return <CoursesDefault />; }
 
 function CoursesDefault() {
   return (
-    <AppFrame role={ROLES.admin} title="Courses" sub="Manage the courses at your institution">
+    <AppFrame role={ROLES.admin} activeLabel="Courses" title="Courses" sub="Manage the courses at your institution">
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <p className="text-body text-muted">14 courses active, 4 deactivated</p>
@@ -118,7 +97,7 @@ function CoursesDefault() {
 
 export function InstitutionCoursesEmpty() {
   return (
-    <AppFrame role={ROLES.admin} title="Courses" sub="Manage the courses at your institution">
+    <AppFrame role={ROLES.admin} activeLabel="Courses" title="Courses" sub="Manage the courses at your institution">
       <EmptyState
         icon={Building2}
         title="No courses yet"
@@ -131,7 +110,7 @@ export function InstitutionCoursesEmpty() {
 
 export function InstitutionCoursesLoading() {
   return (
-    <AppFrame role={ROLES.admin} title="Courses" sub="Loading your courses…">
+    <AppFrame role={ROLES.admin} activeLabel="Courses" title="Courses" sub="Loading your courses…">
       <div className="flex flex-col gap-4">
         <LoadingRows rows={4} />
       </div>
@@ -141,7 +120,7 @@ export function InstitutionCoursesLoading() {
 
 export function InstitutionCoursesError() {
   return (
-    <AppFrame role={ROLES.admin} title="Courses" sub="Manage the courses at your institution">
+    <AppFrame role={ROLES.admin} activeLabel="Courses" title="Courses" sub="Manage the courses at your institution">
       <Notice tone="error" title="Could not load courses">
         We could not fetch the course list. Check your connection and try again. If this persists,
         contact your institution's IT support.
@@ -155,7 +134,7 @@ export function InstitutionCoursesError() {
 
 export function InstitutionCoursesDenied() {
   return (
-    <AppFrame role={ROLES.ta} title="Courses" sub="Manage courses">
+    <AppFrame role={ROLES.ta} activeLabel="Courses" title="Courses" sub="Manage courses">
       <Notice tone="error" title="You do not have permission to view this page">
         Only Institution Admins can manage courses. If you need this access, ask your Institution
         Admin to update your role.
@@ -170,7 +149,7 @@ export function PeopleRoles() { return <PeopleRolesDefault />; }
 
 function PeopleRolesDefault() {
   return (
-    <AppFrame role={ROLES.admin} title="People & roles" sub="Who has access, and what they can do">
+    <AppFrame role={ROLES.admin} activeLabel="People & roles" title="People & roles" sub="Who has access, and what they can do">
       <div className="flex flex-col gap-6">
         <Notice tone="brand" title="A person can hold more than one role">
           A Lecturer can also be an HOD. Permissions are the union of all active roles. Suspending an
@@ -212,7 +191,7 @@ function PeopleRolesDefault() {
 
 export function PeopleRolesEmpty() {
   return (
-    <AppFrame role={ROLES.admin} title="People & roles" sub="Who has access, and what they can do">
+    <AppFrame role={ROLES.admin} activeLabel="People & roles" title="People & roles" sub="Who has access, and what they can do">
       <EmptyState
         icon={Users}
         title="No one has been invited yet"
@@ -225,7 +204,7 @@ export function PeopleRolesEmpty() {
 
 export function PeopleRolesLoading() {
   return (
-    <AppFrame role={ROLES.admin} title="People & roles" sub="Loading accounts…">
+    <AppFrame role={ROLES.admin} activeLabel="People & roles" title="People & roles" sub="Loading accounts…">
       <div className="flex flex-col gap-4">
         <LoadingRows rows={5} />
       </div>
@@ -235,7 +214,7 @@ export function PeopleRolesLoading() {
 
 export function PeopleRolesError() {
   return (
-    <AppFrame role={ROLES.admin} title="People & roles" sub="Who has access, and what they can do">
+    <AppFrame role={ROLES.admin} activeLabel="People & roles" title="People & roles" sub="Who has access, and what they can do">
       <Notice tone="error" title="Could not load accounts">
         We could not fetch the people list. Check your connection and try again.
       </Notice>
@@ -248,7 +227,7 @@ export function PeopleRolesError() {
 
 export function PeopleRolesDenied() {
   return (
-    <AppFrame role={ROLES.ta} title="People & roles" sub="Manage user accounts">
+    <AppFrame role={ROLES.ta} activeLabel="People & roles" title="People & roles" sub="Manage user accounts">
       <Notice tone="error" title="You do not have permission to view this page">
         Only Institution Admins can manage people and roles.
       </Notice>
@@ -262,7 +241,7 @@ export function BookletProfileSetup() { return <BookletProfileSetupDefault />; }
 
 function BookletProfileSetupDefault() {
   return (
-    <AppFrame role={ROLES.admin} title="Booklet profile" sub="Teach Markelo what your answer booklet looks like">
+    <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet profile" sub="Teach Markelo what your answer booklet looks like">
       <div className="flex flex-col gap-6 max-w-2xl">
         <Notice tone="brand" title="Only your cover page is required">
           The normal answer page, extra sheet, and continuation sheet are optional. If you skip them,
@@ -315,7 +294,7 @@ function BookletProfileSetupDefault() {
 
 export function BookletProfileSetupLoading() {
   return (
-    <AppFrame role={ROLES.admin} title="Booklet profile" sub="Uploading your booklet pages…">
+    <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet profile" sub="Uploading your booklet pages…">
       <div className="flex flex-col gap-4 max-w-2xl">
         <SkeletonCard />
         <SkeletonCard />
@@ -327,7 +306,7 @@ export function BookletProfileSetupLoading() {
 
 export function BookletProfileSetupError() {
   return (
-    <AppFrame role={ROLES.admin} title="Booklet profile" sub="Teach Markelo what your answer booklet looks like">
+    <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet profile" sub="Teach Markelo what your answer booklet looks like">
       <Notice tone="error" title="Upload failed">
         We could not upload one or more pages. Make sure each file is a PDF or image under 10 MB and
         try again.
@@ -341,7 +320,7 @@ export function BookletProfileSetupError() {
 
 export function BookletProfileSetupDenied() {
   return (
-    <AppFrame role={ROLES.ta} title="Booklet profile" sub="Configure booklet setup">
+    <AppFrame role={ROLES.ta} activeLabel="Booklet profile" title="Booklet profile" sub="Configure booklet setup">
       <Notice tone="error" title="You do not have permission to view this page">
         Only Institution Admins can configure the booklet profile.
       </Notice>
@@ -365,7 +344,7 @@ export function BookletProfileValidation() { return <BookletProfileValidationDef
 
 function BookletProfileValidationDefault() {
   return (
-    <AppFrame role={ROLES.admin} title="Booklet profile validation" sub="Markelo checked what it could detect from your pages">
+    <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet profile validation" sub="Markelo checked what it could detect from your pages">
       {/* TODO(token): max-w-2xl is Tailwind's default 672px, not a Markelo
           token. Needs a form-width decision from KingFizzy. See the audit. */}
       <div className="flex max-w-2xl flex-col gap-6">
@@ -409,7 +388,7 @@ function BookletProfileValidationDefault() {
 
 export function BookletProfileValidationLoading() {
   return (
-    <AppFrame role={ROLES.admin} title="Booklet profile validation" sub="Running detection on your booklet pages…">
+    <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet profile validation" sub="Running detection on your booklet pages…">
       <div className="flex flex-col gap-4 max-w-2xl">
         <LoadingRows rows={5} />
       </div>
@@ -419,7 +398,7 @@ export function BookletProfileValidationLoading() {
 
 export function BookletProfileValidationError() {
   return (
-    <AppFrame role={ROLES.admin} title="Booklet profile validation" sub="Markelo checks what it can detect">
+    <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet profile validation" sub="Markelo checks what it can detect">
       <Notice tone="error" title="Validation could not complete">
         The detection pipeline encountered an error. This might be because a page image was unclear.
         Check your uploads and try again.
@@ -433,7 +412,7 @@ export function BookletProfileValidationError() {
 
 export function BookletProfileValidationDenied() {
   return (
-    <AppFrame role={ROLES.ta} title="Booklet profile validation">
+    <AppFrame role={ROLES.ta} activeLabel="Booklet profile" title="Booklet profile validation">
       <Notice tone="error" title="You do not have permission to view this page">
         Only Institution Admins can validate the booklet profile.
       </Notice>
@@ -447,7 +426,7 @@ export function BookletProfileVersioning() { return <BookletProfileVersioningDef
 
 function BookletProfileVersioningDefault() {
   return (
-    <AppFrame role={ROLES.admin} title="Booklet versions" sub="Each version keeps old scripts working under the profile they were processed against">
+    <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet versions" sub="Each version keeps old scripts working under the profile they were processed against">
       <div className="flex flex-col gap-6">
         <Notice tone="brand" title="Creating a new version never reprocesses old scripts">
           When your institution redesigns its booklet, create a new version. Scripts processed under
@@ -481,7 +460,7 @@ function BookletProfileVersioningDefault() {
 
 export function BookletProfileVersioningEmpty() {
   return (
-    <AppFrame role={ROLES.admin} title="Booklet versions" sub="Booklet profile versioning">
+    <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet versions" sub="Booklet profile versioning">
       <EmptyState
         icon={Archive}
         title="No versions yet"
@@ -493,7 +472,7 @@ export function BookletProfileVersioningEmpty() {
 
 export function BookletProfileVersioningLoading() {
   return (
-    <AppFrame role={ROLES.admin} title="Booklet versions" sub="Loading versions…">
+    <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet versions" sub="Loading versions…">
       <LoadingRows rows={2} />
     </AppFrame>
   );
@@ -501,7 +480,7 @@ export function BookletProfileVersioningLoading() {
 
 export function BookletProfileVersioningError() {
   return (
-    <AppFrame role={ROLES.admin} title="Booklet versions" sub="Booklet profile versioning">
+    <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet versions" sub="Booklet profile versioning">
       <Notice tone="error" title="Could not load versions">
         We could not fetch the version list. Try again.
       </Notice>
@@ -514,7 +493,7 @@ export function BookletProfileVersioningError() {
 
 export function BookletProfileVersioningDenied() {
   return (
-    <AppFrame role={ROLES.ta} title="Booklet versions">
+    <AppFrame role={ROLES.ta} activeLabel="Booklet profile" title="Booklet versions">
       <Notice tone="error" title="You do not have permission to view this page">
         Only Institution Admins can manage booklet profile versions.
       </Notice>
@@ -528,7 +507,7 @@ export function AuditTrail() { return <AuditTrailDefault />; }
 
 function AuditTrailDefault() {
   return (
-    <AppFrame role={ROLES.admin} title="Audit trail" sub="A permanent record of every significant action. Nothing here can be edited or deleted">
+    <AppFrame role={ROLES.admin} activeLabel="Audit trail" title="Audit trail" sub="A permanent record of every significant action. Nothing here can be edited or deleted">
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -577,7 +556,7 @@ function AuditTrailDefault() {
 
 export function AuditTrailEmpty() {
   return (
-    <AppFrame role={ROLES.admin} title="Audit trail" sub="A permanent record of every significant action">
+    <AppFrame role={ROLES.admin} activeLabel="Audit trail" title="Audit trail" sub="A permanent record of every significant action">
       <EmptyState
         icon={ScrollText}
         title="No entries yet"
@@ -589,7 +568,7 @@ export function AuditTrailEmpty() {
 
 export function AuditTrailLoading() {
   return (
-    <AppFrame role={ROLES.admin} title="Audit trail" sub="Loading entries…">
+    <AppFrame role={ROLES.admin} activeLabel="Audit trail" title="Audit trail" sub="Loading entries…">
       <LoadingRows rows={5} />
     </AppFrame>
   );
@@ -597,7 +576,7 @@ export function AuditTrailLoading() {
 
 export function AuditTrailError() {
   return (
-    <AppFrame role={ROLES.admin} title="Audit trail" sub="A permanent record of every action">
+    <AppFrame role={ROLES.admin} activeLabel="Audit trail" title="Audit trail" sub="A permanent record of every action">
       <Notice tone="error" title="Could not load audit trail">
         The log could not be retrieved. Try again.
       </Notice>
@@ -610,7 +589,7 @@ export function AuditTrailError() {
 
 export function AuditTrailDenied() {
   return (
-    <AppFrame role={ROLES.ta} title="Audit trail">
+    <AppFrame role={ROLES.ta} activeLabel="Audit trail" title="Audit trail">
       <Notice tone="error" title="You do not have permission to view this page">
         The audit trail is available to Moderators, Institution Admins, and Senior Management only.
         If you need access, ask your Institution Admin.
@@ -625,7 +604,7 @@ export function ResultCorrection() { return <ResultCorrectionDefault />; }
 
 function ResultCorrectionDefault() {
   return (
-    <AppFrame role={ROLES.admin} title="Result correction" sub="Fix a genuine error in a locked result. Every change is logged permanently">
+    <AppFrame role={ROLES.admin} activeLabel="Result correction" title="Result correction" sub="Fix a genuine error in a locked result. Every change is logged permanently">
       <div className="flex flex-col gap-6">
         <Notice tone="warning" title="Unlocking requires a stated reason">
           Every correction records the old value, the new value, who made the change, and when.
@@ -659,7 +638,7 @@ function ResultCorrectionDefault() {
 
 export function ResultCorrectionEmpty() {
   return (
-    <AppFrame role={ROLES.admin} title="Result correction" sub="Fix a genuine error in a locked result">
+    <AppFrame role={ROLES.admin} activeLabel="Result correction" title="Result correction" sub="Fix a genuine error in a locked result">
       <EmptyState
         icon={Lock}
         title="No locked results yet"
@@ -671,7 +650,7 @@ export function ResultCorrectionEmpty() {
 
 export function ResultCorrectionLoading() {
   return (
-    <AppFrame role={ROLES.admin} title="Result correction" sub="Loading results…">
+    <AppFrame role={ROLES.admin} activeLabel="Result correction" title="Result correction" sub="Loading results…">
       <LoadingRows rows={4} />
     </AppFrame>
   );
@@ -679,7 +658,7 @@ export function ResultCorrectionLoading() {
 
 export function ResultCorrectionError() {
   return (
-    <AppFrame role={ROLES.admin} title="Result correction" sub="Fix a genuine error in a locked result">
+    <AppFrame role={ROLES.admin} activeLabel="Result correction" title="Result correction" sub="Fix a genuine error in a locked result">
       <Notice tone="error" title="Could not load results">
         We could not retrieve the result list. Check your connection and try again.
       </Notice>
@@ -692,7 +671,7 @@ export function ResultCorrectionError() {
 
 export function ResultCorrectionDenied() {
   return (
-    <AppFrame role={ROLES.ta} title="Result correction">
+    <AppFrame role={ROLES.ta} activeLabel="Result correction" title="Result correction">
       <Notice tone="error" title="You do not have permission to view this page">
         Only Institution Admins and Moderators/HODs can correct results.
       </Notice>

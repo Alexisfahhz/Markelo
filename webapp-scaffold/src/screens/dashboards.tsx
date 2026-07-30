@@ -9,7 +9,7 @@
 */
 import React from "react";
 import { AppFrame } from "../ui/shell";
-import { Button, Card, CardHeader, Badge, Stat, Progress, Notice, EmptyState, ScriptId } from "../ui/kit";
+import { Button, Card, CardHeader, Badge, Stat, Progress, Notice, EmptyState, ScriptId, Table, Td, Row } from "../ui/kit";
 import { ROLES } from "../roles";
 import {
   ClipboardList,
@@ -37,37 +37,6 @@ import {
 } from "lucide-react";
 
 /* ---------------------------------------------------------------- helpers */
-
-function Row({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`flex items-center gap-4 border-b border-border px-4 py-3 last:border-0 ${className}`}>
-      {children}
-    </div>
-  );
-}
-
-function Table({ head, children }: { head: string[]; children: React.ReactNode }) {
-  return (
-    <div className="overflow-x-auto rounded-card border border-border bg-white">
-      <table className="w-full min-w-[560px] border-collapse text-body">
-        <thead>
-          <tr className="border-b border-border bg-bg">
-            {head.map((h) => (
-              <th key={h} className="px-4 py-2.5 text-left">
-                <span className="uppercase-label">{h}</span>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>{children}</tbody>
-      </table>
-    </div>
-  );
-}
-
-function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <td className={`border-b border-border px-4 py-3 text-text ${className}`}>{children}</td>;
-}
 
 const stageTone = (s: string) =>
   s === "Finalized" ? "success" : s === "Marking" || s === "Moderation" ? "brand" : s === "Exceptions" ? "warning" : "neutral";

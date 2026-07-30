@@ -23,7 +23,7 @@
 import React from "react";
 import { AppFrame } from "../ui/shell";
 import {
-  Button, Card, CardHeader, Badge, Notice, EmptyState, ScriptId, Stat, Progress,
+  Button, Card, CardHeader, Badge, Notice, EmptyState, ScriptId, Stat, Progress, Table, Td, Row,
 } from "../ui/kit";
 import { ROLES } from "../roles";
 import {
@@ -32,35 +32,6 @@ import {
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ helpers */
-
-function Row({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`flex items-center gap-4 border-b border-border px-4 py-3 last:border-0 ${className}`}>
-      {children}
-    </div>
-  );
-}
-
-function Table({ head, children }: { head: string[]; children: React.ReactNode }) {
-  return (
-    <div className="overflow-x-auto rounded-card border border-border bg-white">
-      <table className="w-full min-w-[560px] border-collapse text-body">
-        <thead>
-          <tr className="border-b border-border bg-bg">
-            {head.map((h) => (
-              <th key={h} className="px-4 py-2.5 text-left"><span className="uppercase-label">{h}</span></th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>{children}</tbody>
-      </table>
-    </div>
-  );
-}
-
-function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <td className={`border-b border-border px-4 py-3 text-text ${className}`}>{children}</td>;
-}
 
 function SkeletonRows({ rows = 4 }: { rows?: number }) {
   return (
@@ -89,7 +60,7 @@ export function MarkingAssignment() { return <MarkingAssignmentDefault />; }
 
 function MarkingAssignmentDefault() {
   return (
-    <AppFrame role={ROLES.lecturer} title="Marking assignment" sub="Split scripts between yourself and your teaching assistants">
+    <AppFrame role={ROLES.lecturer} activeLabel="Marking assignment" title="Marking assignment" sub="Split scripts between yourself and your teaching assistants">
       <div className="flex flex-col gap-6">
         <Notice tone="brand" title="Change the split at any time">
           Moving a script to a different marker never deletes work already submitted. The original
@@ -143,7 +114,7 @@ function MarkingAssignmentDefault() {
 
 export function MarkingAssignmentEmpty() {
   return (
-    <AppFrame role={ROLES.lecturer} title="Marking assignment" sub="Split scripts between yourself and your teaching assistants">
+    <AppFrame role={ROLES.lecturer} activeLabel="Marking assignment" title="Marking assignment" sub="Split scripts between yourself and your teaching assistants">
       <EmptyState
         icon={Users}
         title="No scripts ready to assign yet"
@@ -155,7 +126,7 @@ export function MarkingAssignmentEmpty() {
 
 export function MarkingAssignmentLoading() {
   return (
-    <AppFrame role={ROLES.lecturer} title="Marking assignment" sub="Loading your class's assignment…">
+    <AppFrame role={ROLES.lecturer} activeLabel="Marking assignment" title="Marking assignment" sub="Loading your class's assignment…">
       <SkeletonRows rows={4} />
     </AppFrame>
   );
@@ -163,7 +134,7 @@ export function MarkingAssignmentLoading() {
 
 export function MarkingAssignmentError() {
   return (
-    <AppFrame role={ROLES.lecturer} title="Marking assignment" sub="Split scripts between yourself and your teaching assistants">
+    <AppFrame role={ROLES.lecturer} activeLabel="Marking assignment" title="Marking assignment" sub="Split scripts between yourself and your teaching assistants">
       <Notice tone="error" title="Could not load the assignment">
         We could not fetch who is assigned to what. Check your connection and try again.
       </Notice>
@@ -176,7 +147,7 @@ export function MarkingAssignmentError() {
 
 export function MarkingAssignmentDenied() {
   return (
-    <AppFrame role={ROLES.ta} title="Marking assignment" sub="Split a class's scripts across its markers">
+    <AppFrame role={ROLES.ta} activeLabel="Marking assignment" title="Marking assignment" sub="Split a class's scripts across its markers">
       <Notice tone="error" title="You do not have permission to view this page">
         Only the Lecturer can assign scripts across markers. You will still see any script assigned
         to you on your own dashboard.
@@ -193,7 +164,7 @@ function MarkingProgressTeam() {
   const totalAssigned = MARKERS.reduce((s, r) => s + r.a, 0);
   const totalMarked = MARKERS.reduce((s, r) => s + r.m, 0);
   return (
-    <AppFrame role={ROLES.lecturer} title="Marking progress" sub="How your class is moving, marker by marker">
+    <AppFrame role={ROLES.lecturer} activeLabel="Marking progress" title="Marking progress" sub="How your class is moving, marker by marker">
       <div className="flex flex-col gap-6">
         <div className="grid grid-cols-3 gap-4">
           <Stat label="Scripts marked" value={totalMarked} sub={`of ${totalAssigned} assigned`} icon={ChartNoAxesColumn} />
@@ -222,7 +193,7 @@ function MarkingProgressTeam() {
 
 export function MarkingProgressOwn() {
   return (
-    <AppFrame role={ROLES.ta} title="Marking progress" sub="Your own pace">
+    <AppFrame role={ROLES.ta} activeLabel="Marking progress" title="Marking progress" sub="Your own pace">
       <div className="flex flex-col gap-6 max-w-2xl">
         <div className="grid grid-cols-3 gap-4">
           <Stat label="Assigned to you" value={120} icon={PenLine} />
@@ -240,7 +211,7 @@ export function MarkingProgressOwn() {
 
 export function MarkingProgressEmpty() {
   return (
-    <AppFrame role={ROLES.lecturer} title="Marking progress" sub="How your class is moving, marker by marker">
+    <AppFrame role={ROLES.lecturer} activeLabel="Marking progress" title="Marking progress" sub="How your class is moving, marker by marker">
       <EmptyState
         icon={ChartNoAxesColumn}
         title="No marking has started yet"
@@ -252,7 +223,7 @@ export function MarkingProgressEmpty() {
 
 export function MarkingProgressLoading() {
   return (
-    <AppFrame role={ROLES.lecturer} title="Marking progress" sub="Loading progress…">
+    <AppFrame role={ROLES.lecturer} activeLabel="Marking progress" title="Marking progress" sub="Loading progress…">
       <SkeletonRows rows={4} />
     </AppFrame>
   );
@@ -260,7 +231,7 @@ export function MarkingProgressLoading() {
 
 export function MarkingProgressError() {
   return (
-    <AppFrame role={ROLES.lecturer} title="Marking progress" sub="How your class is moving, marker by marker">
+    <AppFrame role={ROLES.lecturer} activeLabel="Marking progress" title="Marking progress" sub="How your class is moving, marker by marker">
       <Notice tone="error" title="Could not load progress">
         We could not fetch marking progress. Check your connection and try again.
       </Notice>
@@ -273,7 +244,7 @@ export function MarkingProgressError() {
 
 export function MarkingProgressDenied() {
   return (
-    <AppFrame role={ROLES.admin} title="Marking progress" sub="How a class is moving, marker by marker">
+    <AppFrame role={ROLES.admin} activeLabel="Marking progress" title="Marking progress" sub="How a class is moving, marker by marker">
       <Notice tone="error" title="You do not have permission to view this page">
         Only the Lecturer and the Teaching Assistants on this exam can view marking progress.
       </Notice>
