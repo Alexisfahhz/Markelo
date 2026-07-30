@@ -12,6 +12,7 @@ import * as C from "./screens/components";
 import * as EX from "./screens/exam";
 import * as S from "./screens/scanning";
 import * as T from "./screens/triage";
+import * as W from "./screens/workload";
 import { Logo } from "./ui/shell";
 
 type Screen = { id: string; label: string; note?: string; el: React.ReactNode };
@@ -178,6 +179,26 @@ const GROUPS: Group[] = [
       { id: "sc-report-loading", label: "Integrity report: starting", el: <S.IntegrityReportLoading /> },
       { id: "sc-report-error", label: "Integrity report: stopped", el: <S.IntegrityReportError /> },
       { id: "sc-report-denied", label: "Integrity report: denied", el: <S.IntegrityReportDenied /> },
+    ],
+  },
+  {
+    title: "Phase 4: Marking workload",
+    owner: "Designer 7",
+    screens: [
+      /* --- Marking Assignment (D2) --- */
+      { id: "wl-assign", label: "Marking assignment: default", note: "D2", el: <W.MarkingAssignment /> },
+      { id: "wl-assign-empty", label: "Marking assignment: empty", el: <W.MarkingAssignmentEmpty /> },
+      { id: "wl-assign-loading", label: "Marking assignment: loading", el: <W.MarkingAssignmentLoading /> },
+      { id: "wl-assign-error", label: "Marking assignment: error", el: <W.MarkingAssignmentError /> },
+      { id: "wl-assign-denied", label: "Marking assignment: denied", el: <W.MarkingAssignmentDenied /> },
+
+      /* --- Marking Progress (D2, "own pace" persona rule) --- */
+      { id: "wl-progress", label: "Marking progress: team (Lecturer)", note: "D2", el: <W.MarkingProgress /> },
+      { id: "wl-progress-own", label: "Marking progress: your pace (TA)", note: "never compared to other TAs", el: <W.MarkingProgressOwn /> },
+      { id: "wl-progress-empty", label: "Marking progress: empty", el: <W.MarkingProgressEmpty /> },
+      { id: "wl-progress-loading", label: "Marking progress: loading", el: <W.MarkingProgressLoading /> },
+      { id: "wl-progress-error", label: "Marking progress: error", el: <W.MarkingProgressError /> },
+      { id: "wl-progress-denied", label: "Marking progress: denied", el: <W.MarkingProgressDenied /> },
     ],
   },
   {

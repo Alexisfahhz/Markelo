@@ -696,3 +696,63 @@ group.
   test, only the states a real build would need to cover.
 - The shared-Table extraction task flagged two sessions ago is still pending,
   unrelated to this build.
+
+## 2026-07-30 (ninth entry) : claude-sonnet-5
+
+**Phase:** Phase 4 begun early, ahead of the rest of Phase 3. Marking
+workload, story D2. Requested explicitly: KingFizzy wants Marking Assignment
+and Marking Progress assigned to one designer, matching Designer 7's pairing
+in the week plan, so both were built together rather than one at a time.
+
+**Built `src/screens/workload.tsx`, 11 screens.** Marking Assignment: default,
+empty, loading, error, denied (5 states). Marking Progress: the Lecturer's
+team view, the TA's own-pace view, empty, loading, error, denied (6 states,
+one extra because story D2's second rule is a different screen for a
+different role, not a filtered copy). Registered as a new "Phase 4: Marking
+workload" group in `App.tsx`, owner "Designer 7", between Exam setup and
+Scanning.
+
+**Acceptance criteria verified live, not assumed:**
+- **D2, a TA sees only their own pace, never a comparison.** Confirmed by
+  building two separate functions, `MarkingProgressTeam` (Lecturer, shows all
+  four markers side by side) and `MarkingProgressOwn` (TA, shows only that
+  TA's three stats and one progress bar). Screenshotted both: the TA view has
+  no other marker's name or number anywhere on it, and its Card header states
+  the rule directly, "This is your own pace. It is not compared to anyone
+  else's," reusing the exact line already shipped on the TA dashboard for
+  consistency.
+- **D2, reassignment preserves history.** Marking Assignment's "Recently
+  reassigned" card shows a moved script (MK-001180) with a caption naming the
+  original marker and stating her marks are "kept as history," not deleted.
+  This is a second, independent surface of the rule beyond the top Notice, so
+  the rule is demonstrated, not only described.
+- **Reused the existing dashboard data model on purpose.** Both screens use
+  the same marker roster and numbers already shown on the Lecturer and TA
+  dashboards (Chidinma Eze, Tunde Alabi, Grace Obi, CSC 312, 62/24 for the
+  Lecturer's own scripts). A reviewer moving between the dashboard and these
+  two full screens sees one consistent set of numbers, not two different
+  mock datasets that quietly disagree.
+
+**Verified:**
+- `npx tsc --noEmit` exit 0.
+- 107 screens registered (96 plus these 11). Confirmed live in the browser
+  sidebar footer.
+- All 11 states clicked through and screenshotted individually in the
+  preview: Marking Assignment's default, empty, and denied; Marking
+  Progress's team view, own-pace view, and denied. Loading and error states
+  read correctly from source (same skeleton and Notice pattern already
+  verified elsewhere this project) but were not separately screenshotted this
+  round.
+
+**Not done / blocked:**
+- The Marking Interface itself (Designer 8, stories C1/C2/E1/E2/K1) is the
+  next natural screen, everything built in Phase 3 and this workload pair
+  feeds scripts into it, but it was not requested this session.
+- Remaining Phase 3: Exam Creation, Student Data Upload and Validation,
+  Identity Registry, Result Processing and Export.
+- The "Reassign" button on Marking Assignment and the Select-style marker
+  picker it implies are presentational only, same convention as every other
+  screen in this scaffold.
+- The shared-Table extraction task flagged multiple sessions ago is still
+  pending, unrelated to this build. `workload.tsx` adds a fourth local copy
+  of the same `Table`/`Td` pair.
