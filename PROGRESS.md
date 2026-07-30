@@ -1017,3 +1017,39 @@ rendering as a single `ClientRect` (one line).
 - The wider Identity Registry column (`max-w-4xl`) was not applied to
   Empty, Loading, Error, or Closed, none of them carry a table, and making
   them wider too was not asked for.
+
+## 2026-07-30 (fourteenth entry) : claude-sonnet-5
+
+**Follow-up on the same `Stat` card.** KingFizzy came back not satisfied,
+the previous round's `min-h-[104px]` technically anchored the label top and
+the value bottom, but with 24px/22px padding eating most of the card there
+wasn't much left for `justify-between` to actually distribute, so it barely
+read as intentional. Two explicit asks this round: real auto-distributed
+space between the two groups, and 16px padding on all four sides, not the
+asymmetric 24px/22px from before.
+
+**Changed `Stat` in `ui/kit.tsx`:** `p-4` (16px, uniform, replacing the
+`py-6 px-[22px]` split) and `min-h-32` (128px, up from 104px). The padding
+alone would have shrunk the visible gap further, so the height had to grow
+to compensate, that is what actually gives `justify-between` real room:
+label and value content only need about 60px combined, so at 128px card
+height the rest becomes genuine breathing room, not a rounding error.
+
+**Verified with real measurements, before claiming done:**
+- Card height: 128px. Padding: 16px on all four sides (`getComputedStyle`
+  read back `padding: 16px` uniformly).
+- Gap between the label's bottom edge and the value block's top edge:
+  42.8px, up from roughly 18px in the previous round.
+- Top padding to label (17px) and bottom padding to value (17px) are
+  symmetric, confirming the card isn't just taller, the two groups are
+  correctly anchored to opposite ends.
+- Re-checked a row with mixed content (Marking Progress: Team, where one
+  card carries a `sub` line and two don't) to confirm the fix holds under
+  the exact condition it was meant to fix, all three values now sit on the
+  same visual baseline regardless of which cards have a `sub`.
+- `npx tsc --noEmit` exit 0.
+
+**Not done / blocked:**
+- `min-h-32` and `p-4` are still chosen constants, not tokens, same caveat
+  as last round. A real stat-card sizing token remains a Figma-side
+  decision for KingFizzy to make.

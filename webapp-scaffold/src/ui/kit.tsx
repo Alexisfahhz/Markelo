@@ -416,10 +416,13 @@ export function Stat({
     uneven, whichever was shortest just stopped early instead of matching
     its neighbours. Anchoring the label to the top and the figure to the
     bottom means every card in a row lines up along the same baseline
-    regardless of what else is in it.
+    regardless of what else is in it. `min-h-32` (128px) is what actually
+    gives `justify-between` room to work with, at 16px padding the two
+    groups' own content only needs about 60px, so the rest becomes real,
+    visible breathing room between them rather than a token gesture.
   */
   return (
-    <Card pad={false} className="flex min-h-[104px] flex-col justify-between gap-1 py-6 px-[22px]">
+    <Card pad={false} className="flex min-h-32 flex-col justify-between gap-1 p-4">
       <span className="uppercase-label flex items-center gap-1.5">
         {Icon && <Icon size={13} strokeWidth={2} aria-hidden />}
         {label}
