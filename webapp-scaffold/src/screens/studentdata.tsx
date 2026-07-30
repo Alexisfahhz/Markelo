@@ -217,7 +217,13 @@ export function IdentityRegistry() { return <IdentityRegistryDefault />; }
 function IdentityRegistryDefault() {
   return (
     <RegistryShell>
-      <div className="flex max-w-2xl flex-col gap-6">
+      {/*
+        All three cards below share this one wrapper's width on purpose. The
+        Recent lookups table needs the room, forcing scroll on. But widening
+        only that card while Look up a script and Result stayed narrow would
+        read as a mistake, not a decision, so the whole column moved together.
+      */}
+      <div className="flex max-w-4xl flex-col gap-6">
         <Notice tone="warning" title="The only place a name appears">
           Every lookup here is logged with your name, the record you looked at, and the reason you
           gave. This never appears on a marking or moderation screen.

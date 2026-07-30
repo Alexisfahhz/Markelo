@@ -956,3 +956,64 @@ states each, matching the Definition of Done.
 - No further known gaps from the 28 July audit remain in `admin.tsx`. If
   another one turns up, it should be checked against the live file first,
   the same way this entry was, rather than trusted from an old summary.
+
+## 2026-07-30 (thirteenth entry) : claude-sonnet-5
+
+**Three layout fixes, requested directly against rendered screens rather
+than source.** All three verified with real DOM measurements in the live
+preview, not by eyeballing a screenshot.
+
+**1. `Stat` cards, figure anchored to the bottom.** `ui/kit.tsx`'s `Stat`
+component packed label and value at the top with `flex-col gap-1`, so a row
+of cards where one carries a `sub` line and others don't reads as uneven,
+the short ones just stop early instead of matching their neighbours.
+Changed to `justify-between` with a `min-h-[104px]` floor, so the label
+anchors top and the value (plus `sub`, grouped together) anchors bottom,
+independent of a row's tallest card. This is the shared component, so it
+applies everywhere `Stat` is used, not just Student Data's three cards,
+that was a deliberate call: KingFizzy's second request in the same message
+was explicitly about uniformity across a screen, and a shared component
+already IS the mechanism this project uses for that.
+
+**2. Identity Registry's Recent Lookups table no longer needs horizontal
+scroll.** All three cards on that screen (Look up a script, Result, Recent
+lookups) share one wrapping div, so the fix was widening that one div from
+`max-w-2xl` (672px) to `max-w-4xl` (896px) rather than only the table's
+card, exactly per KingFizzy's own stated constraint: widening just the
+table card while the other two stayed narrow would read as a mistake, not
+a decision. Confirmed via `scrollWidth` vs `clientWidth` on the table's
+`overflow-x-auto` wrapper: 670 vs 670, no scroll needed. Scoped to
+`IdentityRegistryDefault` only, the other five states on that screen don't
+carry the table and didn't need the width.
+
+**3. "Need attention" now fits on one line, and all three Stat cards lost
+2px of horizontal padding.** Measured before touching anything: the
+label's natural unwrapped width was 147px, and the card's available inner
+width (197px card minus 24px padding per side minus the 1px border per
+side) was also 147px, a dead-even fit that lost to sub-pixel rounding.
+KingFizzy's own answer, reduce the padding by 2px each side, fixed both
+problems at once: `Card`'s default `p-6` (24px all round) was swapped for
+`pad={false}` on the `Stat` card specifically, with explicit `py-6
+px-[22px]`, keeping vertical padding untouched and only trimming
+horizontal, confirmed measured at exactly 22px afterward and the label
+rendering as a single `ClientRect` (one line).
+
+**Verified:**
+- `npx tsc --noEmit` exit 0 after each of the three changes.
+- Real DOM measurements, not visual guesses: label natural width vs
+  available card width before the fix; table `scrollWidth`/`clientWidth`
+  before and after the width change; label top-offset (25px) and
+  value-bottom-offset (25px) after the `justify-between` change, confirming
+  actual symmetry, not just "looks closer."
+- Screenshotted Student Data's three cards and Identity Registry's three
+  cards together after all three fixes landed, to confirm none of the
+  changes fought each other.
+
+**Not done / blocked:**
+- `Stat`'s new `min-h-[104px]` is a chosen constant, not a token. If
+  KingFizzy wants a real spacing/sizing token for stat-card height, that is
+  a Figma-side decision he owns, flagged the same way border and motion
+  tokens were flagged earlier this project.
+- The wider Identity Registry column (`max-w-4xl`) was not applied to
+  Empty, Loading, Error, or Closed, none of them carry a table, and making
+  them wider too was not asked for.

@@ -409,14 +409,25 @@ export function Stat({
 }) {
   const valueTone =
     tone === "error" ? "text-error" : tone === "warning" ? "text-warning" : tone === "success" ? "text-success" : "text-text";
+  /*
+    `justify-between` plus a min-height, not `gap`. A stat card's label and
+    figure used to sit packed together at the top, so a row of cards with
+    different content (some carrying a `sub` line, some not) read as
+    uneven, whichever was shortest just stopped early instead of matching
+    its neighbours. Anchoring the label to the top and the figure to the
+    bottom means every card in a row lines up along the same baseline
+    regardless of what else is in it.
+  */
   return (
-    <Card className="flex flex-col gap-1">
+    <Card pad={false} className="flex min-h-[104px] flex-col justify-between gap-1 py-6 px-[22px]">
       <span className="uppercase-label flex items-center gap-1.5">
         {Icon && <Icon size={13} strokeWidth={2} aria-hidden />}
         {label}
       </span>
-      <span className={`text-title font-bold tabular-nums ${valueTone}`}>{value}</span>
-      {sub && <span className="text-caption text-muted">{sub}</span>}
+      <div className="flex flex-col gap-1">
+        <span className={`text-title font-bold tabular-nums ${valueTone}`}>{value}</span>
+        {sub && <span className="text-caption text-muted">{sub}</span>}
+      </div>
     </Card>
   );
 }
