@@ -9,6 +9,7 @@ import * as O from "./screens/onboarding";
 import * as D from "./screens/dashboards";
 import * as AD from "./screens/admin";
 import * as C from "./screens/components";
+import * as EX from "./screens/exam";
 import * as S from "./screens/scanning";
 import * as T from "./screens/triage";
 import { Logo } from "./ui/shell";
@@ -145,6 +146,18 @@ const GROUPS: Group[] = [
       { id: "ad-correction-loading", label: "Result correction: loading", el: <AD.ResultCorrectionLoading /> },
       { id: "ad-correction-error", label: "Result correction: error", el: <AD.ResultCorrectionError /> },
       { id: "ad-correction-denied", label: "Result correction: denied", el: <AD.ResultCorrectionDenied /> },
+    ],
+  },
+  {
+    title: "Exam setup",
+    owner: "Designer 3",
+    screens: [
+      /* --- Marking Scheme Setup (D1) --- */
+      { id: "ms-setup", label: "Marking scheme: default", note: "D1", el: <EX.MarkingSchemeSetup /> },
+      { id: "ms-setup-empty", label: "Marking scheme: empty", note: "marking cannot begin", el: <EX.MarkingSchemeSetupEmpty /> },
+      { id: "ms-setup-loading", label: "Marking scheme: loading", el: <EX.MarkingSchemeSetupLoading /> },
+      { id: "ms-setup-error", label: "Marking scheme: error", el: <EX.MarkingSchemeSetupError /> },
+      { id: "ms-setup-denied", label: "Marking scheme: denied", el: <EX.MarkingSchemeSetupDenied /> },
     ],
   },
   {

@@ -646,3 +646,53 @@ needs his ruling.
   rather than being copied a second time.
 - The shared-Table extraction task flagged last session is still pending,
   unrelated to this build.
+
+## 2026-07-30 (eighth entry) : claude-sonnet-5
+
+**Phase:** Phase 3 continued. Exam setup, story D1.
+
+**Checked first: the screen did not exist.** Confirmed against Designer 3's
+assignment in the week plan (27 July), which pairs Exam Creation with Marking
+Scheme Setup under one owner. Only Marking Scheme Setup was requested, so only
+that was built. Exam Creation remains open for whoever picks up the rest of
+Designer 3's group.
+
+**Built `src/screens/exam.tsx`, 5 screens.** Default (a scheme in progress,
+five valid rows plus one deliberately invalid to show the inline error state),
+empty, loading, error, denied. Registered as a new "Exam setup" group in
+`App.tsx`, owner "Designer 3", ahead of the existing "Phase 3: Scanning"
+group.
+
+**Acceptance criteria verified live, not assumed:**
+- **D1, marking cannot begin without a scheme.** The empty state is not a
+  generic "add your first item" screen, it opens with an error-tone Notice
+  stating the rule by name, then the EmptyState CTA underneath it. Screenshot
+  confirmed both render together.
+- **D1, a mark cannot exceed its question's maximum, designed as a blocked
+  save.** A scheme cannot be confirmed with an invalid question. Question 5 in
+  the default state ships with no value, a red-bordered `Input`, and an inline
+  "Enter a mark greater than zero" message; the "Confirm scheme" button is
+  `disabled` while that condition holds, matching the same disabled-until-valid
+  pattern used for A2/A3 and the F1 return flow in earlier sessions.
+- **No rubric builder.** The screen has exactly two fields per question
+  (number, max mark) and says so in its own top Notice. No text field for a
+  marking guide anywhere.
+
+**Verified:**
+- `npx tsc --noEmit` exit 0.
+- 96 screens registered (91 plus these 5). Confirmed by reading the sidebar
+  footer live in the browser, not by re-deriving the count from source.
+- All five states clicked through and screenshotted in the preview at
+  1280x720: default, empty, loading, error, denied. Denied correctly renders
+  under the Teaching Assistant shell, matching the pattern used everywhere
+  else permission-denied is shown.
+
+**Not done / blocked:**
+- Exam Creation (Designer 3's other screen) is still unbuilt.
+- Remaining Phase 3: Student Data Upload and Validation, Identity Registry,
+  Result Processing and Export.
+- The row list (add/remove question) is presentational only, as with every
+  other screen in this scaffold; there is no live add/remove interaction to
+  test, only the states a real build would need to cover.
+- The shared-Table extraction task flagged two sessions ago is still pending,
+  unrelated to this build.
