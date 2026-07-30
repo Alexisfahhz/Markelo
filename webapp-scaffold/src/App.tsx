@@ -10,6 +10,7 @@ import * as D from "./screens/dashboards";
 import * as AD from "./screens/admin";
 import * as C from "./screens/components";
 import * as EX from "./screens/exam";
+import * as SD from "./screens/studentdata";
 import * as S from "./screens/scanning";
 import * as T from "./screens/triage";
 import * as W from "./screens/workload";
@@ -159,6 +160,33 @@ const GROUPS: Group[] = [
       { id: "ms-setup-loading", label: "Marking scheme: loading", el: <EX.MarkingSchemeSetupLoading /> },
       { id: "ms-setup-error", label: "Marking scheme: error", el: <EX.MarkingSchemeSetupError /> },
       { id: "ms-setup-denied", label: "Marking scheme: denied", el: <EX.MarkingSchemeSetupDenied /> },
+    ],
+  },
+  {
+    title: "Student data and results",
+    owner: "Designer 4",
+    screens: [
+      /* --- Student Data Upload and Validation (PRD §10 step 2) --- */
+      { id: "sd-upload", label: "Student data: default", note: "§10 step 2", el: <SD.StudentDataUpload /> },
+      { id: "sd-upload-empty", label: "Student data: empty", note: "scanning cannot begin", el: <SD.StudentDataUploadEmpty /> },
+      { id: "sd-upload-loading", label: "Student data: loading", el: <SD.StudentDataUploadLoading /> },
+      { id: "sd-upload-error", label: "Student data: error", el: <SD.StudentDataUploadError /> },
+      { id: "sd-upload-denied", label: "Student data: denied", el: <SD.StudentDataUploadDenied /> },
+
+      /* --- Identity Registry (H2) --- */
+      { id: "sd-registry", label: "Identity registry: default", note: "H2", el: <SD.IdentityRegistry /> },
+      { id: "sd-registry-empty", label: "Identity registry: empty", el: <SD.IdentityRegistryEmpty /> },
+      { id: "sd-registry-loading", label: "Identity registry: loading", el: <SD.IdentityRegistryLoading /> },
+      { id: "sd-registry-error", label: "Identity registry: error", el: <SD.IdentityRegistryError /> },
+      { id: "sd-registry-closed", label: "Identity registry: closed", note: "exam reached Marking status", el: <SD.IdentityRegistryClosed /> },
+      { id: "sd-registry-denied", label: "Identity registry: denied", el: <SD.IdentityRegistryDenied /> },
+
+      /* --- Result Processing and Export (G1) --- */
+      { id: "sd-results", label: "Result processing: default", note: "G1", el: <SD.ResultProcessing /> },
+      { id: "sd-results-empty", label: "Result processing: empty", el: <SD.ResultProcessingEmpty /> },
+      { id: "sd-results-loading", label: "Result processing: loading", el: <SD.ResultProcessingLoading /> },
+      { id: "sd-results-error", label: "Result processing: error", el: <SD.ResultProcessingError /> },
+      { id: "sd-results-denied", label: "Result processing: denied", el: <SD.ResultProcessingDenied /> },
     ],
   },
   {

@@ -827,3 +827,80 @@ build order; "Marking progress" to the TA nav between "My marking" and
 - Did not screenshot every one of the 107 screens' loading/error states
   individually; spot-checked a representative one per fixed file plus every
   file that previously lacked a shared shell.
+
+## 2026-07-30 (eleventh entry) : claude-sonnet-5
+
+**Phase 3 continued. Student data and results, PRD §10 step 2, stories H2
+and G1.** Confirmed scope against the week plan before building: Designer
+4's assignment is exactly Student Data Upload and Validation, Identity
+Registry, and Result Processing and Export, nothing else, KingFizzy asked
+for exactly that list and it matched.
+
+**Built `src/screens/studentdata.tsx`, 16 screens.** Student Data Upload:
+default, empty ("scanning cannot begin" blocked state), loading, error,
+denied (5). Identity Registry: default, empty, loading, error, closed,
+denied (6, closed is a real lifecycle state, not a Denied variant). Result
+Processing and Export: default, empty, loading, error, denied (5).
+Registered as a new "Student data and results" group in `App.tsx`, owner
+"Designer 4", between Exam setup and Scanning.
+
+**A scope decision surfaced before building, not silently made.** G1's
+export file has to reunite marks with real students, the institution's
+portal needs names to file grades against. But the project's own rule says
+the Identity Registry is the only place in the whole product a name appears.
+Resolved by keeping Result Processing Script-ID-only on screen; the Notice
+on that screen states plainly that identity matching happens at export time,
+not in the UI. Flagged this to KingFizzy before writing any code rather than
+picking a side quietly.
+
+**Acceptance criteria verified live, not assumed:**
+- **§10 step 2, handles 5,000+ records.** The upload screen's top Notice
+  states the cohort-size and time target directly ("5,000 records or more,
+  validates in about a minute"), and the flagged-rows table demonstrates the
+  three real failure modes named in the PRD text: duplicate matric number,
+  missing course code, and a matric number that does not match the
+  institution's format.
+- **H2, only place a name appears.** Verified by grep across the new file:
+  the only screen with a student name anywhere on it is Identity Registry.
+  Result Processing's table has no name column, confirmed by reading the
+  rendered screenshot.
+- **H2, closed at Marking status, never after.** Built as its own state,
+  `IdentityRegistryClosed`, not a shade of Denied, because an Exam Officer
+  with full permission still cannot open it once the exam has moved past
+  Setup. Screenshotted: the screen shows only the block, no search form
+  underneath it a user could still try.
+- **H2, every lookup requires a reason and is logged.** The lookup form's
+  reason field is marked required, and a "Recent lookups" table sits directly
+  below the result, showing Script ID, who looked it up, the stated reason,
+  and when, so the logging isn't just asserted in a Notice, it's demonstrated
+  as existing data.
+- **G1, fixed formula with manual override.** The results table computes
+  Total as CA + Exam inline (not a hardcoded value), and one row carries an
+  "Overridden" badge instead of the usual ghost "Override" button, showing
+  both the normal path and the override path in the same table.
+
+**Verified:**
+- `npx tsc --noEmit` exit 0 (one unused import, `Lock`, caught and removed
+  before this).
+- 123 screens registered (107 plus these 16), confirmed live in the sidebar
+  footer.
+- Sidebar active-state highlighting, the subject of the fix earlier this
+  session, checked correct on all three defaults plus the Identity Registry
+  closed state: "Student data", "Identity registry", and "Results" each
+  highlight only on their own screen.
+- Screenshotted default and one blocked state per screen (Student data
+  empty was read from source rather than re-screenshotted, identical
+  Notice-then-EmptyState pattern already verified on Marking Scheme Setup
+  two sessions ago).
+
+**Not done / blocked:**
+- Phase 3 is now fully built except Exam Creation (Designer 3's other
+  screen, not requested this session either time it came up).
+- Phase 4 (Marking Interface, the product's core) and the remainder of
+  Phase 5 (Result approval, Dispute evidence view) remain.
+- Result Processing's "Override" button and the Student Data upload's
+  per-row "Fix" affordance are presentational only, same convention as
+  every screen in this scaffold.
+- The shared-Table extraction (`Table`/`Td`/`Th`/`Row` in `ui/kit.tsx`) from
+  earlier this session was reused directly here with no changes needed,
+  confirming it covers this shape of screen cleanly.
