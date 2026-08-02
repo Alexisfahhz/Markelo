@@ -1053,3 +1053,54 @@ height the rest becomes genuine breathing room, not a rounding error.
 - `min-h-32` and `p-4` are still chosen constants, not tokens, same caveat
   as last round. A real stat-card sizing token remains a Figma-side
   decision for KingFizzy to make.
+
+---
+
+## 2026-08-02 — Prototype flow app (presentation layer, on request)
+
+**Model:** opencode/deepseek-v4-flash
+
+KingFizzy asked for a standalone clickable-prototype app: every auth screen and
+every role dashboard on one long vertically scrollable canvas, no routing, no
+backend. Built as `~/Downloads/Fahhz/Markelo/prototype-flow/` — a separate Vite
+app that **imports the screens live from `webapp-scaffold/src/screens/*`** (zero
+copies; the scaffold was not modified). Order mirrors the "Sign in & account"
+and "Dashboards" groups of the scaffold's `App.tsx` GROUPS registry.
+
+**What changed:**
+- New app: `prototype-flow/` (package.json, vite/ts config, `src/flow.tsx`
+  screen registry + action maps, `src/components/ScreenShell.tsx`,
+  `src/components/PrototypeNav.tsx`, `src/App.tsx` scroll canvas, `verify.mjs`
+  + `verify/` screenshots, puppeteer-core dev dep).
+- 18 screens: 12 auth (Sign In → Signing In → Wrong Credentials → MFA →
+  Accept Invitation → Forgot Password → Reset Sent → No Role → Suspended →
+  Choose Role → Session Expiring → Access Revoked) + 6 dashboards (Officer,
+  Lecturer, TA, Moderator, Admin, Senior Management).
+- CTA clicks smooth-scroll via click delegation on a wrapper (screens
+  untouched): Sign in → Signing In (any-click → MFA) → Confirm → Choose Role →
+  Lecturer/Moderator card → that dashboard; Forgot password ↔ Back to sign in;
+  sign-out paths → Sign In. Loading screen advances on any click.
+- Floating nav is one app-level instance with a scroll-spy. A first version
+  rendered one nav per dashboard section, which stacked six fixed navs and left
+  only the last (Next-disabled) clickable — fixed by lifting it to `App.tsx`
+  with a scroll-spy tracking the current dashboard (prev/next disable at ends,
+  Auth, Top).
+
+**Verified (counts, how counted):**
+- 18 screens — counted in the live DOM
+  (`document.querySelectorAll("section[id]")`, headless Chrome).
+- `npx tsc -b` + `vite build` exit 0.
+- 13/13 behavioral checks PASS in headless Chrome (scroll lands exactly on
+  each target, computed styles = design tokens: h1 28px/700 Plus Jakarta Sans,
+  CTA bg rgb(26,86,160) #1a56a0, exactly 1 nav instance, prev/next disabled
+  states, 0 JS errors). Screenshots at `prototype-flow/verify/` for an eyeball
+  pass (this session's model cannot read images).
+
+**Not done / open:**
+- Mapping judgment calls for KingFizzy: MFA "Confirm" → Choose Role, Choose
+  Role Lecturer/Moderator cards → those dashboards, Session Expiry "Keep me
+  signed in" = deliberate no-op. Each is a one-line edit in `src/flow.tsx`.
+- "End of prototype" footer exists; no intro/cover screen.
+- The 07-30 scaffold commits (Stat cards, Student Data Upload etc.) are
+  recorded here in PROGRESS.md but still have no entry in the workspace's
+  `logs/` — flagged at the 08-02 START, still awaiting a workspace log line.

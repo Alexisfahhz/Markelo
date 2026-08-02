@@ -1,0 +1,14 @@
+/*
+  Prototype-flow stylesheet.
+
+  The Markelo design system lives in ../webapp-scaffold/src/index.css (tokens,
+  typography scale, every utility). We import it wholesale so the prototype
+  is pixel-identical to the scaffold, then add the @source so Tailwind
+  generates the classes the scaffold's screens actually use.
+*/
+@import "../../webapp-scaffold/src/index.css";
+@source "../../webapp-scaffold/src";
+
+html {
+  scroll-behavior: smooth;
+}
