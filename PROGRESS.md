@@ -1104,3 +1104,83 @@ and "Dashboards" groups of the scaffold's `App.tsx` GROUPS registry.
 - The 07-30 scaffold commits (Stat cards, Student Data Upload etc.) are
   recorded here in PROGRESS.md but still have no entry in the workspace's
   `logs/` — flagged at the 08-02 START, still awaiting a workspace log line.
+
+---
+
+## 2026-08-03 (fifteenth entry) : claude-opus-5
+
+**Phase:** presentation layer (prototype-flow) + Phase 1/2 shared components
+
+Auth-screen redesign and a categorised sidebar, both requested by KingFizzy
+against four uploaded reference images. Three approach decisions were his, taken
+before any code: the redesign lands in the **shared scaffold source** (so 5179
+and 5180 both change, keeping prototype-flow's zero-copy architecture); the
+right-panel artwork is **drawn as tokenized inline SVG**, not sourced 3D renders,
+because html-to-design imports vector as editable layers and raster as one flat
+rectangle; and the mockup's **"Sign in with SSO" button was NOT built**, because
+an authentication method no document commits to is a spec claim, not a visual
+one (rule 3, never invent evidence).
+
+**Built:**
+
+- `prototype-flow/src/components/ScreenShell.tsx` — **the 1392.09px bug.** Every
+  artboard was wrapped in `px-6` on a fluid block, so each screen rendered at
+  viewport minus 48px and html-to-design carried that into Figma as the frame
+  width. Now a fixed 1440x1024 block with the padding as outer margin.
+  `mx-auto w-max` so a window narrower than 1440 scrolls instead of clipping.
+  Height was `100vh`, the identical non-determinism, and was pinned to 1024.
+- `src/ui/authart.tsx` — **NEW.** Twelve illustrations built from two isometric
+  primitives (`Plate`, `Slab`) on one 2:1 projection, so twelve subjects read as
+  one family. Every colour is a token.
+- `src/ui/shell.tsx` — `LogoMark` (circular badge above the form, placeholder
+  `M` inside pending KingFizzy's logo file); `AuthAside` (headline, icon-chip
+  bullets, art, chip); `ASIDE` map of eleven per-screen panels; `Sidebar`
+  rebuilt with an identity block, nine category groups and per-role padlocks.
+- `src/ui/kit.tsx` — `Input` gained an optional leading `icon`, inset 12px to
+  match the Select chevron, `pl-10`, always `aria-hidden`.
+- `src/roles.ts` — `NAV_GROUPS`, one shared 25-destination menu in nine groups.
+  **It grants nothing.** Each role's existing `nav` array stays the permission
+  source and the sidebar locks anything absent from it, so PRD §6 is untouched.
+- `src/screens/auth.tsx` — 11 screens wired to their own aside, mail/lock icons
+  on 5 email and 5 password inputs, `Head` centred, "Sign in" to "Welcome back".
+
+**Two problems found by measuring, not by looking:**
+
+1. **The flat 25-row menu failed the most junior role.** A Teaching Assistant
+   saw 25 rows of which 21 were locked, with "My marking", their entire job,
+   below seven padlocks and under the fold. Fixed by collapsing any group with
+   zero permitted items to its label plus a count and one lock. TA goes 25 rows
+   to 6, and "My marking" is now the fourth row. Admin 15, Officer 11, Lecturer
+   10, Moderator 9, Management 4. Only Admin still scrolls, by 144px.
+   **This modifies the design KingFizzy agreed with his teammate** and is
+   flagged to him: the padlock and the visible-whole-product idea are intact,
+   only fully-locked groups compress.
+2. **The aside footer overlapped the bullet list** on any frame under ~900px.
+   The art was sized `w-full`, kept its intrinsic height, and pushed through the
+   text in a `justify-between` panel. Now height-driven inside a `min-h-0 flex-1`
+   wrapper, so the drawing is the element that yields.
+
+**Verified (and how):**
+- Artboard geometry read from the live DOM: all 18 sections exactly 1440x1024,
+  `anyClipped` false, `bodyScrollW` 1488.
+- Sidebar counts read per role from the rendered DOM, not from source.
+- 11 asides, 11 distinct illustrations, 11 distinct headlines, **0 overlaps**,
+  measured by comparing each footer's top against the body block's bottom.
+- `npx tsc --noEmit` exit 0 (scaffold), `npx tsc -b` exit 0 (prototype-flow).
+- `npx vite build` exit 0 in **both** apps.
+- Console: the browser buffer retains stale HMR failures from the intermediate
+  edit states (I added `NAV_GROUPS` before its `LifeBuoy` import, and the aside
+  icons before theirs). Both were real for about a minute and both are fixed.
+  The current state is proven by the two clean production builds above, not by
+  the console.
+
+**Not done / blocked:**
+- **The logo asset never arrived.** KingFizzy said it was uploaded; only the
+  Markelo mockup and four sidebar references came through. `LogoMark` holds the
+  placeholder `M`. Swapping it touches one span.
+- `ArtExpiring` is drawn but unwired. "Session about to expire" is an `AppFrame`
+  overlay, not a signed-out screen, so it has no aside slot.
+- "Help & guidance" is the one invented destination, on the strength of
+  principle P3. It has no screen. Everything else in `NAV_GROUPS` exists.
+- 1024 as the artboard height is my choice, not a document's. The Desktop Grid
+  fixes 1440 wide and says nothing about height.

@@ -132,16 +132,46 @@ const inputBase =
   "h-10 w-full rounded-control border bg-white text-body text-text " +
   "placeholder:text-muted focus:border-brand outline-none transition-colors";
 
+/*
+  A leading icon is drawn inside the field, not beside it, so the label above
+  keeps its own left edge and the icon reads as part of the control. The inset
+  is 12px, the same as the text inset on a plain Input and the same as the
+  Select chevron on the right, so a form mixing all three lines up on one
+  vertical rule. Padding-left grows to 40px (12 inset + 16 glyph + 12 gap) so a
+  long value can never slide under the icon.
+
+  It is decorative and always `aria-hidden`: the Field label already names the
+  control, and a second announcement of "mail" would be noise on a screen
+  reader, not help.
+*/
 export function Input({
   invalid,
+  icon: Icon,
   className = "",
   ...rest
-}: React.InputHTMLAttributes<HTMLInputElement> & { invalid?: boolean }) {
-  return (
+}: React.InputHTMLAttributes<HTMLInputElement> & {
+  invalid?: boolean;
+  icon?: LucideIcon;
+}) {
+  const field = (
     <input
-      className={`${inputBase} px-3 ${invalid ? "border-error" : "border-border-control"} ${className}`}
+      className={`${inputBase} ${Icon ? "pl-10 pr-3" : "px-3"} ${
+        invalid ? "border-error" : "border-border-control"
+      } ${className}`}
       {...rest}
     />
+  );
+  if (!Icon) return field;
+  return (
+    <div className="relative">
+      {field}
+      <Icon
+        size={16}
+        strokeWidth={2}
+        aria-hidden
+        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted"
+      />
+    </div>
   );
 }
 

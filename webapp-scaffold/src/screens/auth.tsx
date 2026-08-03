@@ -4,10 +4,12 @@
   access immediately), §16 (MFA for privileged roles).
 */
 import React from "react";
-import { AuthFrame, Logo, AppFrame } from "../ui/shell";
+import { AuthFrame, Logo, AppFrame, AuthAside, ASIDE } from "../ui/shell";
 import { Button, Field, Input, Notice, Card, Badge } from "../ui/kit";
 import { ROLES, RoleKey } from "../roles";
 import {
+  Mail,
+  Lock,
   LogIn,
   KeyRound,
   ShieldCheck,
@@ -20,9 +22,16 @@ import {
   Send,
 } from "lucide-react";
 
+/*
+  Centred, because the circular mark above it is centred and a left-aligned
+  heading under a centred mark reads as a mistake rather than a choice. The
+  form fields below stay left-aligned: a centred label above a full-width
+  input has no edge to line up against, which is the usual way this pattern
+  goes wrong.
+*/
 function Head({ title, sub }: { title: string; sub?: string }) {
   return (
-    <div className="mb-6 flex flex-col gap-2">
+    <div className="mb-6 flex flex-col gap-2 text-center">
       <div className="mb-4 lg:hidden">
         <Logo />
       </div>
@@ -36,14 +45,14 @@ function Head({ title, sub }: { title: string; sub?: string }) {
 
 export function SignIn() {
   return (
-    <AuthFrame>
-      <Head title="Sign in" sub="Use the work email your institution registered." />
+    <AuthFrame aside={<AuthAside {...ASIDE.signin} />}>
+      <Head title="Welcome back" sub="Use the work email your institution registered." />
       <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
         <Field label="Work email" required>
-          <Input type="email" placeholder="a.okonkwo@yabatech.edu.ng" autoComplete="username" />
+          <Input type="email" icon={Mail} placeholder="a.okonkwo@yabatech.edu.ng" autoComplete="username" />
         </Field>
         <Field label="Password" required>
-          <Input type="password" placeholder="••••••••" autoComplete="current-password" />
+          <Input type="password" icon={Lock} placeholder="••••••••" autoComplete="current-password" />
         </Field>
         <div className="flex items-center justify-between">
           <label className="flex items-center gap-2 text-body text-text">
@@ -67,7 +76,7 @@ export function SignIn() {
 
 export function SignInError() {
   return (
-    <AuthFrame>
+    <AuthFrame aside={<AuthAside {...ASIDE.rejected} />}>
       <Head title="Sign in" />
       <div className="mb-4">
         <Notice tone="error" title="That email and password do not match.">
@@ -77,10 +86,10 @@ export function SignInError() {
       </div>
       <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
         <Field label="Work email" required>
-          <Input type="email" defaultValue="a.okonkwo@yabatech.edu.ng" invalid />
+          <Input type="email" icon={Mail} defaultValue="a.okonkwo@yabatech.edu.ng" invalid />
         </Field>
         <Field label="Password" required error="Enter your password again.">
-          <Input type="password" defaultValue="wrongpass" invalid />
+          <Input type="password" icon={Lock} defaultValue="wrongpass" invalid />
         </Field>
         <Button size="xl" full icon={LogIn}>
           Sign in
@@ -92,14 +101,14 @@ export function SignInError() {
 
 export function SignInLoading() {
   return (
-    <AuthFrame>
+    <AuthFrame aside={<AuthAside {...ASIDE.connecting} />}>
       <Head title="Sign in" />
       <form className="flex flex-col gap-4">
         <Field label="Work email" required>
-          <Input type="email" defaultValue="a.okonkwo@yabatech.edu.ng" disabled />
+          <Input type="email" icon={Mail} defaultValue="a.okonkwo@yabatech.edu.ng" disabled />
         </Field>
         <Field label="Password" required>
-          <Input type="password" defaultValue="••••••••" disabled />
+          <Input type="password" icon={Lock} defaultValue="••••••••" disabled />
         </Field>
         <Button size="xl" full disabled>
           Signing you in…
@@ -113,7 +122,7 @@ export function SignInLoading() {
 
 export function MfaChallenge() {
   return (
-    <AuthFrame>
+    <AuthFrame aside={<AuthAside {...ASIDE.mfa} />}>
       <Head
         title="Confirm it is you"
         sub="Your role can change institution records, so Markelo asks for a second check every time you sign in."
@@ -153,7 +162,7 @@ export function MfaChallenge() {
 
 export function AcceptInvite() {
   return (
-    <AuthFrame>
+    <AuthFrame aside={<AuthAside {...ASIDE.invite} />}>
       <Head
         title="Welcome to Markelo"
         sub="Yaba College of Technology has created an account for you. Set a password to finish."
@@ -167,17 +176,17 @@ export function AcceptInvite() {
       </div>
       <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
         <Field label="Work email">
-          <Input type="email" defaultValue="a.okonkwo@yabatech.edu.ng" disabled />
+          <Input type="email" icon={Mail} defaultValue="a.okonkwo@yabatech.edu.ng" disabled />
         </Field>
         <Field
           label="Create a password"
           hint="At least 12 characters. Use a phrase you will remember, not a single word."
           required
         >
-          <Input type="password" placeholder="••••••••••••" autoComplete="new-password" />
+          <Input type="password" icon={Lock} placeholder="••••••••••••" autoComplete="new-password" />
         </Field>
         <Field label="Type the password again" required>
-          <Input type="password" placeholder="••••••••••••" autoComplete="new-password" />
+          <Input type="password" icon={Lock} placeholder="••••••••••••" autoComplete="new-password" />
         </Field>
         <Button size="xl" full icon={KeyRound}>
           Set password and continue
@@ -189,11 +198,11 @@ export function AcceptInvite() {
 
 export function ForgotPassword() {
   return (
-    <AuthFrame>
+    <AuthFrame aside={<AuthAside {...ASIDE.forgot} />}>
       <Head title="Forgot password" sub="Enter your work email. We will send you a reset link." />
       <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
         <Field label="Work email" required>
-          <Input type="email" placeholder="a.okonkwo@yabatech.edu.ng" />
+          <Input type="email" icon={Mail} placeholder="a.okonkwo@yabatech.edu.ng" />
         </Field>
         <Button size="xl" full icon={Send}>
           Send reset link
@@ -208,7 +217,7 @@ export function ForgotPassword() {
 
 export function ForgotPasswordSent() {
   return (
-    <AuthFrame>
+    <AuthFrame aside={<AuthAside {...ASIDE.sent} />}>
       <Head title="Check your email" />
       <Notice tone="success" title="Reset link sent">
         If an account uses <strong>a.okonkwo@yabatech.edu.ng</strong>, a reset link is on its way.
@@ -231,11 +240,7 @@ export function ForgotPasswordSent() {
 export function NoRoleAssigned() {
   return (
     <AuthFrame
-      aside={
-        <p className="text-title font-bold leading-snug text-on-dark">
-          Nothing is available to a new account until a role is given to it. That is deliberate.
-        </p>
-      }
+      aside={<AuthAside {...ASIDE.norole} />}
     >
       <Head title="Your account has no role yet" />
       <Notice tone="warning" title="Waiting for your Institution Admin">
@@ -259,11 +264,7 @@ export function NoRoleAssigned() {
 export function AccountSuspended() {
   return (
     <AuthFrame
-      aside={
-        <p className="text-title font-bold leading-snug text-on-dark">
-          When an account is suspended, access stops at once, not at the next sign-in.
-        </p>
-      }
+      aside={<AuthAside {...ASIDE.suspended} />}
     >
       <Head title="This account is suspended" />
       <Notice tone="error" title="You cannot sign in right now">
@@ -290,11 +291,7 @@ export function AccountSuspended() {
 export function ChooseRole({ held = ["lecturer", "moderator"] as RoleKey[] }) {
   return (
     <AuthFrame
-      aside={
-        <p className="text-title font-bold leading-snug text-on-dark">
-          You hold both roles. Markelo gives you everything both roles allow, not one or the other.
-        </p>
-      }
+      aside={<AuthAside {...ASIDE.roles} />}
     >
       <div className="w-full">
         <div className="mb-4 lg:hidden">
@@ -403,11 +400,7 @@ export function SessionExpiryWarning() {
 export function AccessRevokedMidSession() {
   return (
     <AuthFrame
-      aside={
-        <p className="text-title font-bold leading-snug text-on-dark">
-          A role change takes effect the moment it is made, not the next time you sign in.
-        </p>
-      }
+      aside={<AuthAside {...ASIDE.revoked} />}
     >
       <div className="w-full">
         <div className="mb-4 lg:hidden">

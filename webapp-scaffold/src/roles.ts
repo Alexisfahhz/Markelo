@@ -29,6 +29,7 @@ import {
   ShieldCheck,
   Undo2,
   FileCheck2,
+  LifeBuoy,
 } from "lucide-react";
 
 export type RoleKey =
@@ -150,6 +151,103 @@ export const ROLE_ORDER: RoleKey[] = [
   "ta",
   "moderator",
   "management",
+];
+
+/*
+  THE CATEGORISED MENU.
+
+  One menu structure shared by all six roles, rather than six different menus.
+  A role's own `nav` array above stays the single source of truth for what it
+  may reach: this list only decides order and grouping, and the sidebar locks
+  anything the role's own array does not contain. Nothing here grants or
+  removes a permission, so the PRD §6 model is unchanged by it.
+
+  Why one shared menu at all. Six different-shaped menus meant a Teaching
+  Assistant had no way of knowing Moderation exists, let alone that it is
+  someone else's job. Showing the whole product with a padlock on what is not
+  yours makes the permission model legible, which matters more than usual here
+  because this is an audit product: a user who cannot see the shape of the
+  system cannot reason about who did what to a result.
+
+  Groups follow the order work actually happens in, set up an exam, get the
+  scripts in, mark them, moderate them, release results, and only then the
+  standing institution settings. That is principle P1, familiar before novel:
+  the menu reads in the same order as the job.
+
+  ONE ADDITION, and it is flagged rather than quiet. "Help and guidance" is not
+  in any role's nav array and has no screen yet. It is here because principle
+  P3 in DesignSystem/00-define.md commits to guidance living in the interface
+  and never in a manual, which needs somewhere to live. Everything else in this
+  list is an existing destination. No other placeholder was invented.
+*/
+export type NavGroup = { label?: string; items: NavItem[] };
+
+export const NAV_GROUPS: NavGroup[] = [
+  { items: [{ label: "Dashboard", icon: LayoutDashboard }] },
+  {
+    label: "Exam setup",
+    items: [
+      { label: "Exams", icon: ClipboardList },
+      { label: "Marking scheme", icon: ListChecks },
+      { label: "Student data", icon: FileSpreadsheet },
+      { label: "Booklet profile", icon: BookOpenCheck },
+    ],
+  },
+  {
+    label: "Scripts",
+    items: [
+      { label: "Scan batches", icon: ScanLine },
+      { label: "Exception queue", icon: TriangleAlert },
+      { label: "Identity registry", icon: IdCard },
+    ],
+  },
+  {
+    label: "Marking",
+    items: [
+      { label: "My marking", icon: PenLine },
+      { label: "My courses", icon: GraduationCap },
+      { label: "Marking assignment", icon: Users },
+      { label: "Marking progress", icon: ChartNoAxesColumn },
+      { label: "Flagged for review", icon: Flag },
+    ],
+  },
+  {
+    label: "Moderation",
+    items: [
+      { label: "Moderation queue", icon: ShieldCheck },
+      { label: "Returned scripts", icon: Undo2 },
+    ],
+  },
+  {
+    label: "Results",
+    items: [
+      { label: "Results", icon: FileCheck2 },
+      { label: "Result approval", icon: FileCheck2 },
+      { label: "Result correction", icon: Undo2 },
+    ],
+  },
+  {
+    label: "Oversight",
+    items: [
+      { label: "Exam performance", icon: ChartNoAxesColumn },
+      { label: "Reports", icon: FileScan },
+      { label: "Audit trail", icon: ScrollText },
+    ],
+  },
+  {
+    label: "Institution",
+    items: [
+      { label: "Courses", icon: Building2 },
+      { label: "People & roles", icon: Users },
+    ],
+  },
+  {
+    label: "Support",
+    items: [
+      { label: "Help & guidance", icon: LifeBuoy },
+      { label: "Settings", icon: Settings },
+    ],
+  },
 ];
 
 export const INSTITUTION = "Yaba College of Technology";
