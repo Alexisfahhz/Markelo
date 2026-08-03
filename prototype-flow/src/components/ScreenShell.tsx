@@ -30,7 +30,7 @@ export function ScreenShell({ screen, index }: { screen: FlowScreen; index: numb
     <section id={screen.id} className="scroll-mt-0">
       <div className="flex flex-col items-center gap-1.5 py-3">
         <p className="text-label uppercase tracking-[0.12em] text-muted">
-          Screen {String(index + 1).padStart(2, "0")} — {screen.label}
+          Screen {String(index + 1).padStart(2, "0")} · {screen.label}
         </p>
         <div className="h-px w-24 bg-border/70" aria-hidden />
       </div>

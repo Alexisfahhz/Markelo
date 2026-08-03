@@ -1329,3 +1329,59 @@ before React re-renders and reports the stale value.
   a toggle would be a control that does nothing.
 - `MarkeloLockup` still exported and unused. "Help & guidance" still the one
   invented destination, still without a screen.
+
+---
+
+## 2026-08-04 (eighteenth entry) : claude-opus-5
+
+**Phase:** presentation layer, remote preview
+
+**Built:** a single self-contained HTML build of `prototype-flow`, published as a
+private artifact so KingFizzy can open the prototype away from this machine
+without either dev server running. 380KB, one file, zero external requests.
+
+Built from `dist/` by inlining the CSS and the JS module into one document. The
+dev servers and the html-to-design export path are untouched; this is a preview
+copy, not a new source of truth.
+
+**Three problems solved, all found by testing rather than assuming:**
+
+1. **The fonts would have silently disappeared.** `index.html` pulls Plus
+   Jakarta Sans and JetBrains Mono from Google Fonts, and an artifact's CSP
+   blocks every external host. A naive publish would have fallen back to system
+   sans and misrepresented the typography, which on a design deliverable is the
+   whole thing. Fixed by installing `@fontsource/plus-jakarta-sans` and
+   `@fontsource/jetbrains-mono` and embedding all six faces as base64 woff2
+   `@font-face` rules. Verified with `document.fonts.check`, both true.
+2. **Mojibake.** The first build rendered `SCREEN 01 A-EUR" SIGN IN` and turned
+   the password dots into gibberish. The file bytes were valid UTF-8; the cause
+   was a host sending `text/html` with no charset, so the browser fell back to
+   windows-1252. Rather than depend on the host getting the header right, every
+   non-ASCII character in the bundle is now emitted as a `\uXXXX` JS escape, so
+   the payload is pure ASCII and cannot be misread by any charset. Verified: the
+   file is 100% ASCII and renders correctly from a server that sends no charset
+   at all.
+3. **Em dashes had come back.** The 2026-07-29 sweep removed 409 project-wide,
+   but `prototype-flow` was created on 08-02 and reintroduced six, including one
+   in visible UI copy (`Screen 01 - Sign In`) and one in the document title.
+   Replaced by sense, not swapped for hyphens: the screen label separator is now
+   a middot, the prose ones became commas. **0 remaining** in either app.
+
+**Verified (and how):** served the standalone file over a deliberately
+charset-less local server and read the live DOM. 18 sections, 11 artworks,
+16 collapse buttons, artboards all exactly 1440px, computed heading font
+`"Plus Jakarta Sans"`, both font faces loaded. `npx tsc -b` exit 0,
+`npx vite build` exit 0.
+
+**Not done / blocked:**
+- The artifact is a **snapshot**. It does not update when the source changes; it
+  has to be regenerated and republished. The URL is stable across republishes
+  from this conversation.
+- The font packages were installed with `--no-save`, so `package.json` is
+  unchanged and a fresh clone will not have them. Regenerating the artifact
+  needs that install repeated. This is deliberate: they are a packaging
+  dependency for the preview, not a dependency of the app, which still loads
+  fonts from Google Fonts as before.
+- Not deployed to any public URL. `CURRENT.md` records that pushing this
+  project anywhere is KingFizzy's call, and an artifact is private to his
+  account, so it adds no exposure beyond this conversation.

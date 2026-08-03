@@ -1,12 +1,12 @@
 /*
-  Markelo prototype flow — screen registry.
+  Markelo prototype flow, screen registry.
 
   NOT a route table. This is a demo-order list for the scroll canvas.
 
   Source of truth: the scaffold at ../webapp-scaffold. The order below
   mirrors the "Sign in & account" and "Dashboards" groups in
   webapp-scaffold/src/App.tsx (GROUPS), and every component is imported
-  live from webapp-scaffold/src/screens/* — no copies, so when a screen
+  live from webapp-scaffold/src/screens/*, no copies, so when a screen
   evolves in the scaffold this prototype updates with it.
 
   `actions` maps a click on a button/link (matched by its visible text,

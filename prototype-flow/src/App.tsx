@@ -7,7 +7,7 @@ import { PrototypeNav } from "./components/PrototypeNav";
   Markelo prototype flow.
 
   Every screen sits on one long vertical canvas, one viewport each, in the
-  same order the scaffold registry presents them. There is no routing —
+  same order the scaffold registry presents them. There is no routing,
   movement is smooth scrolling between artboards.
 
   The floating prototype navigation is app-level (one instance, scroll-spied),
@@ -50,7 +50,7 @@ export default function App() {
       {currentDashboard && <PrototypeNav currentId={currentDashboard} />}
       <div className="flex flex-col items-center gap-1.5 py-12">
         <p className="text-label uppercase tracking-[0.12em] text-muted">
-          End of prototype — {FLOW.length} screens
+          End of prototype, {FLOW.length} screens
         </p>
         <p className="text-caption text-muted">
           Markelo · presentation layer only, no routing or backend
