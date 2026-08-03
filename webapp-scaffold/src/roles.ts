@@ -180,12 +180,18 @@ export const ROLE_ORDER: RoleKey[] = [
   and never in a manual, which needs somewhere to live. Everything else in this
   list is an existing destination. No other placeholder was invented.
 */
-export type NavGroup = { label?: string; items: NavItem[] };
+/*
+  `icon` belongs to the parent row in the sidebar tree. Children below it are
+  text on an indent rail and carry no icon of their own, so a parent icon can
+  never collide with one of its children.
+*/
+export type NavGroup = { label?: string; icon?: LucideIcon; items: NavItem[] };
 
 export const NAV_GROUPS: NavGroup[] = [
   { items: [{ label: "Dashboard", icon: LayoutDashboard }] },
   {
     label: "Exam setup",
+    icon: ClipboardList,
     items: [
       { label: "Exams", icon: ClipboardList },
       { label: "Marking scheme", icon: ListChecks },
@@ -195,6 +201,7 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Scripts",
+    icon: ScanLine,
     items: [
       { label: "Scan batches", icon: ScanLine },
       { label: "Exception queue", icon: TriangleAlert },
@@ -203,6 +210,7 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Marking",
+    icon: PenLine,
     items: [
       { label: "My marking", icon: PenLine },
       { label: "My courses", icon: GraduationCap },
@@ -213,6 +221,7 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Moderation",
+    icon: ShieldCheck,
     items: [
       { label: "Moderation queue", icon: ShieldCheck },
       { label: "Returned scripts", icon: Undo2 },
@@ -220,6 +229,7 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Results",
+    icon: FileCheck2,
     items: [
       { label: "Results", icon: FileCheck2 },
       { label: "Result approval", icon: FileCheck2 },
@@ -228,6 +238,7 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Oversight",
+    icon: ChartNoAxesColumn,
     items: [
       { label: "Exam performance", icon: ChartNoAxesColumn },
       { label: "Reports", icon: FileScan },
@@ -236,6 +247,7 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Institution",
+    icon: Building2,
     items: [
       { label: "Courses", icon: Building2 },
       { label: "People & roles", icon: Users },
@@ -243,6 +255,7 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Support",
+    icon: LifeBuoy,
     items: [
       { label: "Help & guidance", icon: LifeBuoy },
       { label: "Settings", icon: Settings },

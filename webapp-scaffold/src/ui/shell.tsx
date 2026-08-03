@@ -25,6 +25,7 @@ import {
   KeyRound,
   MailCheck,
   Layers,
+  ChevronDown,
 } from "lucide-react";
 import {
   ArtShield,
@@ -39,13 +40,12 @@ import {
   ArtRoles,
   ArtRevoked,
 } from "./authart";
+import { MarkeloMark } from "./logo";
 
 export function Logo({ onDark = false }: { onDark?: boolean }) {
   return (
     <span className="inline-flex items-center gap-2">
-      <span className="grid h-7 w-7 place-items-center rounded-badge bg-brand text-sub font-bold text-white">
-        M
-      </span>
+      <MarkeloMark className={`h-6 w-auto ${onDark ? "text-on-dark" : "text-brand"}`} />
       <span className={`text-sub font-bold ${onDark ? "text-on-dark" : "text-text"}`}>Markelo</span>
     </span>
   );
@@ -54,25 +54,35 @@ export function Logo({ onDark = false }: { onDark?: boolean }) {
 /*
   The circular mark that sits above the sign-in form. It is a different object
   from `Logo`, not a variant of it: `Logo` is an identifier in a corner and
-  always carries the wordmark, this one is the visual anchor a screen is
-  composed around and carries no text, because the heading directly beneath it
-  already says where you are.
+  carries the wordmark, this one is the visual anchor a screen is composed
+  around and carries no text, because the heading directly beneath it already
+  says where you are.
 
-  The concentric ring is a halo, not a border. It is drawn as a second element
-  rather than a `ring` utility so it can sit at a lower opacity than the mark
-  without dragging the mark's own contrast down with it.
+  Three concentric circles, evenly spaced 14px apart, each fainter as it goes
+  out: a solid tinted disc at 76px, then hairlines at 104px and 132px. They are
+  drawn as three siblings rather than as `ring` utilities because a ring is
+  painted at the element's own opacity, and the whole effect here depends on
+  each circle being weaker than the one inside it. 0.75px is deliberate and
+  sub-pixel: at a full 1px the outer ring reads as a border, which is a
+  container, and the intent is a halo, which is not.
 
-  TODO(asset): the inner mark is the placeholder `M` from `Logo`. KingFizzy's
-  real logo file replaces the contents of the inner span and nothing else.
+  The mark itself is the real logo from `logo.tsx`, tinted through
+  `text-brand` so it moves with the token rather than carrying the source
+  file's baked-in #0e3c75.
 */
 export function LogoMark() {
   return (
-    <span className="relative inline-grid h-20 w-20 place-items-center">
-      <span className="absolute inset-0 rounded-pill bg-brand-light" aria-hidden />
-      <span className="absolute inset-2 rounded-pill bg-white" aria-hidden />
-      <span className="relative grid h-11 w-11 place-items-center rounded-card bg-brand text-section font-bold text-white">
-        M
-      </span>
+    <span className="relative inline-grid h-[132px] w-[132px] place-items-center">
+      <span
+        className="absolute inset-0 rounded-pill border-[0.75px] border-brand/20"
+        aria-hidden
+      />
+      <span
+        className="absolute inset-3.5 rounded-pill border-[0.75px] border-brand/45"
+        aria-hidden
+      />
+      <span className="absolute inset-7 rounded-pill bg-brand-light" aria-hidden />
+      <MarkeloMark className="relative h-9 w-auto text-brand" />
     </span>
   );
 }
@@ -183,18 +193,19 @@ export function Sidebar({
       <div className="flex flex-col gap-4 px-5 pb-4 pt-6">
         <Logo onDark />
         {/*
-          Identity block. Which institution, which academic session, and which
-          role you are currently acting as. It sits above the menu rather than
-          in the footer because on a multi-role account every lock below it is
-          only true *for the role named here*, so the menu cannot be read
-          correctly without it.
+          Identity block, one line, not three.
+
+          It carried the institution and the academic session too. Both are
+          already printed in the top bar of every screen this sidebar appears
+          on, so the sidebar was repeating them into its own narrowest column
+          and spending about 34px of vertical space to do it. What is left is
+          the only part that is not duplicated and the only part the menu needs:
+          on a multi-role account every padlock below is calculated against the
+          role named here, so the menu cannot be read correctly without it.
         */}
-        <div className="flex flex-col gap-0.5 rounded-control bg-white/8 px-3 py-2.5">
-          <span className="truncate text-caption font-medium text-on-dark">{INSTITUTION}</span>
-          <span className="truncate text-caption text-on-dark/55">{SESSION}</span>
-          <span className="mt-1 truncate text-caption font-semibold text-on-dark/90">
-            {role.title}
-          </span>
+        <div className="flex flex-col gap-0.5 rounded-control bg-white/8 px-3 py-2">
+          <span className="text-label uppercase tracking-[0.1em] text-on-dark/50">Working as</span>
+          <span className="truncate text-body font-medium text-on-dark">{role.title}</span>
         </div>
       </div>
 
@@ -205,98 +216,150 @@ export function Sidebar({
         sidebar grow instead would push the role switcher and sign-out off the
         bottom of the screen, where they are unreachable.
       */}
-      <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-2">
+      {/*
+        A PARENT-CHILD TREE, not a flat list with headings.
+
+        The flat version was too dense, and the reason is countable rather than
+        a matter of taste: it drew 25 icons in a 236px column, one per row, so
+        every row competed with every other row for the same first glance. Here
+        only the nine parents carry an icon and the children are text on an
+        indent rail. Nine focal points instead of 25, and the indent does the
+        work the icons were failing to do, which is say what belongs to what.
+
+        Children are keyboard-reachable in source order under their parent, so
+        the visual nesting and the tab order agree.
+      */}
+      <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
         {NAV_GROUPS.map((group, gi) => {
           const reachable = group.items.filter((i) => granted.has(i.label)).length;
+
           /*
-            A group with nothing in it for this role collapses to its own
-            label plus a count.
+            A group with no children at all, currently only Dashboard, is its
+            own destination and renders as a parent with nothing under it.
+          */
+          if (!group.label) {
+            const only = group.items[0];
+            const permitted = granted.get(only.label);
+            const active = !!permitted && only.label === activeLabel;
+            const OnlyIcon = only.icon;
+            return (
+              <a
+                key={only.label}
+                href="#"
+                onClick={(e) => e.preventDefault()}
+                aria-disabled={!permitted || undefined}
+                className={`flex items-center gap-3 rounded-control px-3 py-2.5 text-body transition-colors ${
+                  active
+                    ? "bg-brand font-semibold text-white"
+                    : permitted
+                      ? "text-on-dark/80 hover:bg-white/10"
+                      : "cursor-not-allowed text-on-dark/35"
+                }`}
+              >
+                <OnlyIcon size={17} strokeWidth={2} className="shrink-0" aria-hidden />
+                <span className="min-w-0 flex-1 truncate">{only.label}</span>
+              </a>
+            );
+          }
+
+          const ParentIcon = group.icon;
+
+          /*
+            A parent with nothing in it for this role stays a parent and simply
+            never opens. It is dimmed, carries one lock and a count, and shows
+            no children.
 
             Measured before this existed: a Teaching Assistant saw 25 rows of
-            which 21 were locked, and "My marking", which is the entire job,
-            sat below seven padlocks and under the fold. The most junior role
-            got the worst screen, which is the opposite of what a permission
-            display is for.
-
-            It collapses rather than disappears, so the thing KingFizzy and his
-            teammate actually wanted still holds: you can see Moderation exists
-            and that it is not yours. You just do not have to scroll past it to
-            reach your own work. Roles that own most of the product, Admin and
-            Exam Officer, barely notice this; the roles that own little are the
-            ones it rescues.
+            which 21 were locked, with "My marking", the entire job, below seven
+            padlocks and under the fold. The most junior role got the worst
+            screen, which is the opposite of what a permission display is for.
+            Collapsing rather than hiding keeps what KingFizzy and his teammate
+            wanted: you can still see Moderation exists and is not yours.
           */
-          if (group.label && reachable === 0) {
+          if (reachable === 0) {
             return (
-              <div key={group.label} className={gi === 0 ? "" : "mt-4"}>
-                <div className="flex items-center gap-2 px-3 py-1.5 text-label uppercase tracking-[0.1em] text-on-dark/30">
+              <div key={group.label} className="mt-3">
+                <div className="flex cursor-not-allowed items-center gap-3 px-3 py-2 text-body text-on-dark/30">
+                  {ParentIcon && (
+                    <ParentIcon size={17} strokeWidth={2} className="shrink-0" aria-hidden />
+                  )}
                   <span className="min-w-0 flex-1 truncate">{group.label}</span>
-                  <span className="tabular-nums">{group.items.length}</span>
+                  <span className="text-caption tabular-nums">{group.items.length}</span>
                   <Lock
                     size={12}
                     strokeWidth={2.25}
+                    className="shrink-0"
                     aria-label={`${group.label}: ${group.items.length} areas you do not have access to`}
                   />
                 </div>
               </div>
             );
           }
+
           return (
-          <div key={group.label ?? `g${gi}`} className={gi === 0 ? "" : "mt-4"}>
-            {group.label && (
-              <p className="px-3 pb-1.5 text-label uppercase tracking-[0.1em] text-on-dark/40">
-                {group.label}
-              </p>
-            )}
-            <ul className="flex flex-col gap-0.5">
-              {group.items.map((item) => {
-                const permitted = granted.get(item.label);
-                const locked = !permitted;
-                const active = !locked && item.label === activeLabel;
-                const Icon = item.icon;
-                return (
-                  <li key={item.label}>
-                    <a
-                      href="#"
-                      onClick={(e) => e.preventDefault()}
-                      aria-disabled={locked || undefined}
-                      /*
-                        A locked row is dimmed and gets no hover state, so it
-                        never behaves like something that would respond. It
-                        keeps its icon and full label: greying the label out
-                        into unreadability would defeat the whole point, which
-                        is that you can see what exists and that it is not
-                        yours.
-                      */
-                      className={`flex items-center gap-2.5 rounded-control px-3 py-2 text-body transition-colors ${
-                        active
-                          ? "bg-brand font-semibold text-white"
-                          : locked
-                            ? "cursor-not-allowed text-on-dark/35"
-                            : "text-on-dark/75 hover:bg-brand hover:text-white"
-                      }`}
-                    >
-                      <Icon size={17} strokeWidth={2} className="shrink-0" aria-hidden />
-                      <span className="min-w-0 flex-1 truncate">{item.label}</span>
-                      {locked ? (
-                        <Lock
-                          size={12}
-                          strokeWidth={2.25}
-                          className="shrink-0 text-on-dark/35"
-                          aria-label="You do not have access to this"
-                        />
-                      ) : (
-                        permitted?.badge && (
-                          <span className="shrink-0 rounded-pill bg-white/20 px-2 py-0.5 text-caption tabular-nums text-white">
-                            {permitted.badge}
-                          </span>
-                        )
-                      )}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+            <div key={group.label} className="mt-5">
+              <div className="flex items-center gap-3 px-3 py-2 text-body font-medium text-on-dark">
+                {ParentIcon && (
+                  <ParentIcon size={17} strokeWidth={2} className="shrink-0" aria-hidden />
+                )}
+                <span className="min-w-0 flex-1 truncate">{group.label}</span>
+                <ChevronDown size={14} strokeWidth={2.25} className="shrink-0 opacity-40" aria-hidden />
+              </div>
+
+              {/*
+                The rail is a left border on the list, not a line drawn per row,
+                so it is continuous by construction and cannot develop gaps when
+                a row's height changes. It starts at 28px, which lines the
+                children's text up under the parent's text rather than under
+                the parent's icon.
+              */}
+              <ul className="ml-[27px] flex flex-col gap-0.5 border-l border-white/12 pl-2.5 pt-1">
+                {group.items.map((item) => {
+                  const permitted = granted.get(item.label);
+                  const locked = !permitted;
+                  const active = !locked && item.label === activeLabel;
+                  return (
+                    <li key={item.label}>
+                      <a
+                        href="#"
+                        onClick={(e) => e.preventDefault()}
+                        aria-disabled={locked || undefined}
+                        /*
+                          A locked child is dimmed and gets no hover state, so
+                          it never behaves like something that would respond. It
+                          keeps its full label: greying it into unreadability
+                          would defeat the point, which is that you can see what
+                          exists and that it is not yours.
+                        */
+                        className={`flex items-center gap-2 rounded-control px-2.5 py-1.5 text-body transition-colors ${
+                          active
+                            ? "bg-brand font-semibold text-white"
+                            : locked
+                              ? "cursor-not-allowed text-on-dark/30"
+                              : "text-on-dark/70 hover:bg-white/10 hover:text-on-dark"
+                        }`}
+                      >
+                        <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                        {locked ? (
+                          <Lock
+                            size={12}
+                            strokeWidth={2.25}
+                            className="shrink-0"
+                            aria-label="You do not have access to this"
+                          />
+                        ) : (
+                          permitted?.badge && (
+                            <span className="shrink-0 rounded-pill bg-white/20 px-2 py-0.5 text-caption tabular-nums text-white">
+                              {permitted.badge}
+                            </span>
+                          )
+                        )}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           );
         })}
       </div>
@@ -458,7 +521,15 @@ export function AuthAside({
   chip?: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-0 flex-1 flex-col justify-center gap-6 py-4">
+    /*
+      `overflow-hidden` is the safety net that lets the art keep a floor. The
+      art now refuses to shrink below 150px, because at the sizes it was
+      reaching on a short panel it read as a stray thumbnail rather than an
+      illustration. That floor means on a genuinely tiny panel the composition
+      could exceed the space, so the panel clips instead of letting anything
+      escape into the footer line.
+    */
+    <div className="flex min-h-0 flex-1 flex-col justify-center gap-6 overflow-hidden py-4">
       {/*
         `min-h-0 flex-1` is what makes the artwork the part that yields. The
         headline, the bullets and the chip are all content that must stay

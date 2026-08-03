@@ -111,7 +111,7 @@ function Frame({ children }: { children: React.ReactNode }) {
     */
     <svg
       viewBox={VB}
-      className="h-full max-h-[300px] w-auto max-w-full text-white/25"
+      className="h-full min-h-[150px] max-h-[300px] w-auto max-w-full text-white/25"
       aria-hidden
       role="presentation"
     >

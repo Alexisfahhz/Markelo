@@ -1184,3 +1184,86 @@ one (rule 3, never invent evidence).
   principle P3. It has no screen. Everything else in `NAV_GROUPS` exists.
 - 1024 as the artboard height is my choice, not a document's. The Desktop Grid
   fixes 1440 wide and says nothing about height.
+
+---
+
+## 2026-08-03 (sixteenth entry) : claude-opus-5
+
+**Phase:** presentation layer, follow-up to the fifteenth entry
+
+**Built:**
+
+- `src/ui/logo.tsx` — **NEW.** The real logo from KingFizzy's
+  `Markelo Logo(SVG).svg`, split into `MarkeloMark` (mark only) and
+  `MarkeloLockup` (mark plus wordmark). Two deliberate changes to the source,
+  both recorded in the file: the white group is dropped, because it is a full
+  2000x2000 white square with the letterforms knocked out of it and would have
+  shown its corners inside a circular badge and painted a white block on the
+  dark sidebar; and the paths are set to `currentColor` instead of the baked-in
+  `#0e3c75`, so the mark follows the token. No path data was redrawn. The two
+  exports differ only by viewBox crop.
+  **Judgement call:** the badge uses the mark alone, not the lockup, because a
+  wordmark inside a 44px circle is unreadable. `MarkeloLockup` exists for
+  anywhere with room.
+- `LogoMark` — three concentric circles 14px apart, each fainter outward: solid
+  tinted disc at 76px, hairlines at 104px and 132px, both `0.75px`. Drawn as
+  three siblings rather than `ring` utilities, because a ring paints at the
+  element's own opacity and the whole effect depends on each circle being weaker
+  than the one inside it.
+- `Logo` — the fake `M`-in-a-square placeholder is gone, replaced by the real
+  mark, on both light and dark.
+- **Sidebar rebuilt as a parent-child tree.** Nine parents carry an icon, a
+  label and a chevron; children are text on a continuous indent rail with no
+  icon of their own. The rail is a left border on the `ul`, not a line per row,
+  so it cannot develop gaps when a row's height changes. `NavGroup` gained an
+  `icon`, which is only possible without collision because children gave theirs
+  up.
+  **Why the flat version was cluttered, stated as a count rather than a
+  feeling:** it drew 25 icons in a 236px column, one per row, so every row
+  competed with every other for the same glance. Nine focal points now, and the
+  indent does the work the icons were failing at, which is saying what belongs
+  to what.
+- **Identity block cut from three lines to one.** It repeated the institution
+  and the academic session, both of which the top bar already prints on every
+  screen this sidebar appears on. Only "Working as <role>" is left, which is the
+  part the menu actually needs, since every padlock is calculated against it.
+
+**Two bugs found and fixed:**
+
+1. **The artwork collapsed to a thumbnail.** The `min-h-0 flex-1` wrapper from
+   the last entry let it shrink without a floor, and on the shorter 5179 harness
+   panel it reached about 40px and read as a stray icon. Given a `min-h-[150px]`
+   floor, with `overflow-hidden` on the panel as the safety net so a genuinely
+   tiny panel clips instead of letting anything escape into the footer.
+2. **Four of six roles overflowed the sidebar** once the tree's breathing room
+   was added. Fixed by removing the duplicated identity lines and tightening
+   collapsed parents, which are markers not content. Not fixed by squeezing the
+   spacing back out, which would have undone the thing that was asked for.
+
+**Verified (and how):**
+- Sidebar overflow at the real 1024 frame, measured per role from the live DOM:
+  admin 212px, officer 47, lecturer 0, TA 0, moderator 44, management 0. Was
+  admin 274 / officer 133 / lecturer 98 / moderator 130 before the trim.
+  **Admin still scrolls and that is accepted**, not overlooked: it reaches the
+  most of the product, the footer with the role switcher sits outside the
+  scroller so nothing critical is ever pushed off, and the alternative was
+  taking back the whitespace that was the point of the change.
+- 11 artworks all at 300px, all 11 structurally distinct, 0 footer overlaps.
+- 18 artboards still exactly 1440x1024.
+- `npx tsc --noEmit` exit 0, `npx vite build` exit 0, both apps.
+
+**A measurement error worth recording.** I first read the artwork heights with
+`aside svg[role="presentation"]` and reported one rendering at 24px. That
+selector was matching the aside's *logo*, which became an svg in this same
+entry and is 24px by design. The artwork was never wrong. Re-measured against
+each svg's own viewBox. The lesson is that a selector written before a change
+can silently start matching something else after it.
+
+**Not done / blocked:**
+- `MarkeloLockup` is exported but unused. It is the full supplied artwork and is
+  kept so nobody has to re-derive it; delete it if it is still unused later.
+- Parent rows show a chevron but do not collapse on click. The tree is presented
+  fully open, which suits a prototype being read rather than operated. Real
+  collapse behaviour is a decision, not an oversight.
+- "Help & guidance" is still the one invented destination, still without a
+  screen.
