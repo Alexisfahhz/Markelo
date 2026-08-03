@@ -1267,3 +1267,65 @@ can silently start matching something else after it.
   collapse behaviour is a decision, not an oversight.
 - "Help & guidance" is still the one invented destination, still without a
   screen.
+
+---
+
+## 2026-08-04 (seventeenth entry) : claude-opus-5
+
+**Phase:** presentation layer, follow-up to the sixteenth entry
+
+**Built:** sidebar parent rows now collapse on click.
+
+- The parent is a real `<button>` with `aria-expanded` and `aria-controls`, not
+  a div with a click handler, because it changes what is on screen and has to
+  be keyboard-reachable and announce its state.
+- **Open by default, click to close**, not the reverse. Starting closed would
+  hide the whole product behind nine clicks on first run, and principle P3
+  assumes no training and low technical confidence. It also keeps the tree
+  visible in the html-to-design export, which is the reason this build exists:
+  a collapsed export would carry nine rows and none of the structure.
+- A closed parent shows the number of children it is hiding, reusing the
+  count-plus-glyph shape a fully-locked parent already uses, so closing a group
+  never makes its contents vanish without trace.
+- Closed state resets on role change, keyed on `role.key`, so one role's closed
+  groups are never carried onto another's menu where the labels may not exist.
+
+**Motion: only the chevron animates, and only its rotation.**
+`IMPLEMENTATION_PLAN.md` section 3 prohibits animating anything but `opacity`
+and `transform`, because animating height forces a layout recalculation every
+frame and that is visible jank on a modest institution PC. So the rows appear
+and disappear instantly. This is the one place the project rule **overrides**
+the workspace's usual standing rule for expand/collapse (grid-template-rows
+`0fr` to `1fr`), and it is deliberate, not an oversight.
+
+**A real bug found by testing rather than reading.**
+`panelId` was derived from the group label alone. The prototype canvas renders
+all six role dashboards on one page, so six sidebars each emitted
+`nav-exam-setup`: duplicate DOM ids, invalid HTML, and an `aria-controls` on one
+screen resolving to a panel on another screen. Fixed with `React.useId()` to
+scope ids per Sidebar instance. **Confirmed 0 duplicate ids across 35 ids on the
+full canvas** after the fix; the first verification pass had reported
+`panelHidden: false` precisely because `getElementById` was returning another
+dashboard's panel.
+
+**Verified (and how):** clicked the real control in the live DOM, reading state
+in a separate call each time because a synchronous read after `click()` runs
+before React re-renders and reports the stale value.
+- Open: `aria-expanded` true, panel visible, chevron unrotated, Admin sidebar
+  overflow 212px.
+- After one click: `aria-expanded` **false**, correct panel `hidden`, chevron
+  `-rotate-90`, count "4" appears, overflow **65px**.
+- After a second click: returns to the open state exactly, overflow back to 212.
+- Collapsing groups on Admin left the Exam Officer sidebar untouched
+  (`["true","true","true"]`), confirming state is per instance.
+- 0 duplicate DOM ids. `npx tsc --noEmit` exit 0. `npx vite build` exit 0 in
+  both apps.
+
+**Not done / blocked:**
+- Closed state is not persisted. Reloading reopens everything. Persisting it
+  would need localStorage, which is app behaviour rather than design, and this
+  folder is a design scaffold.
+- Fully-locked parents are still not clickable. There is nothing to reveal, so
+  a toggle would be a control that does nothing.
+- `MarkeloLockup` still exported and unused. "Help & guidance" still the one
+  invented destination, still without a screen.

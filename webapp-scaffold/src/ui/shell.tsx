@@ -188,6 +188,39 @@ export function Sidebar({
   */
   const granted = new Map(role.nav.map((n) => [n.label, n]));
 
+  /*
+    Every parent this role can reach starts open, and clicking one closes it.
+    That order matters: the alternative, starting closed and clicking to open,
+    hides the whole product behind nine clicks on first run, and principle P3
+    assumes no training and low technical confidence. A user who has never seen
+    Markelo should not have to discover that the menu has contents.
+
+    It also keeps the structure visible in the html-to-design export, which is
+    what this build exists for. A collapsed export would carry nine rows and
+    none of the tree.
+
+    Closed state is per role because the key includes `role.key`: switching
+    role rebuilds the map rather than carrying one role's closed groups onto
+    another's menu, where the labels may not even exist.
+  */
+  /*
+    `useId` scopes the panel ids to this Sidebar instance. Derived from the
+    group label alone they collided: the prototype canvas renders all six role
+    dashboards on one page, so six sidebars each emitted `nav-exam-setup`, and
+    an `aria-controls` on one screen resolved to a panel on another. Invalid
+    HTML, and it would have sent a screen reader to the wrong element.
+  */
+  const uid = React.useId();
+  const [closed, setClosed] = React.useState<Set<string>>(new Set());
+  React.useEffect(() => setClosed(new Set()), [role.key]);
+  const toggle = (label: string) =>
+    setClosed((prev) => {
+      const next = new Set(prev);
+      if (next.has(label)) next.delete(label);
+      else next.add(label);
+      return next;
+    });
+
   return (
     <nav className="flex w-[236px] shrink-0 flex-col bg-brand-dark">
       <div className="flex flex-col gap-4 px-5 pb-4 pt-6">
@@ -296,15 +329,57 @@ export function Sidebar({
             );
           }
 
+          const isOpen = !closed.has(group.label);
+          const panelId = `${uid}-${group.label.replace(/\W+/g, "-").toLowerCase()}`;
+          /*
+            A closed parent still says how many children it is hiding, using
+            the same count-plus-glyph shape a fully-locked parent uses. Without
+            it, closing a group makes its contents vanish with no trace, and
+            the user has to remember what was there.
+          */
+          const hiddenCount = group.items.length;
+
           return (
             <div key={group.label} className="mt-5">
-              <div className="flex items-center gap-3 px-3 py-2 text-body font-medium text-on-dark">
+              {/*
+                A real <button>, not a div with a click handler. It is a control
+                that changes what is on screen, so it has to be reachable by
+                keyboard and announce its state, which `aria-expanded` does and
+                a styled div cannot.
+              */}
+              <button
+                type="button"
+                onClick={() => toggle(group.label!)}
+                aria-expanded={isOpen}
+                aria-controls={panelId}
+                className="flex w-full items-center gap-3 rounded-control px-3 py-2 text-left text-body font-medium text-on-dark transition-colors hover:bg-white/10"
+              >
                 {ParentIcon && (
                   <ParentIcon size={17} strokeWidth={2} className="shrink-0" aria-hidden />
                 )}
                 <span className="min-w-0 flex-1 truncate">{group.label}</span>
-                <ChevronDown size={14} strokeWidth={2.25} className="shrink-0 opacity-40" aria-hidden />
-              </div>
+                {!isOpen && (
+                  <span className="text-caption tabular-nums text-on-dark/45">{hiddenCount}</span>
+                )}
+                {/*
+                  Only the chevron animates, and only its rotation.
+                  IMPLEMENTATION_PLAN.md section 3 prohibits animating anything
+                  but opacity and transform, because animating height forces a
+                  layout recalculation every frame and that is visible jank on a
+                  modest institution PC. So the rows appear and disappear
+                  instantly and the chevron carries the sense of movement. This
+                  is the one place the project rule overrides the usual
+                  grid-template-rows 0fr-to-1fr reveal.
+                */}
+                <ChevronDown
+                  size={14}
+                  strokeWidth={2.25}
+                  aria-hidden
+                  className={`shrink-0 opacity-40 transition-transform duration-200 ${
+                    isOpen ? "" : "-rotate-90"
+                  }`}
+                />
+              </button>
 
               {/*
                 The rail is a left border on the list, not a line drawn per row,
@@ -313,7 +388,11 @@ export function Sidebar({
                 children's text up under the parent's text rather than under
                 the parent's icon.
               */}
-              <ul className="ml-[27px] flex flex-col gap-0.5 border-l border-white/12 pl-2.5 pt-1">
+              <ul
+                id={panelId}
+                hidden={!isOpen}
+                className="ml-[27px] flex flex-col gap-0.5 border-l border-white/12 pl-2.5 pt-1"
+              >
                 {group.items.map((item) => {
                   const permitted = granted.get(item.label);
                   const locked = !permitted;
