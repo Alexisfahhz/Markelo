@@ -42,6 +42,47 @@ import {
 } from "./authart";
 import { MarkeloMark } from "./logo";
 
+/*
+  NAVIGATION VARIANT.
+
+  Two shapes of the same navigation exist, and which one renders is decided by
+  context rather than a prop, so no screen has to pass it down through AppFrame.
+
+  "tree"  The nine categories are expandable parents with their destinations
+          nested underneath. This is the default and is what the review
+          scaffold on 5179 shows. Nothing about it changed.
+
+  "flat"  The nine categories are the whole sidebar, one flat row each, and a
+          category's destinations move out of the sidebar into a secondary tab
+          row inside the page. Opted into by the prototype build on 5180.
+
+  Why the split exists rather than one replacing the other: a teammate's point
+  was that a nested sidebar is heavy for a lecturer or TA who is not
+  particularly technical, and the flat shape answers that by never asking them
+  to open anything to find their work. It is a real IA change, so it is being
+  trialled on the prototype before the review scaffold follows.
+
+  Defaulting to "tree" is deliberate: a context with no provider must leave
+  existing screens exactly as they were.
+*/
+export type NavVariant = "tree" | "flat";
+const NavVariantContext = React.createContext<NavVariant>("tree");
+
+export function NavVariantProvider({
+  value,
+  children,
+}: {
+  value: NavVariant;
+  children: React.ReactNode;
+}) {
+  return <NavVariantContext.Provider value={value}>{children}</NavVariantContext.Provider>;
+}
+
+/** The group a destination belongs to, or undefined for a standalone one. */
+function groupOf(label: string) {
+  return NAV_GROUPS.find((g) => g.items.some((i) => i.label === label));
+}
+
 export function Logo({ onDark = false }: { onDark?: boolean }) {
   return (
     <span className="inline-flex items-center gap-2">
@@ -171,6 +212,176 @@ export function RoleSwitcher({
   );
 }
 
+/*
+  THE FLAT SIDEBAR.
+
+  Nine rows, one per category, and nothing nested. A category's destinations
+  are not here at all: they render as a tab row inside the page, next to the
+  content they filter. So the sidebar answers "which part of the product am I
+  in" and the tabs answer "which view of it", and neither question is asked
+  twice.
+
+  The active row is marked two ways at once, a tinted fill and a bar pinned to
+  the sidebar's outer edge. The bar is the load-bearing one: a fill alone is
+  easy to lose against a dark panel at a glance, and the bar reads from the
+  furthest left pixel of the screen, which is the first place the eye lands
+  when scanning a left rail.
+
+  Colours are Markelo's own. The reference this structure came from uses a
+  light rail with a dark indicator; inverted onto `brand-dark` the same
+  relationship is a white indicator over a white-tinted fill. The pattern was
+  copied, the palette was not.
+*/
+function FlatSidebar({
+  role,
+  activeLabel,
+  heldRoles,
+}: {
+  role: Role;
+  activeLabel: string;
+  heldRoles?: RoleKey[];
+}) {
+  const granted = new Set(role.nav.map((n) => n.label));
+  const activeGroup = groupOf(activeLabel);
+
+  return (
+    <nav className="flex w-[236px] shrink-0 flex-col bg-brand-dark">
+      {/*
+        The institution selector, in the slot the reference gives its workspace
+        switcher. Markelo has exactly one institution per deployment, so the
+        control does not open anything yet; it is here because it is where a
+        user looks to confirm whose data they are about to change, and PRD §6
+        makes that a question worth answering before any of the rest.
+      */}
+      <div className="px-3 pb-2 pt-5">
+        <button
+          type="button"
+          onClick={(e) => e.preventDefault()}
+          className="flex w-full items-center gap-2.5 rounded-control border border-white/15 px-2.5 py-2 text-left transition-colors hover:bg-white/10"
+        >
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-badge bg-white/10">
+            <MarkeloMark className="h-4 w-auto text-on-dark" />
+          </span>
+          <span className="min-w-0 flex-1 truncate text-body font-medium text-on-dark">
+            {INSTITUTION}
+          </span>
+          <ChevronsUpDown size={14} strokeWidth={2} className="shrink-0 text-on-dark/50" aria-hidden />
+        </button>
+      </div>
+
+      <ul className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-2">
+        {NAV_GROUPS.map((group, gi) => {
+          const label = group.label ?? group.items[0].label;
+          const Icon = group.icon ?? group.items[0].icon;
+          const reachable = group.items.some((i) => granted.has(i.label));
+          const locked = !reachable;
+          const active = group.label
+            ? activeGroup?.label === group.label
+            : activeLabel === label;
+
+          return (
+            <li key={group.label ?? `g${gi}`} className="relative">
+              {active && (
+                <span
+                  aria-hidden
+                  className="absolute -left-3 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-pill bg-white"
+                />
+              )}
+              <a
+                href="#"
+                onClick={(e) => e.preventDefault()}
+                aria-current={active ? "page" : undefined}
+                aria-disabled={locked || undefined}
+                className={`flex items-center gap-3 rounded-control px-3 py-2.5 text-body transition-colors ${
+                  active
+                    ? "bg-white/12 font-semibold text-white"
+                    : locked
+                      ? "cursor-not-allowed text-on-dark/30"
+                      : "text-on-dark/70 hover:bg-white/8 hover:text-on-dark"
+                }`}
+              >
+                <Icon size={17} strokeWidth={2} className="shrink-0" aria-hidden />
+                <span className="min-w-0 flex-1 truncate">{label}</span>
+                {locked && (
+                  <Lock
+                    size={12}
+                    strokeWidth={2.25}
+                    className="shrink-0"
+                    aria-label="You do not have access to this"
+                  />
+                )}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="mt-auto flex flex-col gap-3 border-t border-white/10 px-3 pb-6 pt-4">
+        {heldRoles && heldRoles.length > 1 && (
+          <RoleSwitcher current={role.key} held={heldRoles} />
+        )}
+        <div className="px-2">
+          <p className="uppercase-label !text-on-dark/60">Signed in as</p>
+          <p className="text-body font-medium text-on-dark">{role.person}</p>
+          <p className="text-caption text-on-dark/70">{role.title}</p>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+/*
+  The secondary tab row.
+
+  Holds exactly what the flat sidebar gave up: the destinations inside the
+  category you are in. It only renders when there is something to show, so a
+  standalone destination such as Dashboard gets no empty tab strip under its
+  title.
+
+  A destination the role cannot reach stays visible and locked here for the
+  same reason it did in the sidebar: seeing that a view exists and is somebody
+  else's job is the point, and this is an audit product where the shape of the
+  permission model is worth being legible.
+*/
+export function SectionTabs({ role, activeLabel }: { role: Role; activeLabel: string }) {
+  const group = groupOf(activeLabel);
+  if (!group?.label || group.items.length < 2) return null;
+  const granted = new Set(role.nav.map((n) => n.label));
+
+  return (
+    <div className="border-b border-border bg-white px-8">
+      <div className="flex items-center gap-1 overflow-x-auto" role="tablist" aria-label={group.label}>
+        {group.items.map((item) => {
+          const locked = !granted.has(item.label);
+          const active = item.label === activeLabel;
+          const Icon = item.icon;
+          return (
+            <button
+              key={item.label}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              aria-disabled={locked || undefined}
+              onClick={(e) => e.preventDefault()}
+              className={`-mb-px flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 py-3 text-body transition-colors ${
+                active
+                  ? "border-brand font-semibold text-brand"
+                  : locked
+                    ? "cursor-not-allowed border-transparent text-muted/50"
+                    : "border-transparent text-muted hover:text-text"
+              }`}
+            >
+              <Icon size={16} strokeWidth={2} className="shrink-0" aria-hidden />
+              {item.label}
+              {locked && <Lock size={12} strokeWidth={2.25} className="shrink-0" aria-hidden />}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function Sidebar({
   role,
   activeLabel,
@@ -181,6 +392,11 @@ export function Sidebar({
   /** User Story I2: pass more than one to show the role switcher. */
   heldRoles?: RoleKey[];
 }) {
+  const variant = React.useContext(NavVariantContext);
+  if (variant === "flat") {
+    return <FlatSidebar role={role} activeLabel={activeLabel} heldRoles={heldRoles} />;
+  }
+
   /*
     The role's own nav array is the permission source. This turns it into two
     lookups so the shared menu below can be rendered once and locked per role,
@@ -512,11 +728,19 @@ export function AppFrame({
   overlay?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  const navVariant = React.useContext(NavVariantContext);
   return (
     <div className="relative flex h-full min-h-0 overflow-hidden rounded-card border border-border bg-bg">
       <Sidebar role={role} activeLabel={activeLabel} heldRoles={heldRoles} />
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar title={title} sub={sub} offline={offline} />
+        {/*
+          Only the flat variant has a tab row, because only the flat variant
+          took the destinations out of the sidebar. In the tree variant they
+          are still nested in the rail and a second copy here would be the
+          same list twice.
+        */}
+        {navVariant === "flat" && <SectionTabs role={role} activeLabel={activeLabel} />}
         <div className="min-h-0 flex-1 overflow-y-auto p-8">{children}</div>
       </div>
       {overlay && (

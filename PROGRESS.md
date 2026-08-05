@@ -1385,3 +1385,73 @@ charset-less local server and read the live DOM. 18 sections, 11 artworks,
 - Not deployed to any public URL. `CURRENT.md` records that pushing this
   project anywhere is KingFizzy's call, and an artifact is private to his
   account, so it adds no exposure beyond this conversation.
+
+---
+
+## 2026-08-04 (nineteenth entry) : claude-opus-5
+
+**Phase:** presentation layer, navigation restructure (5180 only)
+
+**Why:** a teammate's point, which KingFizzy agreed with, that a nested sidebar
+is heavy for a lecturer or TA who is not especially technical. The flat shape
+answers it by never asking anyone to open anything to find their work.
+
+**Built:** a second navigation variant, selected by context, so the same
+components render either shape.
+
+- `NavVariantContext` in `shell.tsx`, **defaulting to "tree"**. A context with
+  no provider must leave existing screens exactly as they were, and 5179 has no
+  provider, so it is untouched. Verified, not assumed: see below.
+- `FlatSidebar` - nine rows, one per category, nothing nested. Institution
+  selector in the slot the reference gives its workspace switcher. Active row
+  marked twice, a tinted fill plus a 3px bar pinned to the sidebar's outer edge
+  via `-left-3` against the list's `px-3`. The bar is the load-bearing signal:
+  a fill alone is easy to lose on a dark panel, and the bar reads from the
+  furthest-left pixel, which is where the eye lands scanning a left rail.
+- `SectionTabs` - holds exactly what the sidebar gave up. Renders under the top
+  bar, only when the active destination's category has more than one child, so
+  a standalone destination such as Dashboard gets no empty strip.
+- `prototype-flow/src/flow.tsx` wraps every app-shell screen in `<Flat>`.
+
+**COLOURS: pattern copied, palette not.** The reference is a light rail with a
+dark indicator. Inverted onto `brand-dark` the same relationship is a white
+indicator over a white-tinted fill, and the tab row uses `border-brand` and
+`text-brand` on white. Not one value was taken from the reference image, per
+KingFizzy's explicit instruction.
+
+**Two judgement calls, both flagged rather than quiet:**
+
+1. **Four section screens were added to 5180.** Every dashboard is a standalone
+   destination with no siblings, so on the dashboards alone the tab row
+   correctly renders nothing and the restructure could not be reviewed at all.
+   The four are existing scaffold screens (`ScanBatchUpload`, `IntegrityReport`,
+   `MarkingAssignment`, `StudentDataUpload`), imported live like everything
+   else, no copies, chosen because each sits in a category with several
+   destinations. 18 screens to 22. Say the word and they come out.
+2. **`session-expiry` was wrapped too**, despite being an auth-group screen. It
+   is the only other screen in this build that renders the app shell, so left
+   alone it would have been the single nested sidebar in a prototype where
+   every other shell is flat, and would read as a bug rather than as scope.
+
+**Verified (and how):** read from the live DOM, per screen.
+- 5180: 22 sections, 4 tab rows with the right group labels (Scripts, Scripts,
+  Marking, Exam setup), **0 expandable tree parents left**.
+- TA dashboard: 9 flat rows, active row "Dashboard" carrying `aria-current`,
+  7 locked, **0 tab rows**, which is correct for a standalone destination.
+- Scripts section: tab row reads Scan batches / Exception queue / Identity
+  registry, active tab underlined in `brand`.
+- **5179 unchanged:** still reports `tree`, still has its expandable parents,
+  **0 tab rows, 0 left indicators**, "Working as" block still present.
+- `npx tsc --noEmit` exit 0, `npx tsc -b` exit 0, `npx vite build` exit 0 both
+  apps. Artifact regenerated at 398KB, still pure ASCII.
+
+**Not done / blocked:**
+- Tabs and flat rows are not clickable navigation. Nothing in this scaffold
+  routes, and the tab row is presentational like every other control here.
+- The institution selector does not open. Markelo has one institution per
+  deployment; it occupies the reference's workspace-switcher slot because that
+  is where a user looks to confirm whose data they are about to change.
+- The tree variant is still the default and still what 5179 shows. If the flat
+  shape is adopted for real, the tree branch and its collapse state should be
+  deleted rather than left as a second thing to maintain. **That is a decision,
+  and it is Alex's or KingFizzy's, not mine.**

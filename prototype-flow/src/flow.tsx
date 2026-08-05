@@ -16,12 +16,26 @@
 import React from "react";
 import * as A from "../../webapp-scaffold/src/screens/auth";
 import * as D from "../../webapp-scaffold/src/screens/dashboards";
+import * as SC from "../../webapp-scaffold/src/screens/scanning";
+import * as W from "../../webapp-scaffold/src/screens/workload";
+import * as SD from "../../webapp-scaffold/src/screens/studentdata";
+import { NavVariantProvider } from "../../webapp-scaffold/src/ui/shell";
+
+/*
+  Every screen with an app shell is wrapped so its sidebar renders flat and
+  its category's destinations move into a tab row. The wrapper lives here, in
+  the prototype, and not in the scaffold: the restructure is being trialled on
+  5180 only, so 5179 must keep the nested tree it already has.
+*/
+const Flat = ({ children }: { children: React.ReactNode }) => (
+  <NavVariantProvider value="flat">{children}</NavVariantProvider>
+);
 
 export type FlowAction = { match: string; to: string };
 export type FlowScreen = {
   id: string;
   label: string;
-  group: "auth" | "dashboard";
+  group: "auth" | "dashboard" | "section";
   el: React.ReactNode;
   actions?: FlowAction[];
   /** Loading/transient screens: any click advances. */
@@ -116,7 +130,17 @@ export const FLOW: FlowScreen[] = [
     id: "session-expiry",
     label: "Session Expiring",
     group: "auth",
-    el: <A.SessionExpiryWarning />,
+    /*
+      Wrapped despite being an auth-group screen. It is the only other
+      screen in this build that renders the app shell, so left alone it
+      would be the single nested sidebar in a prototype where every other
+      shell is flat, and would read as a bug rather than as scope.
+    */
+    el: (
+      <Flat>
+        <A.SessionExpiryWarning />
+      </Flat>
+    ),
     actions: [{ match: "Sign me out now", to: SIGNIN_ID }],
   },
   {
@@ -133,37 +157,110 @@ export const FLOW: FlowScreen[] = [
     id: "dash-officer",
     label: "Exam Officer Dashboard",
     group: "dashboard",
-    el: <D.DashOfficer />,
+    el: (
+      <Flat>
+        <D.DashOfficer />
+      </Flat>
+    ),
   },
   {
     id: "dash-lecturer",
     label: "Lecturer Dashboard",
     group: "dashboard",
-    el: <D.DashLecturer />,
+    el: (
+      <Flat>
+        <D.DashLecturer />
+      </Flat>
+    ),
   },
   {
     id: "dash-ta",
     label: "Teaching Assistant Dashboard",
     group: "dashboard",
-    el: <D.DashTa />,
+    el: (
+      <Flat>
+        <D.DashTa />
+      </Flat>
+    ),
   },
   {
     id: "dash-moderator",
     label: "Moderator Dashboard",
     group: "dashboard",
-    el: <D.DashModerator />,
+    el: (
+      <Flat>
+        <D.DashModerator />
+      </Flat>
+    ),
   },
   {
     id: "dash-admin",
     label: "Institution Admin Dashboard",
     group: "dashboard",
-    el: <D.DashAdmin />,
+    el: (
+      <Flat>
+        <D.DashAdmin />
+      </Flat>
+    ),
   },
   {
     id: "dash-management",
     label: "Senior Management Dashboard",
     group: "dashboard",
-    el: <D.DashManagement />,
+    el: (
+      <Flat>
+        <D.DashManagement />
+      </Flat>
+    ),
+  },
+  /* ---------------------------------------------------------- Sections */
+  /*
+    Added so the secondary tab row is actually visible. The flat sidebar moves
+    a category's destinations into tabs, and every dashboard is a standalone
+    destination with no siblings, so on dashboards alone the tab row correctly
+    renders nothing and the change cannot be reviewed. These four are existing
+    scaffold screens, imported live like everything else, chosen because each
+    sits inside a category with more than one destination.
+  */
+  {
+    id: "sec-scripts",
+    label: "Scripts, Scan Batches",
+    group: "section",
+    el: (
+      <Flat>
+        <SC.ScanBatchUpload />
+      </Flat>
+    ),
+  },
+  {
+    id: "sec-scripts-exceptions",
+    label: "Scripts, Exception Queue",
+    group: "section",
+    el: (
+      <Flat>
+        <SC.IntegrityReport />
+      </Flat>
+    ),
+  },
+  {
+    id: "sec-marking",
+    label: "Marking, Assignment",
+    group: "section",
+    el: (
+      <Flat>
+        <W.MarkingAssignment />
+      </Flat>
+    ),
+  },
+  {
+    id: "sec-exam-setup",
+    label: "Exam Setup, Student Data",
+    group: "section",
+    el: (
+      <Flat>
+        <SD.StudentDataUpload />
+      </Flat>
+    ),
   },
 ];
 
