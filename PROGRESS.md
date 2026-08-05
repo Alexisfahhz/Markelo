@@ -1455,3 +1455,59 @@ KingFizzy's explicit instruction.
   shape is adopted for real, the tree branch and its collapse state should be
   deleted rather than left as a second thing to maintain. **That is a decision,
   and it is Alex's or KingFizzy's, not mine.**
+
+---
+
+## 2026-08-04 (twentieth entry) : claude-opus-5
+
+**Phase:** presentation layer, access indicators
+
+**Requested:** lock indicators on tab menus the role cannot reach, and the
+padlock swapped for `lucide/user-lock`.
+
+**The tab locks already existed** and were shipped in the nineteenth entry. The
+tab row KingFizzy was looking at is Scripts as Exam Officer, which grants all
+three destinations, so no lock had anything to mark. Verified by reading every
+tab row in the build: 4 of the 5 carry locked tabs (Exam setup / Booklet
+profile; Marking / Flagged for review; Marking as TA / My courses + Marking
+assignment; Scripts / none). Nothing was added for this, and saying otherwise
+would have claimed work that did not happen.
+
+**Actually changed:**
+
+- **`Lock` to `UserLock` in all four places**, sidebar tree child, tree
+  collapsed parent, flat row, and tab. Size raised 12 to 14: `user-lock` draws a
+  figure and a padlock where `lock` drew a padlock alone, and at 12px the extra
+  detail closed up into a smudge.
+- **Both locked states failed contrast and were fixed.** Measured on the
+  rendered pixels: sidebar locked was **2.21:1**, tab locked **2.12:1**. The
+  entire argument for showing locked destinations is that a user can read what
+  exists and see it is not theirs, so an unreadable locked state fails on its
+  own terms whether or not WCAG 1.4.3 exempts inactive components. Now sidebar
+  locked **4.50:1**, tab locked **4.61:1**, and the available sidebar rows were
+  lifted 5.58 to **6.77:1** so "dimmed" still reads as clearly dimmer.
+  The `user-lock` glyph is now the primary signal and dimness the secondary one,
+  which is the right way round and is what was asked for.
+
+**A measurement error I made and corrected mid-task.** My first contrast
+readings were parsed from `getComputedStyle().color`, which this browser returns
+as `oklab(...)`. Reading those three components as if they were RGB produced
+nonsense: it reported the sidebar's normal text at 1.76:1, which is visibly
+false, and a locked tab at 3.95:1. Redone by compositing each colour onto its
+real background in a 1x1 canvas and reading the pixel back, which resolves any
+colour space. **Every ratio in this entry comes from the canvas method.** The
+lesson is that a plausible-looking number is not a measured one.
+
+**Verified:** contrast as above; `UserLock` present at 4 sites, 0 stray `Lock`,
+0 icons left at size 12; 4 locked tabs and 61 locked sidebar rows across the
+build; `npx tsc --noEmit` exit 0, `npx tsc -b` exit 0, `npx vite build` exit 0
+both apps; artifact regenerated at 399KB and republished to the same URL.
+
+**Not done / blocked:**
+- The two locked states sit at 4.50 and 4.61, just over the 4.5 line. They pass,
+  but there is no headroom, so any future darkening of `--color-brand-dark` or
+  lightening of `--color-muted` will break them. Worth a Figma variable rather
+  than an opacity if the pattern is kept.
+- 5179 still shows the tree variant and is unaffected by the flat work, but it
+  **did** receive the `UserLock` swap and the contrast fixes, because those live
+  in the shared components and are correct in both shapes.

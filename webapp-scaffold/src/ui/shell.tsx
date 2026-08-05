@@ -12,7 +12,7 @@ import {
   CloudCheck,
   ChevronsUpDown,
   Check,
-  Lock,
+  UserLock,
   BookOpenCheck,
   EyeOff,
   PlugZap,
@@ -296,15 +296,15 @@ function FlatSidebar({
                   active
                     ? "bg-white/12 font-semibold text-white"
                     : locked
-                      ? "cursor-not-allowed text-on-dark/30"
-                      : "text-on-dark/70 hover:bg-white/8 hover:text-on-dark"
+                      ? "cursor-not-allowed text-on-dark/60"
+                      : "text-on-dark/80 hover:bg-white/8 hover:text-on-dark"
                 }`}
               >
                 <Icon size={17} strokeWidth={2} className="shrink-0" aria-hidden />
                 <span className="min-w-0 flex-1 truncate">{label}</span>
                 {locked && (
-                  <Lock
-                    size={12}
+                  <UserLock
+                    size={14}
                     strokeWidth={2.25}
                     className="shrink-0"
                     aria-label="You do not have access to this"
@@ -367,13 +367,13 @@ export function SectionTabs({ role, activeLabel }: { role: Role; activeLabel: st
                 active
                   ? "border-brand font-semibold text-brand"
                   : locked
-                    ? "cursor-not-allowed border-transparent text-muted/50"
+                    ? "cursor-not-allowed border-transparent text-muted/90"
                     : "border-transparent text-muted hover:text-text"
               }`}
             >
               <Icon size={16} strokeWidth={2} className="shrink-0" aria-hidden />
               {item.label}
-              {locked && <Lock size={12} strokeWidth={2.25} className="shrink-0" aria-hidden />}
+              {locked && <UserLock size={14} strokeWidth={2.25} className="shrink-0" aria-hidden />}
             </button>
           );
         })}
@@ -528,14 +528,14 @@ export function Sidebar({
           if (reachable === 0) {
             return (
               <div key={group.label} className="mt-3">
-                <div className="flex cursor-not-allowed items-center gap-3 px-3 py-2 text-body text-on-dark/30">
+                <div className="flex cursor-not-allowed items-center gap-3 px-3 py-2 text-body text-on-dark/60">
                   {ParentIcon && (
                     <ParentIcon size={17} strokeWidth={2} className="shrink-0" aria-hidden />
                   )}
                   <span className="min-w-0 flex-1 truncate">{group.label}</span>
                   <span className="text-caption tabular-nums">{group.items.length}</span>
-                  <Lock
-                    size={12}
+                  <UserLock
+                    size={14}
                     strokeWidth={2.25}
                     className="shrink-0"
                     aria-label={`${group.label}: ${group.items.length} areas you do not have access to`}
@@ -630,14 +630,14 @@ export function Sidebar({
                           active
                             ? "bg-brand font-semibold text-white"
                             : locked
-                              ? "cursor-not-allowed text-on-dark/30"
-                              : "text-on-dark/70 hover:bg-white/10 hover:text-on-dark"
+                              ? "cursor-not-allowed text-on-dark/60"
+                              : "text-on-dark/80 hover:bg-white/10 hover:text-on-dark"
                         }`}
                       >
                         <span className="min-w-0 flex-1 truncate">{item.label}</span>
                         {locked ? (
-                          <Lock
-                            size={12}
+                          <UserLock
+                            size={14}
                             strokeWidth={2.25}
                             className="shrink-0"
                             aria-label="You do not have access to this"
