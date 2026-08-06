@@ -109,12 +109,12 @@ function InstitutionSetupDefault() {
         <Card>
           <div className="flex items-start gap-6">
             <div className="flex shrink-0 flex-col items-center gap-2">
-              <Tooltip content={hasLogo ? "Change institution logo" : "Upload institution logo"}>
+              <Tooltip content={hasLogo ? "Change institution logo" : "Upload institution logo or image"}>
                 <button
                   type="button"
                   onClick={() => setHasLogo((v) => !v)}
                   className="shrink-0 transition-transform hover:scale-105 focus:outline-none"
-                  aria-label={hasLogo ? "Change institution logo" : "Upload institution logo"}
+                  aria-label={hasLogo ? "Change institution logo" : "Upload institution logo or image"}
                 >
                   <InstitutionBadge hasLogo={hasLogo} initials="YCT" />
                 </button>
