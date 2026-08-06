@@ -333,7 +333,7 @@ body {
   background: #ffffff;
   border: 0.75px solid var(--color-border);
   border-radius: var(--radius-badge);
-  padding: 4px 27px 4px 8px;
+  padding: 4px 22px 4px 8px;
   field-sizing: content;
   height: 24px;
   font-family: var(--font-sans);
@@ -352,7 +352,7 @@ body {
 
 .pagination-select-icon {
   position: absolute;
-  right: 6px;
+  right: 4px;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
