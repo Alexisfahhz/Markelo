@@ -26,6 +26,7 @@ import {
   MailCheck,
   Layers,
   ChevronDown,
+  Building2,
 } from "lucide-react";
 import {
   ArtShield,
@@ -246,26 +247,20 @@ function FlatSidebar({
 
   return (
     <nav className="flex w-[236px] shrink-0 flex-col bg-brand-dark">
-      {/*
-        The institution selector, in the slot the reference gives its workspace
-        switcher. Markelo has exactly one institution per deployment, so the
-        control does not open anything yet; it is here because it is where a
-        user looks to confirm whose data they are about to change, and PRD §6
-        makes that a question worth answering before any of the rest.
-      */}
-      <div className="px-3 pb-2 pt-5">
+      {/* Institution selector pill — Figma: #4A76C4 fill, 8px radius */}
+      <div className="px-3 pb-1 pt-5">
         <button
           type="button"
           onClick={(e) => e.preventDefault()}
-          className="flex w-full items-center gap-2.5 rounded-control border border-white/15 px-2.5 py-2 text-left transition-colors hover:bg-white/10"
+          className="flex w-full items-center gap-2.5 rounded-control bg-[#4A76C4] px-3 py-2 text-left transition-colors hover:brightness-110"
         >
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-badge bg-white/10">
-            <MarkeloMark className="h-4 w-auto text-on-dark" />
+          <span className="grid h-6 w-6 shrink-0 place-items-center rounded-[4px] bg-white/20">
+            <Building2 size={14} strokeWidth={1.33} className="text-white" aria-hidden />
           </span>
-          <span className="min-w-0 flex-1 truncate text-body font-medium text-on-dark">
+          <span className="min-w-0 flex-1 truncate text-body font-medium text-white">
             {INSTITUTION}
           </span>
-          <ChevronsUpDown size={14} strokeWidth={2} className="shrink-0 text-on-dark/50" aria-hidden />
+          <ChevronsUpDown size={14} strokeWidth={1.33} className="shrink-0 text-white/70" aria-hidden />
         </button>
       </div>
 
@@ -284,7 +279,7 @@ function FlatSidebar({
               {active && (
                 <span
                   aria-hidden
-                  className="absolute -left-3 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-pill bg-white"
+                  className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-pill bg-white"
                 />
               )}
               <a
@@ -294,18 +289,18 @@ function FlatSidebar({
                 aria-disabled={locked || undefined}
                 className={`flex items-center gap-3 rounded-control px-3 py-2.5 text-body transition-colors ${
                   active
-                    ? "bg-white/12 font-semibold text-white"
+                    ? "bg-[#4A76C4] font-semibold text-white"
                     : locked
-                      ? "cursor-not-allowed text-on-dark/60"
-                      : "text-on-dark/80 hover:bg-white/8 hover:text-on-dark"
+                      ? "cursor-not-allowed opacity-50"
+                      : "text-white/80 hover:bg-white/8"
                 }`}
               >
-                <Icon size={17} strokeWidth={2} className="shrink-0" aria-hidden />
+                <Icon size={17} strokeWidth={1.33} className="shrink-0 text-[#8FB4E0]" aria-hidden />
                 <span className="min-w-0 flex-1 truncate">{label}</span>
                 {locked && (
                   <UserLock
                     size={14}
-                    strokeWidth={2.25}
+                    strokeWidth={2}
                     className="shrink-0"
                     aria-label="You do not have access to this"
                   />
@@ -321,9 +316,9 @@ function FlatSidebar({
           <RoleSwitcher current={role.key} held={heldRoles} />
         )}
         <div className="px-2">
-          <p className="uppercase-label !text-on-dark/60">Signed in as</p>
-          <p className="text-body font-medium text-on-dark">{role.person}</p>
-          <p className="text-caption text-on-dark/70">{role.title}</p>
+          <p className="text-label uppercase tracking-[0.1em] text-white/50">Signed in as</p>
+          <p className="text-body font-medium text-white/85">{role.person}</p>
+          <p className="text-caption text-white/60">{role.title}</p>
         </div>
       </div>
     </nav>
@@ -437,55 +432,39 @@ export function Sidebar({
       return next;
     });
 
+  /*
+    Figma-matched sidebar: institution pill at the top, parent-child tree
+    for the nav groups. Every value is from the Figma SVG (2026-08-06).
+
+    Pill: #4A76C4 fill, 8px radius, 12px horizontal padding.
+    Active nav item: #4A76C4 bg with a 4px white indicator bar at the left
+    edge. Icons: #8FB4E0, 1.33px stroke. Locked groups: opacity 0.5. Right-
+    side chevrons at x=240.7 (3.3px from the 236px sidebar's right edge).
+  */
   return (
     <nav className="flex w-[236px] shrink-0 flex-col bg-brand-dark">
-      <div className="flex flex-col gap-4 px-5 pb-4 pt-6">
-        <Logo onDark />
-        {/*
-          Identity block, one line, not three.
-
-          It carried the institution and the academic session too. Both are
-          already printed in the top bar of every screen this sidebar appears
-          on, so the sidebar was repeating them into its own narrowest column
-          and spending about 34px of vertical space to do it. What is left is
-          the only part that is not duplicated and the only part the menu needs:
-          on a multi-role account every padlock below is calculated against the
-          role named here, so the menu cannot be read correctly without it.
-        */}
-        <div className="flex flex-col gap-0.5 rounded-control bg-white/8 px-3 py-2">
-          <span className="text-label uppercase tracking-[0.1em] text-on-dark/50">Working as</span>
-          <span className="truncate text-body font-medium text-on-dark">{role.title}</span>
-        </div>
+      {/* Institution selector pill — Figma: x=32, w=212, h=38, rx=8 */}
+      <div className="px-3 pb-1 pt-5">
+        <button
+          type="button"
+          onClick={(e) => e.preventDefault()}
+          className="flex w-full items-center gap-2.5 rounded-control bg-[#4A76C4] px-3 py-2 text-left transition-colors hover:brightness-110"
+        >
+          <span className="grid h-6 w-6 shrink-0 place-items-center rounded-[4px] bg-white/20">
+            <Building2 size={14} strokeWidth={1.33} className="text-white" aria-hidden />
+          </span>
+          <span className="min-w-0 flex-1 truncate text-body font-medium text-white">
+            {INSTITUTION}
+          </span>
+          <ChevronsUpDown size={14} strokeWidth={1.33} className="shrink-0 text-white/70" aria-hidden />
+        </button>
       </div>
 
-      {/*
-        The menu scrolls on its own. The shared menu is 25 destinations across
-        nine groups, which is taller than a 1024px frame once the logo, the
-        identity block and the footer have taken their share. Letting the whole
-        sidebar grow instead would push the role switcher and sign-out off the
-        bottom of the screen, where they are unreachable.
-      */}
-      {/*
-        A PARENT-CHILD TREE, not a flat list with headings.
-
-        The flat version was too dense, and the reason is countable rather than
-        a matter of taste: it drew 25 icons in a 236px column, one per row, so
-        every row competed with every other row for the same first glance. Here
-        only the nine parents carry an icon and the children are text on an
-        indent rail. Nine focal points instead of 25, and the indent does the
-        work the icons were failing to do, which is say what belongs to what.
-
-        Children are keyboard-reachable in source order under their parent, so
-        the visual nesting and the tab order agree.
-      */}
+      {/* Nav groups */}
       <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
         {NAV_GROUPS.map((group, gi) => {
           const reachable = group.items.filter((i) => granted.has(i.label)).length;
 
-          /*
-            A group with no children at all, currently only Dashboard, is its
-            own destination and renders as a parent with nothing under it.
-          */
           if (!group.label) {
             const only = group.items[0];
             const permitted = granted.get(only.label);
@@ -497,49 +476,38 @@ export function Sidebar({
                 href="#"
                 onClick={(e) => e.preventDefault()}
                 aria-disabled={!permitted || undefined}
-                className={`flex items-center gap-3 rounded-control px-3 py-2.5 text-body transition-colors ${
+                className={`relative flex items-center gap-3 rounded-control px-3 py-2.5 text-body transition-colors ${
                   active
-                    ? "bg-brand font-semibold text-white"
+                    ? "bg-[#4A76C4] font-semibold text-white"
                     : permitted
-                      ? "text-on-dark/80 hover:bg-white/10"
-                      : "cursor-not-allowed text-on-dark/35"
+                      ? "text-white/80 hover:bg-white/8"
+                      : "cursor-not-allowed opacity-50"
                 }`}
               >
-                <OnlyIcon size={17} strokeWidth={2} className="shrink-0" aria-hidden />
+                {active && (
+                  <span aria-hidden className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-pill bg-white" />
+                )}
+                <OnlyIcon size={17} strokeWidth={1.33} className="shrink-0 text-[#8FB4E0]" aria-hidden />
                 <span className="min-w-0 flex-1 truncate">{only.label}</span>
+                {!permitted && (
+                  <UserLock size={14} strokeWidth={2} className="shrink-0" aria-label="You do not have access to this" />
+                )}
               </a>
             );
           }
 
           const ParentIcon = group.icon;
 
-          /*
-            A parent with nothing in it for this role stays a parent and simply
-            never opens. It is dimmed, carries one lock and a count, and shows
-            no children.
-
-            Measured before this existed: a Teaching Assistant saw 25 rows of
-            which 21 were locked, with "My marking", the entire job, below seven
-            padlocks and under the fold. The most junior role got the worst
-            screen, which is the opposite of what a permission display is for.
-            Collapsing rather than hiding keeps what KingFizzy and his teammate
-            wanted: you can still see Moderation exists and is not yours.
-          */
           if (reachable === 0) {
             return (
-              <div key={group.label} className="mt-3">
-                <div className="flex cursor-not-allowed items-center gap-3 px-3 py-2 text-body text-on-dark/60">
+              <div key={group.label} className="mt-1">
+                <div className="flex cursor-not-allowed items-center gap-3 rounded-control px-3 py-2.5 text-body opacity-50">
                   {ParentIcon && (
-                    <ParentIcon size={17} strokeWidth={2} className="shrink-0" aria-hidden />
+                    <ParentIcon size={17} strokeWidth={1.33} className="shrink-0 text-[#8FB4E0]" aria-hidden />
                   )}
-                  <span className="min-w-0 flex-1 truncate">{group.label}</span>
-                  <span className="text-caption tabular-nums">{group.items.length}</span>
-                  <UserLock
-                    size={14}
-                    strokeWidth={2.25}
-                    className="shrink-0"
-                    aria-label={`${group.label}: ${group.items.length} areas you do not have access to`}
-                  />
+                  <span className="min-w-0 flex-1 truncate text-white/80">{group.label}</span>
+                  <span className="text-caption tabular-nums text-white/50">{group.items.length}</span>
+                  <UserLock size={14} strokeWidth={2} className="shrink-0" aria-label={`${group.label}: ${group.items.length} areas you do not have access to`} />
                 </div>
               </div>
             );
@@ -547,67 +515,38 @@ export function Sidebar({
 
           const isOpen = !closed.has(group.label);
           const panelId = `${uid}-${group.label.replace(/\W+/g, "-").toLowerCase()}`;
-          /*
-            A closed parent still says how many children it is hiding, using
-            the same count-plus-glyph shape a fully-locked parent uses. Without
-            it, closing a group makes its contents vanish with no trace, and
-            the user has to remember what was there.
-          */
           const hiddenCount = group.items.length;
 
           return (
-            <div key={group.label} className="mt-5">
-              {/*
-                A real <button>, not a div with a click handler. It is a control
-                that changes what is on screen, so it has to be reachable by
-                keyboard and announce its state, which `aria-expanded` does and
-                a styled div cannot.
-              */}
+            <div key={group.label} className="mt-1">
               <button
                 type="button"
                 onClick={() => toggle(group.label!)}
                 aria-expanded={isOpen}
                 aria-controls={panelId}
-                className="flex w-full items-center gap-3 rounded-control px-3 py-2 text-left text-body font-medium text-on-dark transition-colors hover:bg-white/10"
+                className="flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-left text-body font-medium text-white/85 transition-colors hover:bg-white/8"
               >
                 {ParentIcon && (
-                  <ParentIcon size={17} strokeWidth={2} className="shrink-0" aria-hidden />
+                  <ParentIcon size={17} strokeWidth={1.33} className="shrink-0 text-[#8FB4E0]" aria-hidden />
                 )}
                 <span className="min-w-0 flex-1 truncate">{group.label}</span>
                 {!isOpen && (
-                  <span className="text-caption tabular-nums text-on-dark/45">{hiddenCount}</span>
+                  <span className="text-caption tabular-nums text-white/45">{hiddenCount}</span>
                 )}
-                {/*
-                  Only the chevron animates, and only its rotation.
-                  IMPLEMENTATION_PLAN.md section 3 prohibits animating anything
-                  but opacity and transform, because animating height forces a
-                  layout recalculation every frame and that is visible jank on a
-                  modest institution PC. So the rows appear and disappear
-                  instantly and the chevron carries the sense of movement. This
-                  is the one place the project rule overrides the usual
-                  grid-template-rows 0fr-to-1fr reveal.
-                */}
                 <ChevronDown
                   size={14}
-                  strokeWidth={2.25}
+                  strokeWidth={1.67}
                   aria-hidden
-                  className={`shrink-0 opacity-40 transition-transform duration-200 ${
+                  className={`shrink-0 text-white/40 transition-transform duration-200 ${
                     isOpen ? "" : "-rotate-90"
                   }`}
                 />
               </button>
 
-              {/*
-                The rail is a left border on the list, not a line drawn per row,
-                so it is continuous by construction and cannot develop gaps when
-                a row's height changes. It starts at 28px, which lines the
-                children's text up under the parent's text rather than under
-                the parent's icon.
-              */}
               <ul
                 id={panelId}
                 hidden={!isOpen}
-                className="ml-[27px] flex flex-col gap-0.5 border-l border-white/12 pl-2.5 pt-1"
+                className="ml-7 flex flex-col gap-0.5 border-l border-white/10 pl-2.5 pt-1"
               >
                 {group.items.map((item) => {
                   const permitted = granted.get(item.label);
@@ -619,29 +558,17 @@ export function Sidebar({
                         href="#"
                         onClick={(e) => e.preventDefault()}
                         aria-disabled={locked || undefined}
-                        /*
-                          A locked child is dimmed and gets no hover state, so
-                          it never behaves like something that would respond. It
-                          keeps its full label: greying it into unreadability
-                          would defeat the point, which is that you can see what
-                          exists and that it is not yours.
-                        */
                         className={`flex items-center gap-2 rounded-control px-2.5 py-1.5 text-body transition-colors ${
                           active
-                            ? "bg-brand font-semibold text-white"
+                            ? "bg-[#4A76C4] font-semibold text-white"
                             : locked
-                              ? "cursor-not-allowed text-on-dark/60"
-                              : "text-on-dark/80 hover:bg-white/10 hover:text-on-dark"
+                              ? "cursor-not-allowed opacity-50"
+                              : "text-white/80 hover:bg-white/8"
                         }`}
                       >
                         <span className="min-w-0 flex-1 truncate">{item.label}</span>
                         {locked ? (
-                          <UserLock
-                            size={14}
-                            strokeWidth={2.25}
-                            className="shrink-0"
-                            aria-label="You do not have access to this"
-                          />
+                          <UserLock size={14} strokeWidth={2} className="shrink-0" aria-label="You do not have access to this" />
                         ) : (
                           permitted?.badge && (
                             <span className="shrink-0 rounded-pill bg-white/20 px-2 py-0.5 text-caption tabular-nums text-white">
@@ -659,19 +586,13 @@ export function Sidebar({
         })}
       </div>
 
-      {/*
-        The role title used to be repeated here under the person's name. It
-        moved to the identity block at the top, where it has a job to do: it
-        tells you which role the padlocks below are calculated against. Saying
-        it twice in one 236px column made it read as decoration in both places.
-      */}
       <div className="mt-auto flex flex-col gap-3 border-t border-white/10 px-3 pb-6 pt-4">
         {heldRoles && heldRoles.length > 1 && (
           <RoleSwitcher current={role.key} held={heldRoles} />
         )}
         <div className="px-2">
-          <p className="uppercase-label !text-on-dark/60">Signed in as</p>
-          <p className="text-body font-medium text-on-dark">{role.person}</p>
+          <p className="text-label uppercase tracking-[0.1em] text-white/50">Signed in as</p>
+          <p className="text-body font-medium text-white/85">{role.person}</p>
         </div>
       </div>
     </nav>
