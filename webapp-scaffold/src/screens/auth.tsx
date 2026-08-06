@@ -74,7 +74,21 @@ export function SignIn() {
         <Button size="xl" full type="submit" disabled={loading} icon={loading ? undefined : LogIn}>
           {loading ? (
             <span className="inline-flex items-center gap-2">
-              <span className="inline-block h-4 w-4 animate-spin rounded-full border-[1.5px] border-white/30 border-t-white" aria-hidden />
+              <svg className="h-4 w-4 animate-spin" viewBox="0 0 16 16" fill="none" aria-hidden>
+                {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((angle, i) => (
+                  <rect
+                    key={angle}
+                    x="7"
+                    y="1"
+                    width="2"
+                    height="4.5"
+                    rx="1"
+                    fill="white"
+                    opacity={1 - i * 0.08}
+                    transform={`rotate(${angle} 8 8)`}
+                  />
+                ))}
+              </svg>
               Signing in…
             </span>
           ) : (
