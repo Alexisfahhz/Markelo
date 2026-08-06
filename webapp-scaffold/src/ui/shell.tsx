@@ -49,24 +49,23 @@ import { MarkeloMark } from "./logo";
   context rather than a prop, so no screen has to pass it down through AppFrame.
 
   "tree"  The nine categories are expandable parents with their destinations
-          nested underneath. This is the default and is what the review
-          scaffold on 5179 shows. Nothing about it changed.
+          nested underneath. The original shape. Nothing renders it now.
 
   "flat"  The nine categories are the whole sidebar, one flat row each, and a
           category's destinations move out of the sidebar into a secondary tab
-          row inside the page. Opted into by the prototype build on 5180.
+          row inside the page.
 
-  Why the split exists rather than one replacing the other: a teammate's point
-  was that a nested sidebar is heavy for a lecturer or TA who is not
-  particularly technical, and the flat shape answers that by never asking them
-  to open anything to find their work. It is a real IA change, so it is being
-  trialled on the prototype before the review scaffold follows.
+  The split existed so the flat shape could be trialled on the 5180 prototype
+  without disturbing the 5179 review scaffold. That trial is over: flat is the
+  navigation, both builds render it, and the default below is what makes 5179
+  pick it up without needing a provider anywhere.
 
-  Defaulting to "tree" is deliberate: a context with no provider must leave
-  existing screens exactly as they were.
+  "tree" is kept rather than deleted because deleting it is a one-way door and
+  nobody has called the shape settled. It is unreferenced: no provider passes
+  it, so that branch is reachable only by changing this one line back.
 */
 export type NavVariant = "tree" | "flat";
-const NavVariantContext = React.createContext<NavVariant>("tree");
+const NavVariantContext = React.createContext<NavVariant>("flat");
 
 export function NavVariantProvider({
   value,

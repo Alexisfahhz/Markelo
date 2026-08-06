@@ -201,7 +201,7 @@ export function Card({
 }) {
   return (
     <section
-      className={`flat rounded-card border border-border bg-white ${pad ? "p-6" : ""} ${className}`}
+      className={`flat overflow-hidden rounded-card border border-border bg-white ${pad ? "p-6" : ""} ${className}`}
     >
       {children}
     </section>
@@ -530,16 +530,16 @@ function Th({ head }: { head: TableHead }) {
   );
 }
 
-export function Table({ head, children }: { head: TableHead[]; children: React.ReactNode }) {
+export function Table({ head, children, className = "" }: { head: TableHead[]; children: React.ReactNode; className?: string }) {
   return (
-    <div className="overflow-x-auto rounded-card border border-border bg-white">
+    <div className={`overflow-x-auto border-t border-border bg-white ${className}`}>
       <table className="w-full min-w-[560px] border-collapse text-body">
         <thead>
           <tr className="border-b border-border bg-bg">
             {head.map((h, i) => <Th key={typeof h === "string" ? h : h.label || i} head={h} />)}
           </tr>
         </thead>
-        <tbody>{children}</tbody>
+        <tbody className="[&>tr:last-child>td]:border-b-0">{children}</tbody>
       </table>
     </div>
   );
@@ -554,6 +554,182 @@ export function Row({ children, className = "" }: { children: React.ReactNode; c
   return (
     <div className={`flex items-center gap-4 border-b border-border px-4 py-3 last:border-0 ${className}`}>
       {children}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------- Pagination */
+
+/*
+  Table pagination footer. Matches the Figma "Table 1 Component" spec:
+
+    ┌──────────────────────────────────────────────────────────┐
+    │  Showing [4 ▾]  items per page     Previous 1 2 3 … 8 9 10 Next  │
+    └──────────────────────────────────────────────────────────┘
+
+  Layout: bg-bg (#F5F5F5), 16px horizontal padding, 16px vertical padding.
+  Left cell: "Showing" label + per-page dropdown (white, 0.75px border at
+  --color-border, --radius-badge) + "items per page" label. Right cell:
+  "Previous" / "Next" text buttons + numbered page buttons (24×24, same
+  radius). Active page is white with the same 0.75px border as the dropdown;
+  the rest are 60% opacity.
+
+  Ellipsis ("…") stands in for any run of pages the window skips. See
+  buildPageWindow for the shape and why it is fixed.
+
+  This is the only pagination in the product. A table that needs pages uses
+  this component; nothing hand-rolls a Previous/Next pair.
+
+  Drop this inside the same <Card pad={false}> as any <Table> to add pagination.
+  It self-rounds its bottom corners to match the card's 12px radius.
+
+  Usage:
+    const [page, setPage] = useState(1);
+    const perPage = 4;
+    <Table head={[…]}>
+      {visibleRows}
+    </Table>
+    <TablePagination
+      currentPage={page}
+      totalPages={10}
+      perPage={perPage}
+      perPageOptions={[4, 10, 25]}
+      onPageChange={setPage}
+      onPerPageChange={(n) => { setPerPage(n); setPage(1); }}
+    />
+*/
+
+/*
+  Build the visible page-number window with ellipses.
+
+  The shape is fixed: three pages at each end, the current page and its two
+  neighbours, and an ellipsis wherever a gap is skipped. On page 1 of 10 that
+  reads `1 2 3 … 8 9 10`, which is the agreed pattern for every table in the
+  product. It used to keep only page 1 and the last page as anchors, which
+  produced `1 2 … 10` and made two tables with different page counts look
+  like two different components.
+
+  Below eight pages there is no window to build: at seven, the two end
+  triples leave a single hidden page, and an ellipsis standing in for one
+  number is worse than the number. So seven or fewer renders every page.
+*/
+function buildPageWindow(current: number, total: number): (number | "…")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+  const pages: (number | "…")[] = [];
+  const near = new Set<number>();
+
+  /* Three at the head, three at the tail, current and its neighbours. */
+  for (let i = 1; i <= 3; i++) near.add(i);
+  for (let i = total - 2; i <= total; i++) near.add(i);
+  for (let i = current - 1; i <= current + 1; i++) {
+    if (i >= 1 && i <= total) near.add(i);
+  }
+
+  const sorted = [...near].sort((a, b) => (a as number) - (b as number));
+  for (let i = 0; i < sorted.length; i++) {
+    if (i > 0 && (sorted[i] as number) - (sorted[i - 1] as number) > 1) {
+      pages.push("…");
+    }
+    pages.push(sorted[i]);
+  }
+  return pages;
+}
+
+export function TablePagination({
+  currentPage,
+  totalPages,
+  perPage,
+  perPageOptions = [4, 10, 25],
+  onPageChange,
+  onPerPageChange,
+}: {
+  currentPage: number;
+  totalPages: number;
+  perPage: number;
+  perPageOptions?: number[];
+  onPageChange: (page: number) => void;
+  onPerPageChange?: (perPage: number) => void;
+}) {
+  const pages = buildPageWindow(currentPage, totalPages);
+
+  return (
+    <div className="flex items-center justify-between border-t border-border rounded-b-card bg-bg px-4 py-4">
+      {/* Left: items per page */}
+      <div className="flex items-center gap-2">
+        <span className="uppercase-label">Showing</span>
+        <span className="pagination-select-wrapper">
+          <select
+            value={perPage}
+            onChange={(e) => onPerPageChange?.(Number(e.target.value))}
+            aria-label="Items per page"
+            className="pagination-select"
+          >
+            {perPageOptions.map((n) => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+          <ChevronDown
+            size={14}
+            strokeWidth={2}
+            aria-hidden
+            className="pagination-select-icon"
+          />
+        </span>
+        <span className="uppercase-label">items per page</span>
+      </div>
+
+      {/* Right: page navigation */}
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+          disabled={currentPage <= 1}
+          className="uppercase-label pagination-nav-text"
+          aria-label="Previous page"
+        >
+          Previous
+        </button>
+
+        <div className="flex items-center gap-0.5">
+          {pages.map((p, i) =>
+            p === "…" ? (
+              <span
+                key={`ellipsis-${i}`}
+                className="pagination-page-btn pagination-page-inactive"
+                aria-hidden
+              >
+                …
+              </span>
+            ) : (
+              <button
+                key={p}
+                type="button"
+                onClick={() => onPageChange(p as number)}
+                aria-label={`Page ${p}`}
+                aria-current={p === currentPage ? "page" : undefined}
+                className={`pagination-page-btn ${
+                  p === currentPage
+                    ? "pagination-page-active"
+                    : "pagination-page-inactive"
+                }`}
+              >
+                {p}
+              </button>
+            )
+          )}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+          disabled={currentPage >= totalPages}
+          className="uppercase-label pagination-nav-text"
+          aria-label="Next page"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 }

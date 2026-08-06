@@ -344,6 +344,12 @@ export default function App() {
           </div>
         </div>
 
+        {/*
+          No NavVariantProvider here. The scaffold used to opt itself into the
+          flat sidebar with one, which meant the flat shape depended on every
+          host remembering to wrap. It is the scaffold default now, so a screen
+          rendered anywhere gets it, including inside the review harness.
+        */}
         <div className="min-h-0 flex-1 overflow-hidden p-6">{screen.el}</div>
       </main>
     </div>

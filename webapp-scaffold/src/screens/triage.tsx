@@ -36,7 +36,7 @@
 */
 import React from "react";
 import { AppFrame } from "../ui/shell";
-import { Button, Card, CardHeader, Badge, Notice, Field, Input, Select, EmptyState, Progress, ScriptId } from "../ui/kit";
+import { Button, Card, CardHeader, Badge, Notice, Field, Input, Select, EmptyState, Progress, ScriptId, Table, Td } from "../ui/kit";
 import { ROLES } from "../roles";
 import {
   ListChecks, TriangleAlert, FileWarning, CircleCheck, Copy, ScanLine,
@@ -457,64 +457,73 @@ function MarksTable({ rows }: { rows: QRow[] }) {
   const to = sum(rows, "original");
   const tm = sum(rows, "moderated");
   return (
-    <div className="overflow-x-auto rounded-card border border-border bg-white">
-      <table className="w-full border-collapse text-body">
-        <thead>
-          <tr className="border-b border-border bg-bg">
-            <th scope="col" className="px-4 py-3 text-left"><span className="uppercase-label">Question</span></th>
-            <th scope="col" className="px-4 py-3 text-right"><span className="uppercase-label">Max</span></th>
-            <th scope="col" className="px-4 py-3 text-right"><span className="uppercase-label">Original mark</span></th>
-            <th scope="col" className="px-4 py-3 text-right"><span className="uppercase-label">Your mark</span></th>
-            <th scope="col" className="px-4 py-3 text-right"><span className="uppercase-label">Difference</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => {
-            const d = r.moderated - r.original;
-            return (
-              <tr key={r.q}>
-                <td className="border-b border-border px-4 py-3 font-medium text-text">Question {r.q}</td>
-                <td className="border-b border-border px-4 py-3 text-right tabular-nums text-muted">{r.max}</td>
-                <td className="border-b border-border px-4 py-3 text-right tabular-nums text-text">{r.original}</td>
-                <td className="border-b border-border px-4 py-3 text-right">
-                  <input
-                    aria-label={`Your mark for question ${r.q}`}
-                    defaultValue={r.moderated}
-                    className={`h-10 w-16 rounded-control border bg-white px-3 text-right text-body tabular-nums text-text outline-none focus:border-brand ${
-                      d === 0 ? "border-border-control" : "border-brand"
-                    }`}
-                  />
-                </td>
-                <td className="border-b border-border px-4 py-3 text-right">
-                  {d === 0 ? (
-                    <span className="text-caption text-muted">No change</span>
-                  ) : (
-                    <Badge tone={d > 0 ? "success" : "error"}>
-                      {d > 0 ? `Up ${d}` : `Down ${Math.abs(d)}`}
-                    </Badge>
-                  )}
-                </td>
-              </tr>
-            );
-          })}
-          <tr className="bg-bg">
-            <td className="px-4 py-3 font-semibold text-text">Total</td>
-            <td className="px-4 py-3 text-right tabular-nums text-muted">70</td>
-            <td className="px-4 py-3 text-right tabular-nums font-semibold text-text">{to}</td>
-            <td className="px-4 py-3 text-right tabular-nums font-semibold text-text">{tm}</td>
-            <td className="px-4 py-3 text-right">
-              {tm === to ? (
-                <span className="text-caption text-muted">No change</span>
-              ) : (
-                <Badge tone={tm > to ? "success" : "error"}>
-                  {tm > to ? `Up ${tm - to}` : `Down ${to - tm}`}
-                </Badge>
-              )}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    /*
+      This was the one hand-rolled <table> left in the product: its own thead,
+      its own th and td classes, drifting a little from the shared component
+      every time either side was touched. It is the shared Table now, so a
+      change to header padding or row borders reaches this screen too.
+
+      No pagination, deliberately. Every other table is a list that can grow,
+      so a page footer belongs on it. This one is the question breakdown for a
+      single script: it is exactly as long as the paper, it ends in a Total
+      row, and paging it would hide half a mark sheet from the moderator
+      signing it off.
+    */
+    <Card pad={false}>
+      <Table
+        head={[
+          "Question",
+          { label: "Max", right: true },
+          { label: "Original mark", right: true },
+          { label: "Your mark", right: true },
+          { label: "Difference", right: true },
+        ]}
+      >
+        {rows.map((r) => {
+          const d = r.moderated - r.original;
+          return (
+            <tr key={r.q}>
+              <Td className="font-medium">Question {r.q}</Td>
+              <Td className="text-right tabular-nums text-muted">{r.max}</Td>
+              <Td className="text-right tabular-nums">{r.original}</Td>
+              <Td className="text-right">
+                <input
+                  aria-label={`Your mark for question ${r.q}`}
+                  defaultValue={r.moderated}
+                  className={`h-10 w-16 rounded-control border bg-white px-3 text-right text-body tabular-nums text-text outline-none focus:border-brand ${
+                    d === 0 ? "border-border-control" : "border-brand"
+                  }`}
+                />
+              </Td>
+              <Td className="text-right">
+                {d === 0 ? (
+                  <span className="text-caption text-muted">No change</span>
+                ) : (
+                  <Badge tone={d > 0 ? "success" : "error"}>
+                    {d > 0 ? `Up ${d}` : `Down ${Math.abs(d)}`}
+                  </Badge>
+                )}
+              </Td>
+            </tr>
+          );
+        })}
+        <tr className="bg-bg">
+          <Td className="font-semibold">Total</Td>
+          <Td className="text-right tabular-nums text-muted">70</Td>
+          <Td className="text-right tabular-nums font-semibold">{to}</Td>
+          <Td className="text-right tabular-nums font-semibold">{tm}</Td>
+          <Td className="text-right">
+            {tm === to ? (
+              <span className="text-caption text-muted">No change</span>
+            ) : (
+              <Badge tone={tm > to ? "success" : "error"}>
+                {tm > to ? `Up ${tm - to}` : `Down ${to - tm}`}
+              </Badge>
+            )}
+          </Td>
+        </tr>
+      </Table>
+    </Card>
   );
 }
 

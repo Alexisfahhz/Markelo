@@ -35,7 +35,7 @@ async function main() {
     )
   );
   const ids = Object.keys(tops);
-  console.log("screens:", ids.length, ids.length === 6 ? "PASS" : "FAIL");
+  console.log("screens:", ids.length, ids.length === 7 ? "PASS" : "FAIL");
   console.log("order:", ids.join(", "));
 
   const scrollY = () => page.evaluate(() => Math.round(window.scrollY));
@@ -116,9 +116,9 @@ async function main() {
   await settle();
   expect("nav-prev->institution-setup", await scrollY(), tops["institution-setup"]);
 
-  await go("scan-batch-upload");
+  await go("scan-batch-with-preview");
   await settle();
-  await sleep(500);
+  await sleep(1000);
   const nextDisabled = await page.evaluate(
     () => document.querySelector("nav.fixed button[aria-label^='Next']")?.hasAttribute("disabled")
   );

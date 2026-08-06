@@ -18,16 +18,14 @@ import React from "react";
 import * as AD from "../../webapp-scaffold/src/screens/admin";
 import * as ST from "../../webapp-scaffold/src/screens/settings";
 import * as SC from "../../webapp-scaffold/src/screens/scanning";
-import { NavVariantProvider } from "../../webapp-scaffold/src/ui/shell";
 
 /*
-  Every app-shell screen is wrapped so its sidebar renders flat and its
-  category's destinations move into a tab row. The wrapper lives here, in the
-  prototype, and not in the scaffold: 5179 must keep the nested tree.
+  There was a <Flat> wrapper here, opting every app-shell screen into the flat
+  sidebar while 5179 kept the nested tree. Flat is now the scaffold's default,
+  so both builds render it and the wrapper only implied a difference that no
+  longer exists. Removed rather than left in: two mechanisms for one behaviour
+  is how the next person ends up changing the wrong one.
 */
-const Flat = ({ children }: { children: React.ReactNode }) => (
-  <NavVariantProvider value="flat">{children}</NavVariantProvider>
-);
 
 export type FlowAction = { match: string; to: string };
 export type FlowScreen = {
@@ -46,41 +44,25 @@ export const FLOW: FlowScreen[] = [
     id: "institution-setup",
     label: "Institution Setup",
     group: "governance",
-    el: (
-      <Flat>
-        <AD.InstitutionSetup />
-      </Flat>
-    ),
+    el: <AD.InstitutionSetup />,
   },
   {
     id: "admin-settings",
     label: "Admin Settings",
     group: "governance",
-    el: (
-      <Flat>
-        <ST.AdminSettings />
-      </Flat>
-    ),
+    el: <ST.AdminSettings />,
   },
   {
     id: "audit-trail",
     label: "Audit Trail",
     group: "governance",
-    el: (
-      <Flat>
-        <AD.AuditTrail />
-      </Flat>
-    ),
+    el: <AD.AuditTrail />,
   },
   {
     id: "result-correction",
     label: "Result Correction",
     group: "governance",
-    el: (
-      <Flat>
-        <AD.ResultCorrection />
-      </Flat>
-    ),
+    el: <AD.ResultCorrection />,
     actions: [
       { match: "Correct", to: "result-correction-editing" },
     ],
@@ -89,11 +71,7 @@ export const FLOW: FlowScreen[] = [
     id: "result-correction-editing",
     label: "Result Correction, Editing",
     group: "governance",
-    el: (
-      <Flat>
-        <AD.ResultCorrectionEditing />
-      </Flat>
-    ),
+    el: <AD.ResultCorrectionEditing />,
     actions: [
       { match: "Save correction and re-lock", to: "result-correction" },
       { match: "Cancel, re-lock unchanged", to: "result-correction" },
@@ -103,11 +81,13 @@ export const FLOW: FlowScreen[] = [
     id: "scan-batch-upload",
     label: "Scan Batch Upload",
     group: "governance",
-    el: (
-      <Flat>
-        <SC.ScanBatchUpload />
-      </Flat>
-    ),
+    el: <SC.ScanBatchUpload />,
+  },
+  {
+    id: "scan-batch-with-preview",
+    label: "Scan Batch Upload, Booklet Preview",
+    group: "governance",
+    el: <SC.ScanBatchUploadWithPreview />,
   },
 ];
 

@@ -25,7 +25,7 @@
 */
 import React from "react";
 import { AppFrame } from "../ui/shell";
-import { Button, Card, CardHeader, Badge, Notice, Field, Select, EmptyState, Progress, ScriptId, Table, Td } from "../ui/kit";
+import { Button, Card, CardHeader, Badge, Notice, Field, Select, EmptyState, Progress, ScriptId, Table, Td, TablePagination } from "../ui/kit";
 import { ROLES } from "../roles";
 import {
   Upload, FileUp, ScanLine, X, RotateCcw, CircleCheck,
@@ -177,6 +177,172 @@ export function ScanBatchUpload() {
             </div>
 
             {/* Processing status info */}
+            <div className="rounded-lg bg-brand-light p-4">
+              <div className="flex items-start gap-3">
+                <CircleCheck size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-brand" aria-hidden />
+                <div>
+                  <p className="text-[12px] font-semibold leading-4 text-text">What happens next</p>
+                  <p className="mt-1 text-[12px] leading-[18px] text-muted">
+                    After processing, every script is matched against your student list. Matched scripts
+                    can be assigned for marking immediately, even while the rest of the batch is still
+                    being assembled.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </UploadShell>
+  );
+}
+
+export function ScanBatchUploadWithPreview() {
+  return (
+    <UploadShell>
+      <div className="flex gap-0">
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+          <Notice tone="brand" title="Scan in whatever order the booklets are in">
+            You do not need to sort the stack by name or matric number first. Markelo reads each cover
+            page and assembles every student's script for you.
+          </Notice>
+
+          <Card>
+            <CardHeader title="Which exam is this batch for?" sub="Pages are matched against this exam's student list" />
+            <Field label="Exam" required>
+              <Select defaultValue="csc401">
+                <option value="csc401">CSC 401 Compiler Construction, First Semester</option>
+                <option value="csc312">CSC 312 Operating Systems, First Semester</option>
+                <option value="mth201">MTH 201 Linear Algebra, First Semester</option>
+              </Select>
+            </Field>
+          </Card>
+
+          <Card>
+            <CardHeader
+              title="Scanned pages"
+              sub="A multi-page PDF, or a sequence of images"
+              action={
+                <span className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#EBF5ED] px-2 py-1">
+                  <CircleCheck size={14} strokeWidth={2} className="text-[#0E6C40]" aria-hidden />
+                  <span className="text-[12px] font-medium leading-4 tracking-[-0.01em] text-[#0E6C40]">Completed</span>
+                </span>
+              }
+            />
+            <div className="flex flex-col gap-4">
+              <div className="rounded-[12px] border-2 border-dashed border-[#1A56A0] bg-[#E8F1FB] px-6 py-10 text-center">
+                <span className="mx-auto mb-4 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#1A56A0]/10">
+                  <Upload size={26} strokeWidth={1.75} className="text-[#1A56A0]" aria-hidden />
+                </span>
+                <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Drop scanned files here</p>
+                <p className="mt-1 text-[12px] leading-[18px] text-muted">PDF or images. Add as many as your scanner produced.</p>
+                <Button className="mt-4" variant="secondary" icon={FileUp}>Choose files</Button>
+              </div>
+
+              <ul className="flex flex-col gap-2">
+                {STAGED.map((f) => (
+                  <li key={f.n} className="flex items-center gap-4 rounded-lg border border-border bg-white px-4 py-3">
+                    <div className="flex h-6 w-6 items-center justify-center rounded bg-bg">
+                      <Layers size={14} strokeWidth={1.67} className="text-muted" aria-hidden />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[14px] font-medium leading-5 tracking-[-0.01em] text-text">{f.n}</p>
+                      <p className="text-[12px] leading-[18px] text-muted"><span className="tabular-nums">{f.pages}</span> pages, {f.size}</p>
+                    </div>
+                    <Button variant="ghost" size="sm" icon={X} aria-label={`Remove ${f.n}`} />
+                  </li>
+                ))}
+              </ul>
+              <p className="text-[12px] leading-[18px] text-muted">
+                <span className="tabular-nums font-medium">512</span> pages in total. Markelo will work out how many scripts that is.
+              </p>
+            </div>
+          </Card>
+
+          <div className="flex items-center gap-4">
+            <Button variant="secondary" size="xl" full>Cancel</Button>
+            <Button size="xl" full icon={ScanLine}>Start processing</Button>
+          </div>
+        </div>
+
+        {/* Right panel — with booklet cover page preview */}
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+          <div className="flex flex-col gap-6 px-8 py-6">
+            <div>
+              <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Upload progress</h3>
+              <p className="text-[12px] leading-[18px] text-muted">Live feedback as Markelo reads your pages</p>
+            </div>
+
+            <div className="rounded-lg border border-border bg-bg p-4">
+              <div className="flex items-baseline gap-2">
+                <span className="text-[36px] font-bold leading-[44px] tabular-nums text-brand">3</span>
+                <span className="text-[14px] leading-6 text-muted">scripts found</span>
+              </div>
+              <p className="mt-1 text-[12px] leading-[18px] text-muted">3 of 512 cover pages recognised so far as processing continues.</p>
+            </div>
+
+            {/* Booklet cover page preview */}
+            <div className="rounded-lg border border-border bg-bg p-4">
+              <p className="text-[12px] font-semibold leading-4 tracking-[-0.01em] text-text">Cover page preview</p>
+              <p className="mt-1 text-[12px] leading-[18px] text-muted">The first cover page Markelo recognised. This one reads clearly.</p>
+              <div className="mt-3 overflow-hidden rounded-lg border border-border">
+                {/* Booklet cover page SVG */}
+                <svg viewBox="0 0 280 360" className="w-full" role="img" aria-label="Scanned answer booklet cover page">
+                  {/* Page background */}
+                  <rect width="280" height="360" fill="#FAFAFA" rx="2" />
+                  <rect x="12" y="12" width="256" height="336" fill="none" stroke="#1A56A0" strokeWidth="1.5" rx="2" />
+
+                  {/* Institution header */}
+                  <rect x="24" y="24" width="232" height="32" fill="#1A56A0" rx="4" />
+                  <text x="140" y="45" textAnchor="middle" fill="white" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="12">YABA COLLEGE OF TECHNOLOGY</text>
+
+                  {/* Exam details section */}
+                  <rect x="24" y="66" width="232" height="58" fill="none" stroke="#CCCCCC" strokeWidth="0.5" rx="4" />
+                  <text x="36" y="84" fill="#1A1A1A" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="600" fontSize="10">CSC 401</text>
+                  <text x="36" y="98" fill="#666666" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="9">Compiler Construction</text>
+                  <text x="36" y="114" fill="#1A1A1A" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="500" fontSize="9">2025/2026 · First Semester</text>
+
+                  {/* Script ID */}
+                  <rect x="24" y="132" width="232" height="28" fill="#F0F4FA" rx="4" />
+                  <text x="36" y="144" fill="#1A56A0" fontFamily="JetBrains Mono, monospace" fontWeight="700" fontSize="14" letterSpacing="0.02em">MK-000245</text>
+                  <text x="36" y="154" fill="#666666" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="8">Script ID</text>
+
+                  {/* Instructions */}
+                  <text x="24" y="178" fill="#1A1A1A" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="600" fontSize="9">INSTRUCTIONS</text>
+                  <rect x="24" y="184" width="232" height="52" fill="#F5F5F5" rx="4" />
+                  <text x="36" y="198" fill="#666666" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="8">1. Write your answers in the spaces provided.</text>
+                  <text x="36" y="212" fill="#666666" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="8">2. Do not write your name or matric number anywhere on this booklet.</text>
+                  <text x="36" y="226" fill="#666666" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="8">3. The Script ID above is how your work is identified.</text>
+
+                  {/* Barcode area */}
+                  <rect x="24" y="244" width="232" height="36" fill="#FAFAFA" stroke="#CCCCCC" strokeWidth="0.5" rx="4" />
+                  <g transform="translate(36, 256)">
+                    {Array.from({ length: 50 }).map((_, i) => (
+                      <rect key={i} x={i * 4} y={0} width={2} height={8 + Math.round(Math.abs(Math.sin(i * 0.7)) * 12)} fill="#1A1A1A" opacity={0.65 + Math.random() * 0.35} rx="0.5" />
+                    ))}
+                  </g>
+                  <text x="140" y="276" textAnchor="middle" fill="#999999" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="7">Scan Verification Strip</text>
+
+                  {/* Question grid */}
+                  <text x="24" y="298" fill="#1A1A1A" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="600" fontSize="9">QUESTIONS</text>
+                  {[
+                    { q: "1", marks: "20" }, { q: "2", marks: "20" }, { q: "3", marks: "20" },
+                    { q: "4", marks: "20" }, { q: "5", marks: "20" },
+                  ].map((item, i) => (
+                    <g key={item.q}>
+                      <rect x={24 + i * 47} y={304} width={44} height={28} fill="white" stroke="#DDDDDD" strokeWidth="0.5" rx="3" />
+                      <text x={24 + i * 47 + 6} y={318} fill="#1A1A1A" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="600" fontSize="8">Q{item.q}</text>
+                      <text x={24 + i * 47 + 6} y={328} fill="#666666" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="7">{item.marks} marks</text>
+                    </g>
+                  ))}
+
+                  {/* Footer */}
+                  <rect x="24" y="340" width="232" height="12" fill="#F0F4FA" rx="2" />
+                  <text x="140" y="349" textAnchor="middle" fill="#999999" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="7">Markelo Examination OS · Cover Page</text>
+                </svg>
+              </div>
+            </div>
+
             <div className="rounded-lg bg-brand-light p-4">
               <div className="flex items-start gap-3">
                 <CircleCheck size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-brand" aria-hidden />
@@ -364,33 +530,42 @@ export function IntegrityReport() {
           marking straight away.
         </Notice>
 
-        <Table
-          head={[
-            { label: "Script" },
-            { label: "Pages" },
-            { label: "Status" },
-            { label: "What Markelo found" },
-            { label: "", right: true },
-          ]}
-        >
-          {ROWS.map((r) => (
-            <tr key={r.id}>
-              <Td><ScriptId id={r.id} /></Td>
-              <Td className="tabular-nums text-muted">{r.pages}</Td>
-              <Td><StatusCell s={r.status} /></Td>
-              <Td className="text-muted">
-                {r.reason ?? <span className="text-body">Cover page and all pages found</span>}
-              </Td>
-              <Td className="text-right">
-                {r.status === "Matched" ? (
-                  <Button variant="ghost" size="sm" icon={Send}>Assign for marking</Button>
-                ) : (
-                  <Button variant="ghost" size="sm" icon={ListChecks}>Open in exception queue</Button>
-                )}
-              </Td>
-            </tr>
-          ))}
-        </Table>
+        <Card pad={false}>
+          <Table
+            head={[
+              { label: "Script" },
+              { label: "Pages" },
+              { label: "Status" },
+              { label: "What Markelo found" },
+              { label: "", right: true },
+            ]}
+          >
+            {ROWS.map((r) => (
+              <tr key={r.id}>
+                <Td><ScriptId id={r.id} /></Td>
+                <Td className="tabular-nums text-muted">{r.pages}</Td>
+                <Td><StatusCell s={r.status} /></Td>
+                <Td className="text-muted">
+                  {r.reason ?? <span className="text-body">Cover page and all pages found</span>}
+                </Td>
+                <Td className="text-right">
+                  {r.status === "Matched" ? (
+                    <Button variant="ghost" size="sm" icon={Send}>Assign for marking</Button>
+                  ) : (
+                    <Button variant="ghost" size="sm" icon={ListChecks}>Open in exception queue</Button>
+                  )}
+                </Td>
+              </tr>
+            ))}
+          </Table>
+          <TablePagination
+            currentPage={1}
+            totalPages={10}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
+        </Card>
 
         <p className="text-caption text-muted">
           Scripts keep appearing here as pages are read. Nothing is lost if you leave this screen.

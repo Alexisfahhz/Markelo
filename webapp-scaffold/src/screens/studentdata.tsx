@@ -28,7 +28,7 @@ import React from "react";
 import { AppFrame } from "../ui/shell";
 import {
   Button, Card, CardHeader, Badge, Notice, Field, Input, Select, EmptyState,
-  ScriptId, Stat, Table, Td,
+  ScriptId, Stat, Table, Td, TablePagination,
 } from "../ui/kit";
 import { ROLES } from "../roles";
 import {
@@ -115,6 +115,13 @@ function StudentDataUploadDefault() {
               </tr>
             ))}
           </Table>
+          <TablePagination
+            currentPage={1}
+            totalPages={10}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
         </Card>
 
         <div className="grid grid-cols-2 gap-3">
@@ -274,6 +281,13 @@ function IdentityRegistryDefault() {
               </tr>
             ))}
           </Table>
+          <TablePagination
+            currentPage={1}
+            totalPages={10}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
         </Card>
       </div>
     </RegistryShell>
@@ -413,6 +427,13 @@ function ResultProcessingDefault() {
               </tr>
             ))}
           </Table>
+          <TablePagination
+            currentPage={1}
+            totalPages={107}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
         </Card>
 
         <Card>

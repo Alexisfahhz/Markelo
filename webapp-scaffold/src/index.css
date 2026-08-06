@@ -300,3 +300,123 @@ body {
   text-transform: uppercase;
   color: var(--color-muted);
 }
+
+/* ---------------------------------------------------------------- Pagination
+   Figma "Table 1 Component" footer. Values from the design spec, with the
+   spec's raw hexes swapped for the tokens that carry the same role, so the
+   footer moves when the design system moves:
+   - Per-page select: 24 tall, white, 0.75px --color-border, --radius-badge
+   - Page buttons: 24x24, --radius-badge, active = white + the same border,
+     inactive = 60% opacity
+   - Footer: --color-bg, rounded bottom corners to match card radius
+
+   On the gap between the number and its chevron: padding was not the cause.
+   A native select sizes itself to its WIDEST option, so with options 4 / 10 /
+   25 the box is always as wide as "25" and a selected "4" sits in a box with
+   ~8px of dead space after it. Measured, the visible gap was 15.6px on "4"
+   and 4px on "25" -- the same control looking different depending on what was
+   picked. `field-sizing: content` sizes the box to the value actually shown,
+   makes the gap the same for every option. With 27px of right padding that
+   lands at 7.8px measured, against 15.6px before: the 50% asked for.
+   Browsers without field-sizing fall back to the old widest-option sizing,
+   which is what the design already lived with.
+*/
+
+.pagination-select-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.pagination-select {
+  appearance: none;
+  background: #ffffff;
+  border: 0.75px solid var(--color-border);
+  border-radius: var(--radius-badge);
+  padding: 4px 27px 4px 8px;
+  field-sizing: content;
+  height: 24px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--motion-instant);
+}
+.pagination-select:focus-visible {
+  border-color: var(--color-brand);
+}
+
+.pagination-select-icon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--color-text);
+}
+
+.pagination-page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-badge);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: -0.01em;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background var(--motion-instant), opacity var(--motion-instant);
+}
+
+.pagination-page-active {
+  background: #ffffff;
+  border: 0.75px solid var(--color-border);
+  color: var(--color-text);
+  opacity: 1;
+}
+
+.pagination-page-inactive {
+  color: var(--color-muted);
+  opacity: 0.6;
+}
+.pagination-page-inactive:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.pagination-nav-text {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color var(--motion-instant);
+}
+.pagination-nav-text:hover:not(:disabled) {
+  color: var(--color-text);
+}
+.pagination-nav-text:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------------- Tables
+   Global Table Rules for 5179 & 5180:
+   1. Turn off bottom border on the last line of cells in all tables so the last line 
+      does not end up looking like it has double strokes.
+   2. Ensure only the outer table container / pagination bar has rounded bottom edges,
+      not the individual table rows.
+*/
+tbody tr:last-child td {
+  border-bottom: 0 !important;
+}
+

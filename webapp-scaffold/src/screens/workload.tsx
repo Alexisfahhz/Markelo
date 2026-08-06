@@ -23,7 +23,7 @@
 import React from "react";
 import { AppFrame } from "../ui/shell";
 import {
-  Button, Card, CardHeader, Badge, Notice, EmptyState, ScriptId, Stat, Progress, Table, Td, Row,
+  Button, Card, CardHeader, Badge, Notice, EmptyState, ScriptId, Stat, Progress, Table, Td, Row, TablePagination,
 } from "../ui/kit";
 import { ROLES } from "../roles";
 import {
@@ -93,6 +93,13 @@ function MarkingAssignmentDefault() {
               </tr>
             ))}
           </Table>
+          <TablePagination
+            currentPage={1}
+            totalPages={10}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
         </Card>
         <Card>
           <CardHeader title="Recently reassigned" sub="The original marker's submitted marks are never lost" />
@@ -185,6 +192,13 @@ function MarkingProgressTeam() {
               </tr>
             ))}
           </Table>
+          <TablePagination
+            currentPage={1}
+            totalPages={10}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
         </Card>
       </div>
     </AppFrame>

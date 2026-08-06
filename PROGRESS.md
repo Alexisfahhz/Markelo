@@ -1590,3 +1590,105 @@ The existing auth and dashboards flow was to be archived, not deleted.
 - No new PROGRESS.md entries for the governance flow in the workspace's
   `logs/` — same as past scaffold entries, the workspace log tracks what
   happens inside the vault, not the Markelo repo.
+
+---
+
+## Twenty-first entry, 6 August 2026: flat nav everywhere, one table pattern
+
+**What was asked:** three things. Put the 5180 sidebar on 5179, which still
+showed the old nested one. Halve the gap between the per-page number and its
+dropdown chevron. Make every table in the product agree, and rebuild the page
+numbering to the shape `Previous 1 2 3 … 8 9 10 Next`.
+
+**Found on arrival, before doing any of it:** the working tree was not clean
+and none of it was in a commit. Someone had already started task 1 in
+`webapp-scaffold/src/App.tsx` by wrapping the harness stage in
+`<NavVariantProvider value="flat">`, and in the same edit had deleted
+`import * as ST from "./screens/settings";`. `npx tsc --noEmit` exited 2 with
+five `Cannot find name 'ST'` errors. The scaffold did not build. That import is
+restored.
+
+**Files touched:**
+
+- `webapp-scaffold/src/ui/shell.tsx` — `NavVariantContext` default flipped
+  `"tree"` → `"flat"`. This is the whole of task 1. A default beats a provider
+  because it cannot be forgotten by a host: 5179's harness, 5180's canvas and
+  anything built later all get the flat sidebar with no wrapper. `"tree"` is
+  kept but is now unreferenced; deleting it is a one-way door and nobody has
+  called the shape settled.
+- `webapp-scaffold/src/App.tsx` — `ST` import restored; the redundant
+  `NavVariantProvider` wrapper and its import removed, and the stage div put
+  back to one line.
+- `prototype-flow/src/flow.tsx` — the local `<Flat>` wrapper and its six call
+  sites removed for the same reason. Two mechanisms for one behaviour is how
+  the next person changes the wrong one.
+- `webapp-scaffold/src/index.css` — pagination block. `#dadada` → 
+  `var(--color-border)`, `4px` → `var(--radius-badge)`, so the footer moves
+  when the design system moves. `field-sizing: content` added to the per-page
+  select, and its right padding 28px → 27px.
+- `webapp-scaffold/src/ui/kit.tsx` — `buildPageWindow` rewritten.
+- `webapp-scaffold/src/screens/triage.tsx` — `MarksTable` was the last
+  hand-rolled `<table>` in the product, with its own `thead`, `th` and `td`
+  classes. Converted to the shared `Table` / `Td` inside a `Card`.
+- `webapp-scaffold/src/screens/admin.tsx` — the Audit Trail footer was a
+  hand-rolled `Previous` / "Page 1 of 16" / `Next` trio; it is
+  `TablePagination` now, and moved inside the Card it belongs to. "Showing 3 of
+  47 entries" → "47 entries", which was only ever true of the mock. Pagers
+  added to Courses, People & roles (standalone), Result correction. Two bare
+  tables wrapped in `Card pad={false}` to match the rest.
+- `webapp-scaffold/src/screens/dashboards.tsx` — pagers added to all four
+  tables that lacked one.
+- `webapp-scaffold/src/screens/scanning.tsx` — pager added, table wrapped in a
+  Card, `TablePagination` imported.
+- `webapp-scaffold/src/screens/{workload,studentdata,admin}.tsx` — mock
+  `totalPages` of 4, 5 and 8 raised to 10, and admin's odd `perPage={6}` /
+  `[6, 10, 25]` normalised to `4` / `[4, 10, 25]`.
+
+**On the gap, because padding was not the cause.** A native select sizes itself
+to its *widest* option. With options 4 / 10 / 25 the box is always as wide as
+"25", so a selected "4" sat in a box with dead space after it: measured 15.6px
+to the chevron on "4" against 4px on "25", the same control looking different
+depending on what was picked. `field-sizing: content` sizes the box to the
+value actually shown. Measured after: **7.89px, a 50% reduction**, and now
+identical for every option.
+
+**On the page numbering.** The old window kept only page 1 and the last page as
+anchors, so 10 pages rendered `1 2 … 10`, and any table with 7 or fewer pages
+rendered every number. Two tables with different page counts looked like two
+different components. The window is now three at each end plus the current page
+and its neighbours. Seven or fewer still renders every page: at seven, the two
+end triples leave exactly one hidden page, and an ellipsis standing in for one
+number is worse than the number.
+
+**Verified (and how):**
+
+- `npx tsc --noEmit` exit 0 (scaffold), `npx tsc -b` exit 0 (prototype-flow),
+  `npx vite build` exit 0 in both.
+- Live DOM sweep across table screens on 5179 and the whole 5180 canvas.
+  Every style bucket returned exactly **one** unique value: `th` computed
+  style, `td` padding and size, thead background, table wrapper, footer
+  (`rgb(245,245,245)` / 16px / `rgb(204,204,204)` / `0 0 12px 12px`), active
+  page chip (white / `rgb(204,204,204)` / 4px / 12px / 700), inactive opacity
+  `0.6`, and page sequence — `1 2 3 … 8 9 10` on every pager without exception.
+- Hand-rolled pagination inside any screen: **0**. The ten `Previous`/`Next`
+  buttons the sweep found all sit in the 5179 harness top bar, outside the
+  AppFrame; confirmed by scoping the query to the stage container.
+- 5179 screenshotted: flat sidebar, left indicator on the active row,
+  `user-lock` on locked categories, secondary tab row, and the footer reading
+  `SHOWING [4] ITEMS PER PAGE  PREVIOUS 1 2 3 … 8 9 10 NEXT`.
+
+**Not done / open:**
+
+- **Three tables deliberately have no pager**, and this is a judgement worth
+  overruling if it is wrong. Booklet versions sits under copy that says "2
+  versions"; the moderation mark sheet in `triage.tsx` is exactly as long as
+  the exam paper and ends in a Total row, so paging it hides half a mark sheet
+  from the person signing it off. Everything else that is a list which can grow
+  now has one.
+- **Mock page counts were raised to 10** to make the agreed shape visible. This
+  is fabricated demo data, not a claim about volume.
+- **The `#dadada` → `--color-border` swap changes the border from #DADADA to
+  #CCCCCC**, which is a small deviation from the Figma "Table 1 Component"
+  spec. Done because the design-system token is the rule; one line to revert.
+- The tree sidebar branch is now dead code awaiting a decision.
+- The self-contained artifact was not regenerated.

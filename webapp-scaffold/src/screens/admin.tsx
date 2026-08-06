@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import { AppFrame } from "../ui/shell";
 import {
   Button, Card, CardHeader, Badge, Notice, Input, Field,
-  Select, EmptyState, ScriptId, Table, Td, Tooltip,
+  Select, EmptyState, ScriptId, Table, Td, Tooltip, TablePagination,
 } from "../ui/kit";
 import { ROLES } from "../roles";
 import {
@@ -195,7 +195,7 @@ function InstitutionSetupDefault() {
             <p className="text-body text-muted">48 active accounts, 2 waiting for a role</p>
             <Button icon={UserPlus}>Invite someone</Button>
           </div>
-          <div className="mt-3">
+          <div className="mt-3 overflow-hidden rounded-card border border-border bg-white">
             <Table head={["Name", "Email", "Roles", "Status", ""]}>
               {[
                 { n: "Dr. Balogun Salami", e: "b.salami@yabatech.edu.ng", r: "Lecturer, HOD", s: "Active" },
@@ -225,6 +225,13 @@ function InstitutionSetupDefault() {
                 </tr>
               ))}
             </Table>
+            <TablePagination
+              currentPage={1}
+              totalPages={10}
+              perPage={4}
+              perPageOptions={[4, 10, 25]}
+              onPageChange={() => {}}
+            />
           </div>
         </Card>
       </div>
@@ -244,33 +251,42 @@ function CoursesDefault() {
           <p className="text-body text-muted">14 courses active, 4 deactivated</p>
           <Button icon={Plus}>Add course</Button>
         </div>
-        <Table head={["Course", "Code", "Status", "Exams this session", ""]}>
-          {[
-            { n: "Compiler Construction", c: "CSC 401", s: "Active", e: 3 },
-            { n: "Operating Systems", c: "CSC 312", s: "Active", e: 2 },
-            { n: "Linear Algebra", c: "MTH 201", s: "Active", e: 4 },
-            { n: "Intro to Statistics", c: "STA 105", s: "Active", e: 2 },
-            { n: "Data Structures", c: "CSC 201", s: "Deactivated", e: 0 },
-          ].map((r) => (
-            <tr key={r.c}>
-              <Td className="font-medium">{r.n}</Td>
-              <Td className="text-muted">{r.c}</Td>
-              <Td><Badge tone={r.s === "Active" ? "success" : "neutral"}>{r.s}</Badge></Td>
-              <Td className="tabular-nums text-muted">{r.e}</Td>
-              <Td className="text-right">
-                <div className="flex items-center justify-end gap-1">
-                  <Button variant="ghost" size="sm" icon={Pencil} aria-label={`Edit ${r.n}`} />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    icon={r.s === "Active" ? XCircle : RotateCcw}
-                    aria-label={`${r.s === "Active" ? "Deactivate" : "Reactivate"} ${r.n}`}
-                  />
-                </div>
-              </Td>
-            </tr>
-          ))}
-        </Table>
+        <div className="overflow-hidden rounded-card border border-border bg-white">
+          <Table head={["Course", "Code", "Status", "Exams this session", ""]}>
+            {[
+              { n: "Compiler Construction", c: "CSC 401", s: "Active", e: 3 },
+              { n: "Operating Systems", c: "CSC 312", s: "Active", e: 2 },
+              { n: "Linear Algebra", c: "MTH 201", s: "Active", e: 4 },
+              { n: "Intro to Statistics", c: "STA 105", s: "Active", e: 2 },
+              { n: "Data Structures", c: "CSC 201", s: "Deactivated", e: 0 },
+            ].map((r) => (
+              <tr key={r.c}>
+                <Td className="font-medium">{r.n}</Td>
+                <Td className="text-muted">{r.c}</Td>
+                <Td><Badge tone={r.s === "Active" ? "success" : "neutral"}>{r.s}</Badge></Td>
+                <Td className="tabular-nums text-muted">{r.e}</Td>
+                <Td className="text-right">
+                  <div className="flex items-center justify-end gap-1">
+                    <Button variant="ghost" size="sm" icon={Pencil} aria-label={`Edit ${r.n}`} />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={r.s === "Active" ? XCircle : RotateCcw}
+                      aria-label={`${r.s === "Active" ? "Deactivate" : "Reactivate"} ${r.n}`}
+                    />
+                  </div>
+                </Td>
+              </tr>
+            ))}
+          </Table>
+          <TablePagination
+            currentPage={1}
+            totalPages={10}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
+        </div>
       </div>
     </AppFrame>
   );
@@ -340,35 +356,44 @@ function PeopleRolesDefault() {
           <p className="text-body text-muted">48 active accounts, 2 waiting for a role</p>
           <Button icon={UserPlus}>Invite someone</Button>
         </div>
-        <Table head={["Name", "Email", "Roles", "Status", ""]}>
-          {[
-            { n: "Dr. Balogun Salami", e: "b.salami@yabatech.edu.ng", r: "Lecturer, HOD", s: "Active" },
-            { n: "Mrs. Adaeze Okonkwo", e: "a.okonkwo@yabatech.edu.ng", r: "Exam Officer", s: "Active" },
-            { n: "Chidinma Eze", e: "c.eze@yabatech.edu.ng", r: "Teaching Assistant", s: "Active" },
-            { n: "Prof. Eze Nwachukwu", e: "e.nwachukwu@yabatech.edu.ng", r: "Moderator / HOD", s: "Active" },
-            { n: "Grace Obi", e: "g.obi@yabatech.edu.ng", r: "Not set", s: "Awaiting role" },
-            { n: "Samuel Idowu", e: "s.idowu@yabatech.edu.ng", r: "Not set", s: "Awaiting role" },
-          ].map((r) => (
-            <tr key={r.e}>
-              <Td className="font-medium">{r.n}</Td>
-              <Td className="text-muted">{r.e}</Td>
-              <Td><span className="text-body text-text">{r.r}</span></Td>
-              <Td>
-                <Badge tone={r.s === "Active" ? "success" : "warning"}>{r.s}</Badge>
-              </Td>
-              <Td className="text-right">
-                <div className="flex items-center justify-end gap-1">
-                  <Tooltip content="Edit roles">
-                    <Button variant="ghost" size="sm" icon={Pencil} aria-label={`Edit roles for ${r.n}`} />
-                  </Tooltip>
-                  <Tooltip content="Suspend account">
-                    <Button variant="ghost" size="sm" icon={ShieldOff} aria-label={`Suspend ${r.n}`} />
-                  </Tooltip>
-                </div>
-              </Td>
-            </tr>
-          ))}
-        </Table>
+        <Card pad={false}>
+          <Table head={["Name", "Email", "Roles", "Status", ""]}>
+            {[
+              { n: "Dr. Balogun Salami", e: "b.salami@yabatech.edu.ng", r: "Lecturer, HOD", s: "Active" },
+              { n: "Mrs. Adaeze Okonkwo", e: "a.okonkwo@yabatech.edu.ng", r: "Exam Officer", s: "Active" },
+              { n: "Chidinma Eze", e: "c.eze@yabatech.edu.ng", r: "Teaching Assistant", s: "Active" },
+              { n: "Prof. Eze Nwachukwu", e: "e.nwachukwu@yabatech.edu.ng", r: "Moderator / HOD", s: "Active" },
+              { n: "Grace Obi", e: "g.obi@yabatech.edu.ng", r: "Not set", s: "Awaiting role" },
+              { n: "Samuel Idowu", e: "s.idowu@yabatech.edu.ng", r: "Not set", s: "Awaiting role" },
+            ].map((r) => (
+              <tr key={r.e}>
+                <Td className="font-medium">{r.n}</Td>
+                <Td className="text-muted">{r.e}</Td>
+                <Td><span className="text-body text-text">{r.r}</span></Td>
+                <Td>
+                  <Badge tone={r.s === "Active" ? "success" : "warning"}>{r.s}</Badge>
+                </Td>
+                <Td className="text-right">
+                  <div className="flex items-center justify-end gap-1">
+                    <Tooltip content="Edit roles">
+                      <Button variant="ghost" size="sm" icon={Pencil} aria-label={`Edit roles for ${r.n}`} />
+                    </Tooltip>
+                    <Tooltip content="Suspend account">
+                      <Button variant="ghost" size="sm" icon={ShieldOff} aria-label={`Suspend ${r.n}`} />
+                    </Tooltip>
+                  </div>
+                </Td>
+              </tr>
+            ))}
+          </Table>
+          <TablePagination
+            currentPage={1}
+            totalPages={10}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
+        </Card>
       </div>
     </AppFrame>
   );
@@ -651,23 +676,25 @@ function BookletProfileVersioningDefault() {
           <p className="text-body text-muted">2 versions</p>
           <Button icon={Plus} variant="secondary">New version</Button>
         </div>
-        <Table head={["Version", "Created", "Status", "Scripts processed", "Exams using this", ""]}>
-          {[
-            { v: "v2", d: "12 Jul 2026", s: "Active", sc: "4,182", e: 7 },
-            { v: "v1", d: "10 Jun 2026", s: "Superseded", sc: "1,244", e: 2 },
-          ].map((r) => (
-            <tr key={r.v}>
-              <Td><span className="font-mono font-medium">{r.v}</span></Td>
-              <Td className="text-muted">{r.d}</Td>
-              <Td><Badge tone={r.s === "Active" ? "success" : "neutral"}>{r.s}</Badge></Td>
-              <Td className="tabular-nums text-muted">{r.sc}</Td>
-              <Td className="tabular-nums text-muted">{r.e}</Td>
-              <Td className="text-right">
-                <Button variant="ghost" size="sm" icon={Archive}>View details</Button>
-              </Td>
-            </tr>
-          ))}
-        </Table>
+        <Card pad={false}>
+          <Table head={["Version", "Created", "Status", "Scripts processed", "Exams using this", ""]}>
+            {[
+              { v: "v2", d: "12 Jul 2026", s: "Active", sc: "4,182", e: 7 },
+              { v: "v1", d: "10 Jun 2026", s: "Superseded", sc: "1,244", e: 2 },
+            ].map((r) => (
+              <tr key={r.v}>
+                <Td><span className="font-mono font-medium">{r.v}</span></Td>
+                <Td className="text-muted">{r.d}</Td>
+                <Td><Badge tone={r.s === "Active" ? "success" : "neutral"}>{r.s}</Badge></Td>
+                <Td className="tabular-nums text-muted">{r.sc}</Td>
+                <Td className="tabular-nums text-muted">{r.e}</Td>
+                <Td className="text-right">
+                  <Button variant="ghost" size="sm" icon={Archive}>View details</Button>
+                </Td>
+              </tr>
+            ))}
+          </Table>
+        </Card>
       </div>
     </AppFrame>
   );
@@ -739,7 +766,7 @@ function AuditTrailDefault() {
               <Input placeholder="Search entries…" />
             </Field>
           </div>
-          <p className="text-caption text-muted">Showing 3 of 47 entries</p>
+          <p className="text-caption text-muted">47 entries</p>
         </div>
         <Card pad={false}>
           <div className="flex flex-col">
@@ -758,12 +785,21 @@ function AuditTrailDefault() {
               </div>
             ))}
           </div>
+          {/*
+            This footer was a hand-rolled Previous / "Page 1 of 16" / Next
+            trio. Same job TablePagination does, so it is the same component
+            now: one pagination pattern in the product rather than one per
+            screen. The rows above are a div list and not a <table>, which
+            changes nothing about how a page footer should look.
+          */}
+          <TablePagination
+            currentPage={1}
+            totalPages={10}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
         </Card>
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" disabled>Previous</Button>
-          <span className="text-caption text-muted">Page 1 of 16</span>
-          <Button variant="ghost" size="sm">Next</Button>
-        </div>
       </div>
     </AppFrame>
   );
@@ -833,26 +869,35 @@ function ResultCorrectionDefault() {
           a name appears" actually true, rather than true everywhere except
           the screens someone forgot to check.
         */}
-        <Table head={["Course", "Script", "CA", "Exam", "Total", "Grade", "Status", ""]}>
-          {[
-            { c: "CSC 401", id: "MK-001", ca: 28, ex: 58, tot: 86, g: "A", st: "Finalized" },
-            { c: "CSC 401", id: "MK-002", ca: 22, ex: 41, tot: 63, g: "C", st: "Finalized" },
-            { c: "CSC 312", id: "MK-003", ca: 18, ex: 55, tot: 73, g: "B", st: "Finalized" },
-          ].map((r) => (
-            <tr key={r.id}>
-              <Td className="font-medium">{r.c}</Td>
-              <Td><ScriptId id={r.id} /></Td>
-              <Td className="tabular-nums">{r.ca}</Td>
-              <Td className="tabular-nums">{r.ex}</Td>
-              <Td className="tabular-nums font-medium">{r.tot}</Td>
-              <Td><Badge tone="success">{r.g}</Badge></Td>
-              <Td><Badge>{r.st}</Badge></Td>
-              <Td className="text-right">
-                <Button variant="ghost" size="sm" icon={Unlock}>Correct</Button>
-              </Td>
-            </tr>
-          ))}
-        </Table>
+        <Card pad={false}>
+          <Table head={["Course", "Script", "CA", "Exam", "Total", "Grade", "Status", ""]}>
+            {[
+              { c: "CSC 401", id: "MK-001", ca: 28, ex: 58, tot: 86, g: "A", st: "Finalized" },
+              { c: "CSC 401", id: "MK-002", ca: 22, ex: 41, tot: 63, g: "C", st: "Finalized" },
+              { c: "CSC 312", id: "MK-003", ca: 18, ex: 55, tot: 73, g: "B", st: "Finalized" },
+            ].map((r) => (
+              <tr key={r.id}>
+                <Td className="font-medium">{r.c}</Td>
+                <Td><ScriptId id={r.id} /></Td>
+                <Td className="tabular-nums">{r.ca}</Td>
+                <Td className="tabular-nums">{r.ex}</Td>
+                <Td className="tabular-nums font-medium">{r.tot}</Td>
+                <Td><Badge tone="success">{r.g}</Badge></Td>
+                <Td><Badge>{r.st}</Badge></Td>
+                <Td className="text-right">
+                  <Button variant="ghost" size="sm" icon={Unlock}>Correct</Button>
+                </Td>
+              </tr>
+            ))}
+          </Table>
+          <TablePagination
+            currentPage={1}
+            totalPages={10}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
+        </Card>
       </div>
     </AppFrame>
   );

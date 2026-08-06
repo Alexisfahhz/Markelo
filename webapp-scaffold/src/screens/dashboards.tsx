@@ -7,9 +7,9 @@
   detail. Nothing here shows a student name to anyone except the Exam Officer,
   and even then only as a logged Identity Registry action (PRD §9.11, §11).
 */
-import React from "react";
+import React, { useState } from "react";
 import { AppFrame } from "../ui/shell";
-import { Button, Card, CardHeader, Badge, Stat, Progress, Notice, EmptyState, ScriptId, Table, Td, Row } from "../ui/kit";
+import { Button, Card, CardHeader, Badge, Stat, Progress, Notice, EmptyState, ScriptId, Table, Td, Row, TablePagination } from "../ui/kit";
 import { ROLES } from "../roles";
 import {
   ClipboardList,
@@ -89,6 +89,13 @@ export function DashOfficer() {
               </tr>
             ))}
           </Table>
+          <TablePagination
+            currentPage={1}
+            totalPages={10}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
         </Card>
 
         <div className="grid gap-6 lg:grid-cols-2">
@@ -223,6 +230,13 @@ export function DashLecturer() {
               </tr>
             ))}
           </Table>
+          <TablePagination
+            currentPage={1}
+            totalPages={10}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
         </Card>
 
         <Card>
@@ -355,6 +369,13 @@ export function DashModerator() {
               </tr>
             ))}
           </Table>
+          <TablePagination
+            currentPage={1}
+            totalPages={10}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
         </Card>
 
         <div className="grid gap-6 lg:grid-cols-2">
@@ -433,6 +454,13 @@ export function DashAdmin() {
               </tr>
             ))}
           </Table>
+          <TablePagination
+            currentPage={1}
+            totalPages={10}
+            perPage={4}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={() => {}}
+          />
         </Card>
 
         <div className="grid gap-6 lg:grid-cols-2">
@@ -485,6 +513,16 @@ export function DashAdmin() {
 /* --------------------------------------------- Senior Management */
 
 export function DashManagement() {
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(4);
+
+  const deptData = [
+    { d: "Computer Science", e: 9, s: "Moderation", p: 74 },
+    { d: "Mathematics", e: 7, s: "Finalized", p: 100 },
+    { d: "Statistics", e: 6, s: "Marking", p: 41 },
+    { d: "Electrical Engineering", e: 11, s: "Scanning", p: 18 },
+  ];
+
   return (
     <AppFrame role={ROLES.management} title="Dashboard" sub="Examinations across the institution">
       <div className="flex flex-col gap-6">
@@ -500,12 +538,7 @@ export function DashManagement() {
             <CardHeader title="Departments" sub="How far each one has got this session" />
           </div>
           <Table head={["Department", "Exams", "Stage reached", "Progress"]}>
-            {[
-              { d: "Computer Science", e: 9, s: "Moderation", p: 74 },
-              { d: "Mathematics", e: 7, s: "Finalized", p: 100 },
-              { d: "Statistics", e: 6, s: "Marking", p: 41 },
-              { d: "Electrical Engineering", e: 11, s: "Scanning", p: 18 },
-            ].map((r) => (
+            {deptData.map((r) => (
               <tr key={r.d}>
                 <Td className="font-medium">{r.d}</Td>
                 <Td className="tabular-nums text-muted">{r.e}</Td>
@@ -518,6 +551,17 @@ export function DashManagement() {
               </tr>
             ))}
           </Table>
+          <TablePagination
+            currentPage={page}
+            totalPages={10}
+            perPage={perPage}
+            perPageOptions={[4, 10, 25]}
+            onPageChange={setPage}
+            onPerPageChange={(n) => {
+              setPerPage(n);
+              setPage(1);
+            }}
+          />
         </Card>
 
         <div className="grid gap-6 lg:grid-cols-2">
