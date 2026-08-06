@@ -7,7 +7,7 @@
   Every screen ships five states: default, empty, loading, error,
   permission-denied. A screen with only a default state is 20% done.
 */
-import React from "react";
+import React, { useState } from "react";
 import { AppFrame } from "../ui/shell";
 import {
   Button, Card, CardHeader, Badge, Notice, Input, Field,
@@ -20,7 +20,7 @@ import {
   Upload, FileUp, ScanLine,
   PenLine, Archive,
   ScrollText, Lock, Unlock,
-  Check, RotateCcw, Save,
+  Check, RotateCcw, Save, Camera,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ helpers */
@@ -55,13 +55,98 @@ function SkeletonCard() {
 
 export function InstitutionSetup() { return <InstitutionSetupDefault />; }
 
+/*
+  Concentric-circle badge for the institution logo, modelled on the LogoMark
+  halo pattern in shell.tsx. Three rings: a solid inner disc (76px), then two
+  hairlines at 104px and 132px, each fainter outward.
+
+  When a logo IS uploaded, the outer ring pulses subtly so the badge reads as
+  "living" rather than static. Without a logo, the rings stay still: a static
+  badge signals a fallback, not a finished brand identity.
+
+  Default state (no logo): shows the institution initials inside the disc, with
+  a small camera chip in the bottom-right corner to invite upload. Institutions
+  that never bother to upload still see their initials, which is how workplace
+  apps handle this (Google Workspace, Slack, Notion). The badge never looks
+  broken.
+*/
+function InstitutionBadge({ hasLogo, initials }: { hasLogo: boolean; initials: string }) {
+  return (
+    <span className="relative inline-grid h-[120px] w-[120px] shrink-0 place-items-center">
+      <span
+        className={`absolute inset-0 rounded-full border-[0.75px] border-brand/15 ${
+          hasLogo ? "motion-safe:animate-pulse" : ""
+        }`}
+        aria-hidden
+      />
+      <span
+        className="absolute inset-3.5 rounded-full border-[0.75px] border-brand/40"
+        aria-hidden
+      />
+      <span className="absolute inset-7 rounded-full bg-brand-light" aria-hidden />
+      <span className="relative text-brand text-xl font-bold tracking-tight select-none">
+        {initials}
+      </span>
+      {!hasLogo && (
+        <span
+          className="absolute bottom-1 right-1 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-white shadow-sm"
+          aria-hidden
+        >
+          <Camera size={11} strokeWidth={2} className="text-muted" />
+        </span>
+      )}
+    </span>
+  );
+}
+
 function InstitutionSetupDefault() {
+  const [hasLogo, setHasLogo] = useState(false);
+
   return (
     <AppFrame role={ROLES.admin} activeLabel="Courses" title="Institution setup" sub="Set up your institution profile and manage who has access. You can change any of this later in Settings">
       <div className="flex flex-col gap-6">
+        {/* Hero card: logo + identity */}
+        <Card>
+          <div className="flex items-start gap-6">
+            <div className="flex shrink-0 flex-col items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setHasLogo((v) => !v)}
+                className="group relative shrink-0 transition-transform hover:scale-105 focus:outline-none"
+                aria-label={hasLogo ? "Change institution logo" : "Upload institution logo"}
+              >
+                <InstitutionBadge hasLogo={hasLogo} initials="YCT" />
+                <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-caption text-muted opacity-0 transition-opacity group-hover:opacity-100">
+                  {hasLogo ? "Change logo" : "Upload logo"}
+                </span>
+              </button>
+              {!hasLogo && (
+                <span className="text-caption text-muted">
+                  Your initials appear as a placeholder. Upload a logo to personalise the institution.
+                </span>
+              )}
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <h2 className="text-title font-bold text-text">Yaba College of Technology</h2>
+              <p className="mt-1 text-body text-muted">Polytechnic · YCT</p>
+              <div className="mt-4 max-w-md">
+                <Field label="Motto / description" hint="Appears on reports sent to your institution portal">
+                  <Input defaultValue="Knowledge, Skill and Service" />
+                </Field>
+              </div>
+            </div>
+
+            <Button variant="ghost" size="sm" icon={Pencil} aria-label="Edit institution details">
+              Edit
+            </Button>
+          </div>
+        </Card>
+
+        {/* Profile form */}
         <Card>
           <CardHeader
-            title="Institution profile"
+            title="Profile details"
             sub="Your institution name appears on result exports and audit records"
           />
           <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
