@@ -176,8 +176,8 @@ function InstitutionSetupDefault() {
               </Field>
             </div>
             <div className="flex items-center justify-end gap-3 pt-2">
-              <Button variant="secondary" size="lg">Cancel</Button>
-              <Button size="lg" icon={Save}>Save profile</Button>
+              <Button variant="secondary" size="xl">Cancel</Button>
+              <Button size="xl" icon={Save}>Save profile</Button>
             </div>
           </form>
         </Card>

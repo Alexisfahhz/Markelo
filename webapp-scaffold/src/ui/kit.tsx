@@ -11,7 +11,7 @@ import { CircleCheck, CircleAlert, Info, TriangleAlert, Inbox, X, ChevronDown } 
 /* ------------------------------------------------------------------ Button */
 
 type BtnVariant = "primary" | "secondary" | "ghost" | "danger";
-type BtnSize = "sm" | "md" | "lg" | "xl";
+type BtnSize = "sm" | "md" | "xl";
 
 /*
   `min-w-0` matters more than it looks. Without it a button in a flex row keeps
@@ -24,49 +24,28 @@ const btnBase =
   "transition-colors disabled:opacity-45 disabled:cursor-not-allowed whitespace-nowrap";
 
 const btnVariant: Record<BtnVariant, string> = {
-  primary: "bg-brand text-white hover:bg-brand-dark",
-  secondary: "bg-white text-text border border-border hover:bg-brand-light hover:border-brand",
+  primary: "bg-brand text-[#FBFCFF] hover:bg-brand-dark",
+  secondary: "bg-white text-[#1A1A1A] border border-border hover:bg-brand-light hover:border-brand",
   ghost: "bg-transparent text-brand hover:bg-brand-light",
   danger: "bg-error text-white hover:brightness-90",
 };
 
 /*
   CONTROL HEIGHT SCALE. The one place button height is decided.
-  Every height is a multiple of 8. Use the size that matches the job, not taste:
+  Every height is a multiple of 4. Use the size that matches the job, not taste:
 
     sm  32  inside a table row only. Never a page action.
     md  40  inside a card. Matches Input and Select height exactly.
-    lg  48  a section's main action.
-    xl  56  page-level and modal CTAs such as "Send 3 invitations" or "Keep me signed in".
-
-  PROPOSED 29 July 2026: `xl` is new, added on KingFizzy's instruction that the
-  primary CTAs should read at ~56px. Needs a Figma variable before it is final.
-
-  LABEL BUDGET, and this one has already bitten once. `min-w-0` below lets a
-  button shrink so its row cannot overflow. The cost is that an over-long label
-  stops overflowing visibly and starts clipping quietly inside the button. In a
-  two-column CTA row each button gets half the form column, so at a 1280px
-  window an `xl` label has about 160px of text room, roughly 19 characters.
-  Measured slack on the current labels at 1280:
-
-    "Continue"            91px
-    "Skip for now"        83px
-    "Send 3 invitations"  28px
-    "Check the booklet"   20px
-    "Keep me signed in"   12px   <- the next one to clip
-
-  Keep CTA labels short. If a label needs more than about 19 characters, that
-  is the copy to fix, not the padding.
+    xl  42  page-level and modal CTAs. The largest button allowed. Icon 16px, text 14px.
 */
 const btnSize: Record<BtnSize, string> = {
   sm: "h-8 px-3 text-caption",
   md: "h-10 px-4 text-body",
-  lg: "h-12 px-6 text-sub",
-  xl: "h-14 px-6 text-sub",
+  xl: "h-[42px] px-6 text-body",
 };
 
 /** Icon sizes are locked to the button size so a row of buttons never wobbles. */
-const btnIconSize: Record<BtnSize, number> = { sm: 14, md: 16, lg: 18, xl: 18 };
+const btnIconSize: Record<BtnSize, number> = { sm: 14, md: 16, xl: 16 };
 
 export function Button({
   variant = "primary",
