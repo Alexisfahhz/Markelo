@@ -644,9 +644,9 @@ export function Tooltip({
   }[coords.dir];
 
   const arrowPos = {
-    top: "bottom-[-4px] left-1/2 -translate-x-1/2 border-t-[#1A1A1A]",
-    bottom: "top-[-4px] left-1/2 -translate-x-1/2 border-b-[#1A1A1A]",
-    right: "left-[-4px] top-1/2 -translate-y-1/2 border-r-[#1A1A1A]",
+    top: "bottom-[-3px] left-1/2 -translate-x-1/2",
+    bottom: "top-[-3px] left-1/2 -translate-x-1/2",
+    right: "left-[-3px] top-1/2 -translate-y-1/2",
   }[coords.dir];
 
   return (
@@ -666,10 +666,10 @@ export function Tooltip({
             style={{ top: coords.y, left: coords.x }}
             role="tooltip"
           >
-            <span className="relative block whitespace-nowrap rounded-full bg-[#1A1A1A] px-2 py-1 text-[10px] leading-[14px] text-white">
+            <span className="relative block whitespace-nowrap rounded-[4px] bg-[#1A1A1A] px-2 py-1 text-[10px] leading-[14px] text-white">
               {content}
               <span
-                className={`absolute ${arrowPos} h-0 w-0 border-4 border-transparent`}
+                className={`absolute ${arrowPos} h-[6px] w-[6px] rotate-45 rounded-[1px] bg-[#1A1A1A]`}
                 aria-hidden
               />
             </span>
