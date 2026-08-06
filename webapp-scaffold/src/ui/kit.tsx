@@ -666,7 +666,7 @@ export function Tooltip({
             style={{ top: coords.y, left: coords.x }}
             role="tooltip"
           >
-            <span className="relative block whitespace-nowrap rounded-[4px] bg-[#1A1A1A] px-2 py-1 text-[10px] leading-[14px] text-white">
+            <span className="relative block whitespace-nowrap rounded-full bg-[#1A1A1A] px-2 py-1 text-[10px] leading-[14px] text-white">
               {content}
               <span
                 className={`absolute ${arrowPos} h-0 w-0 border-4 border-transparent`}
