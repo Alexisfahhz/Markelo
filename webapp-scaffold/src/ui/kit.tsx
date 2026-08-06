@@ -561,18 +561,14 @@ export function Row({ children, className = "" }: { children: React.ReactNode; c
 /* ----------------------------------------------------------------- Tooltip */
 
 /*
-  Dark tooltip with a subtle bounce entrance and a triangular arrow pointing
-  toward the target element. Rendered via createPortal to document.body, so it
-  can never be clipped by a parent's overflow (tables, cards, sidebars).
+  Dark tooltip. Flex-column body + 16px×8px triangular point, rendered via
+  createPortal to document.body so it escapes parent overflow.
 
-  Automatically flips direction when the trigger is near the top of the
-  viewport (top → bottom with an upward-pointing arrow), so controls at the
-  top of the page never push a tooltip off screen. Explicit "top", "bottom",
-  or "right" overrides the auto behaviour when needed.
-
-  Animation: 200ms (--motion-quick), --motion-enter easing, three-stop bounce
-  keyframe (0%: scale 0.85 + 4px rise → 60%: scale 1.06 + -2px overshoot →
-  100%: settle). At prefers-reduced-motion the bounce is stripped globally.
+  Arrow is a CSS clip-path triangle drawn in the same fill as the body so it
+  reads as one continuous shape. Four directions, dynamically chosen:
+  top (arrow ↓), bottom (arrow ↑), right (arrow ←), left (arrow →).
+  "auto" picks top or bottom based on the trigger's distance from the
+  viewport top (180px threshold).
 */
 export function Tooltip({
   content,
@@ -582,21 +578,23 @@ export function Tooltip({
 }: {
   content: string;
   children: React.ReactNode;
-  position?: "top" | "bottom" | "right" | "auto";
+  position?: "top" | "bottom" | "right" | "left" | "auto";
   delay?: number;
 }) {
   const [visible, setVisible] = React.useState(false);
-  const [coords, setCoords] = React.useState({ x: 0, y: 0, dir: "top" as "top" | "bottom" | "right" });
+  const [coords, setCoords] = React.useState({ x: 0, y: 0, dir: "top" as Dir });
   const triggerRef = React.useRef<HTMLSpanElement>(null);
   const timerRef = React.useRef<ReturnType<typeof setTimeout>>();
+
+  type Dir = "top" | "bottom" | "right" | "left";
 
   const show = () => {
     timerRef.current = setTimeout(() => {
       if (!triggerRef.current) return;
       const rect = triggerRef.current.getBoundingClientRect();
-      let dir: "top" | "bottom" | "right";
-      if (position === "right") {
-        dir = "right";
+      let dir: Dir;
+      if (position === "right" || position === "left") {
+        dir = position;
       } else if (position === "auto") {
         dir = rect.top < 180 ? "bottom" : "top";
       } else {
@@ -604,7 +602,7 @@ export function Tooltip({
       }
       setCoords({
         x: rect.left + rect.width / 2,
-        y: dir === "top" ? rect.top - 8 : rect.bottom + 8,
+        y: dir === "top" ? rect.top - 8 : dir === "bottom" ? rect.bottom + 8 : rect.top + rect.height / 2,
         dir,
       });
       setVisible(true);
@@ -616,17 +614,38 @@ export function Tooltip({
     setVisible(false);
   };
 
-  const transform = {
-    top: "-translate-x-1/2 -translate-y-full",
-    bottom: "-translate-x-1/2",
-    right: "translate-x-1.5 -translate-y-1/2",
-  }[coords.dir];
+  const layout = {
+    top:    { flex: "flex-col items-center" as const, transform: "-translate-x-1/2 -translate-y-full" as const },
+    bottom: { flex: "flex-col items-center" as const, transform: "-translate-x-1/2" as const },
+    right:  { flex: "flex-row items-center"  as const, transform: "translate-x-1.5 -translate-y-1/2" as const },
+    left:   { flex: "flex-row items-center"  as const, transform: "-translate-x-[calc(100%+6px)] -translate-y-1/2" as const },
+  };
 
-  const arrowPos = {
-    top: "bottom-[-3px] left-1/2 -translate-x-1/2",
-    bottom: "top-[-3px] left-1/2 -translate-x-1/2",
-    right: "left-[-3px] top-1/2 -translate-y-1/2",
-  }[coords.dir];
+  const arrows = {
+    top:    "polygon(50% 100%, 0 0, 100% 0)" as const,
+    bottom: "polygon(50% 0%, 0% 100%, 100% 100%)" as const,
+    right:  "polygon(0% 50%, 100% 0%, 100% 100%)" as const,
+    left:   "polygon(100% 50%, 0% 0%, 0% 100%)" as const,
+  };
+
+  const l = layout[coords.dir];
+  const a = arrows[coords.dir];
+
+  const isVertical = coords.dir === "top" || coords.dir === "bottom";
+
+  const body = (
+    <span className="block whitespace-nowrap rounded-[4px] bg-[#1A1A1A] px-2 py-1 text-[10px] leading-[14px] text-white">
+      {content}
+    </span>
+  );
+
+  const point = (
+    <span
+      aria-hidden
+      className={`shrink-0 bg-[#1A1A1A] ${isVertical ? "h-[8px] w-[16px]" : "h-[16px] w-[8px]"}`}
+      style={{ clipPath: a }}
+    />
+  );
 
   return (
     <span
@@ -641,17 +660,13 @@ export function Tooltip({
       {visible &&
         createPortal(
           <span
-            className={`fixed z-[9999] ${transform} animate-tooltip-bounce pointer-events-none select-none`}
-            style={{ top: coords.y, left: coords.x }}
+            className={`fixed z-[9999] ${l.flex} ${l.transform} gap-0 animate-tooltip-bounce pointer-events-none select-none`}
+            style={{ top: coords.y, left: coords.x, filter: "drop-shadow(0px 4px 8px rgba(0,0,0,0.20))" }}
             role="tooltip"
           >
-            <span className="relative block whitespace-nowrap rounded-[4px] bg-[#1A1A1A] px-2 py-1 text-[10px] leading-[14px] text-white">
-              {content}
-              <span
-                className={`absolute ${arrowPos} h-[6px] w-[6px] rotate-45 rounded-[1px] bg-[#1A1A1A]`}
-                aria-hidden
-              />
-            </span>
+            {coords.dir === "bottom" || coords.dir === "right" ? point : null}
+            {body}
+            {coords.dir === "top" || coords.dir === "left" ? point : null}
           </span>,
           document.body
         )}

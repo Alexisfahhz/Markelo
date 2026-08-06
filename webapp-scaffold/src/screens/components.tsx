@@ -103,10 +103,10 @@ export function TooltipSamples() {
       <div className="mx-auto max-w-4xl">
         <h1 className="text-title font-bold text-text">Tooltip</h1>
         <p className="mt-2 max-w-2xl text-body text-muted">
-          Dark tooltip (#1A1A1A, white 10px text, 4px radius) with a subtle
-          bounce entrance and a triangular arrow. Rendered to document.body
-          via portal so it can never be clipped by a parent overflow (table,
-          sidebar, card).
+          Dark tooltip (#1A1A1A, white 10px text, 4px radius) with a 16px×8px
+          triangular arrow drawn via CSS clip-path. The arrow and body share the
+          same fill so they read as one continuous shape. Rendered to document.body
+          via portal so it can never be clipped by parent overflow.
         </p>
 
         {/*
@@ -180,6 +180,12 @@ export function TooltipSamples() {
           <Row label="Right" note="Arrow points left, tooltip to the right. For narrow columns like a sidebar row.">
             <Tooltip content="Notification preferences" position="right">
               <span className="inline-flex cursor-default rounded-control border border-border px-3 py-1 text-body text-text">Hover me (right)</span>
+            </Tooltip>
+          </Row>
+
+          <Row label="Left" note="Arrow points right, tooltip to the left. For elements near the right edge of the screen.">
+            <Tooltip content="Close this panel" position="left">
+              <span className="inline-flex cursor-default rounded-control border border-border px-3 py-1 text-body text-text">Hover me (left)</span>
             </Tooltip>
           </Row>
 
