@@ -44,27 +44,42 @@ function Head({ title, sub }: { title: string; sub?: string }) {
 /* ---------------------------------------------------------------- Sign in */
 
 export function SignIn() {
+  const [loading, setLoading] = React.useState(false);
+
+  const handleSignIn = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => setLoading(false), 10000);
+  };
+
   return (
     <AuthFrame aside={<AuthAside {...ASIDE.signin} />}>
       <Head title="Welcome back" sub="Use the work email your institution registered." />
-      <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
+      <form className="flex flex-col gap-4" onSubmit={handleSignIn}>
         <Field label="Work email" required>
-          <Input type="email" icon={Mail} placeholder="a.okonkwo@yabatech.edu.ng" autoComplete="username" />
+          <Input type="email" icon={Mail} placeholder="a.okonkwo@yabatech.edu.ng" autoComplete="username" disabled={loading} />
         </Field>
         <Field label="Password" required>
-          <Input type="password" icon={Lock} placeholder="••••••••" autoComplete="current-password" />
+          <Input type="password" icon={Lock} placeholder="••••••••" autoComplete="current-password" disabled={loading} />
         </Field>
         <div className="flex items-center justify-between">
           <label className="flex items-center gap-2 text-body text-text">
-            <input type="checkbox" className="h-4 w-4 accent-[#1a56a0]" />
+            <input type="checkbox" className="h-4 w-4 accent-[#1a56a0]" disabled={loading} />
             Keep me signed in
           </label>
           <a href="#" onClick={(e) => e.preventDefault()} className="text-body text-brand hover:underline">
             Forgot password
           </a>
         </div>
-        <Button size="xl" full type="submit" icon={LogIn}>
-          Sign in
+        <Button size="xl" full type="submit" disabled={loading} icon={loading ? undefined : LogIn}>
+          {loading ? (
+            <span className="inline-flex items-center gap-2">
+              <span className="inline-block h-4 w-4 animate-spin rounded-full border-[1.5px] border-white/30 border-t-white" aria-hidden />
+              Signing in…
+            </span>
+          ) : (
+            "Sign in"
+          )}
         </Button>
         <p className="text-caption text-muted">
           No account yet? Your Institution Admin creates it for you. Ask them to send an invitation.
