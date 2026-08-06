@@ -8,6 +8,7 @@ import * as A from "./screens/auth";
 import * as O from "./screens/onboarding";
 import * as D from "./screens/dashboards";
 import * as AD from "./screens/admin";
+import * as ST from "./screens/settings";
 import * as C from "./screens/components";
 import * as EX from "./screens/exam";
 import * as SD from "./screens/studentdata";
@@ -151,6 +152,13 @@ const GROUPS: Group[] = [
       { id: "ad-correction-loading", label: "Result correction: loading", el: <AD.ResultCorrectionLoading /> },
       { id: "ad-correction-error", label: "Result correction: error", el: <AD.ResultCorrectionError /> },
       { id: "ad-correction-denied", label: "Result correction: denied", el: <AD.ResultCorrectionDenied /> },
+
+      /* --- Admin Settings (J2) --- */
+      { id: "ad-settings", label: "Admin settings: default", note: "J2", el: <ST.AdminSettings /> },
+      { id: "ad-settings-empty", label: "Admin settings: empty", el: <ST.AdminSettingsEmpty /> },
+      { id: "ad-settings-loading", label: "Admin settings: loading", el: <ST.AdminSettingsLoading /> },
+      { id: "ad-settings-error", label: "Admin settings: error", el: <ST.AdminSettingsError /> },
+      { id: "ad-settings-denied", label: "Admin settings: denied", el: <ST.AdminSettingsDenied /> },
     ],
   },
   {

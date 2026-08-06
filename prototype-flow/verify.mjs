@@ -1,6 +1,7 @@
 /*
-  Vision-free verification. Measures scroll positions against known section
-  tops. Run: node verify.mjs
+  Vision-free verification, Institution & governance flow.
+  Measures scroll positions, click-through actions, artboard geometry, and
+  navigation behaviour. Run: node verify.mjs
 */
 import { spawn } from "child_process";
 import puppeteer from "puppeteer-core";
@@ -34,7 +35,8 @@ async function main() {
     )
   );
   const ids = Object.keys(tops);
-  console.log("screens:", ids.length, "order:", ids.join(", "));
+  console.log("screens:", ids.length, ids.length === 6 ? "PASS" : "FAIL");
+  console.log("order:", ids.join(", "));
 
   const scrollY = () => page.evaluate(() => Math.round(window.scrollY));
   const click = (selector) =>
@@ -61,91 +63,99 @@ async function main() {
     }
   };
 
-  /* 1. Sign in -> Signing In */
-  await click("#signin button.bg-brand");
+  /* 1. Result Correction "Correct" button -> editing panel */
+  await go("result-correction");
   await settle();
-  expect("sign-in->loading", await scrollY(), tops["signin-loading"]);
-
-  /* 2. Any click on the loading screen -> MFA (loading state advance) */
-  await page.mouse.click(720, 450);
-  await settle();
-  expect("loading-anyclick->mfa", await scrollY(), tops["mfa"]);
-
-  /* 3. MFA Confirm -> Choose Role */
-  await click("#mfa button.bg-brand");
-  await settle();
-  expect("mfa-confirm->choose-role", await scrollY(), tops["choose-role"]);
-
-  /* 4. Choose Role: Lecturer card -> Lecturer dashboard */
   await page.evaluate(() => {
-    const card = [...document.querySelectorAll("#choose-role button")].find((b) =>
-      b.textContent.includes("Lecturer")
+    const btn = [...document.querySelectorAll("#result-correction button")].find((b) =>
+      b.textContent.includes("Correct")
     );
-    card.click();
+    if (btn) btn.click();
   });
   await settle();
-  expect("choose-lecturer->dash-lecturer", await scrollY(), tops["dash-lecturer"]);
+  expect("correction->editing", await scrollY(), tops["result-correction-editing"]);
 
-  /* 5. Forgot password link + reverse link */
-  await go("signin");
-  await sleep(400);
-  await click("#signin a");
+  /* 2. Editing "Save correction and re-lock" -> back to correction */
+  await page.evaluate(() => {
+    const btn = [...document.querySelectorAll("#result-correction-editing button")].find((b) =>
+      b.textContent.includes("Save correction and re-lock")
+    );
+    if (btn) btn.click();
+  });
   await settle();
-  expect("signin-forgot->forgot", await scrollY(), tops["forgot"]);
-  await click("#forgot a.text-brand");
-  await settle();
-  expect("forgot-back->signin", await scrollY(), tops["signin"]);
+  expect("editing-save->correction", await scrollY(), tops["result-correction"]);
 
-  /* 6. Single app-level nav: prev/next/auth/top */
-  await go("dash-officer");
+  /* 3. Editing "Cancel, re-lock unchanged" -> back to correction */
+  await go("result-correction-editing");
   await settle();
+  await page.evaluate(() => {
+    const btn = [...document.querySelectorAll("#result-correction-editing button")].find((b) =>
+      b.textContent.includes("Cancel, re-lock unchanged")
+    );
+    if (btn) btn.click();
+  });
+  await settle();
+  expect("editing-cancel->correction", await scrollY(), tops["result-correction"]);
+
+  /* 4. Nav: single instance, prev/next/top */
   const navCount = await page.evaluate(() => document.querySelectorAll("nav.fixed").length);
-  console.log("nav instances on page:", navCount, navCount === 1 ? "PASS" : "FAIL");
+  console.log("nav instances:", navCount, navCount === 1 ? "PASS" : "FAIL");
+
+  await go("institution-setup");
+  await settle();
   const prevDisabled = await page.evaluate(
-    () => document.querySelector("nav.fixed button[aria-label='Previous dashboard']")?.hasAttribute("disabled")
+    () => document.querySelector("nav.fixed button[aria-label^='Previous']")?.hasAttribute("disabled")
   );
-  console.log("nav prev disabled on first dashboard:", prevDisabled, prevDisabled ? "PASS" : "FAIL");
+  console.log("prev disabled on first screen:", prevDisabled, prevDisabled ? "PASS" : "FAIL");
 
-  await page.evaluate(() => document.querySelector("nav.fixed button[aria-label='Next dashboard']").click());
+  await page.evaluate(() => document.querySelector("nav.fixed button[aria-label^='Next']").click());
   await settle();
-  expect("nav-next->dash-lecturer", await scrollY(), tops["dash-lecturer"]);
+  expect("nav-next->people-roles", await scrollY(), tops["people-roles"]);
 
-  await page.evaluate(() => document.querySelector("nav.fixed button[aria-label='Next dashboard']").click());
+  await page.evaluate(() => document.querySelector("nav.fixed button[aria-label^='Previous']").click());
   await settle();
-  expect("nav-next->dash-ta", await scrollY(), tops["dash-ta"]);
+  expect("nav-prev->institution-setup", await scrollY(), tops["institution-setup"]);
 
-  await page.evaluate(() => document.querySelector("nav.fixed button[aria-label='Previous dashboard']").click());
-  await settle();
-  expect("nav-prev->dash-lecturer", await scrollY(), tops["dash-lecturer"]);
-
-  await page.evaluate(() => document.querySelector("nav.fixed button[aria-label='Back to authentication']").click());
-  await settle();
-  expect("nav-auth->signin", await scrollY(), tops["signin"]);
-
-  await go("dash-management");
+  await go("result-correction-editing");
   await settle();
   const nextDisabled = await page.evaluate(
-    () => document.querySelector("nav.fixed button[aria-label='Next dashboard']")?.hasAttribute("disabled")
+    () => document.querySelector("nav.fixed button[aria-label^='Next']")?.hasAttribute("disabled")
   );
-  console.log("nav next disabled on last dashboard:", nextDisabled, nextDisabled ? "PASS" : "FAIL");
+  console.log("next disabled on last screen:", nextDisabled, nextDisabled ? "PASS" : "FAIL");
 
-  /* 7. Screenshots for the record (diffed, not eyeballed) */
+  /* 5. Artboard geometry */
+  const geo = await page.evaluate(() => {
+    const sections = [...document.querySelectorAll("section[id]")];
+    return sections.map((sec) => {
+      const inner = sec.querySelector("div.mx-auto > div");
+      if (!inner) return { id: sec.id, w: 0, h: 0, clipped: false };
+      const r = inner.getBoundingClientRect();
+      return { id: sec.id, w: Math.round(r.width), h: Math.round(r.height) };
+    });
+  });
+  let geoPass = true;
+  for (const g of geo) {
+    const ok = g.w === 1440 && g.h === 1024;
+    console.log(`geometry ${g.id}: ${g.w}x${g.h} ${ok ? "PASS" : "FAIL"}`);
+    if (!ok) geoPass = false;
+  }
+
+  /* 6. Screenshots */
   await page.evaluate(() => document.querySelector("nav.fixed button[aria-label='Scroll to top']").click());
   await settle();
-  await page.screenshot({ path: "verify/01-signin.png" });
-  await go("dash-officer");
+  await page.screenshot({ path: "verify/01-institution-setup.png" });
+  await go("audit-trail");
   await settle();
-  await page.screenshot({ path: "verify/13-dash-officer.png" });
-  await go("dash-management");
+  await page.screenshot({ path: "verify/04-audit-trail.png" });
+  await go("result-correction-editing");
   await settle();
-  await page.screenshot({ path: "verify/18-dash-management.png" });
-  await page.evaluate((id) => document.getElementById(id)?.scrollIntoView({ block: "start" }), "mfa");
-  await settle();
-  await page.screenshot({ path: "verify/04-mfa.png" });
+  await page.screenshot({ path: "verify/06-result-correction-editing.png" });
 
   console.log("js errors:", errors.length ? errors : "none");
   await browser.close();
   server.kill();
+
+  if (errors.length > 0 || !geoPass) process.exit(1);
 }
 
 main().catch((e) => {

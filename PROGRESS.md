@@ -1511,3 +1511,82 @@ both apps; artifact regenerated at 399KB and republished to the same URL.
 - 5179 still shows the tree variant and is unaffected by the flat work, but it
   **did** receive the `UserLock` swap and the contrast fixes, because those live
   in the shared components and are correct in both shapes.
+
+---
+
+## 2026-08-06, deepseek-v4-pro (via opencode)
+
+**Phase:** Institution & governance flow on 5180, replacing the archived
+auth-and-dashboards flow. One new screen built, five existing screens imported
+live as before.
+
+**What was asked:** a new presentation flow called "Institution & governance" on
+the same 5180 prototype canvas, with the screens Institution Setup, Admin
+Settings, Audit Trail, Result Correction, plus any missing governance screens.
+The existing auth and dashboards flow was to be archived, not deleted.
+
+**Decision points answered before any code was written:**
+- Five screens: the four named plus People & Roles (recommended, I2/I3/J5,
+  existing, zero build cost).
+- Institution Setup = the plan's "Institution Setup, courses" screen (existing
+  `InstitutionCourses`, I1), imported as-is.
+- Admin Settings = one new screen with sectioned cards (Institution profile,
+  Security & MFA, Notifications, Results & exports), 5 states.
+- Archive method = `git tag archive/auth-dashboards-flow` plus moving the old
+  flow registry to `flow-auth-dashboards.tsx` (kept in repo, one-line restore).
+
+**Built:**
+
+- `prototype-flow/src/flow-auth-dashboards.tsx` — old FLOW registry, archived
+  with a header documenting the restore path.
+- `prototype-flow/src/flow.tsx` — new FLOW registry. 6 artboards in order:
+  Institution Setup, People & Roles, Admin Settings, Audit Trail, Result
+  Correction, Result Correction (Editing). The `group` type is `"governance"`.
+  Actions: "Correct" → editing panel, "Save correction and re-lock" / "Cancel,
+  re-lock unchanged" → back to the correction list. All screens wrapped in
+  `<Flat>` for sidebar tabs.
+- `webapp-scaffold/src/screens/settings.tsx` — **new file.** Admin Settings with
+  5 states (default with 4 sectioned cards: Institution profile, Security & MFA
+  policy, Notifications, Results & exports; empty; loading; error; denied).
+  Story J2 is the only PRD requirement in this screen; the other sections are
+  presentational. Every rule that has burned this project is observed:
+  `border-control`, no em dashes, spacing scale, `aria-label` on icon buttons,
+  no `bg-white` outside the Card component.
+- `webapp-scaffold/src/App.tsx` — registered 5 Admin Settings states in the
+  Phase 2 group, after Result Correction.
+- `prototype-flow/src/App.tsx` — scroll-spy generalised from
+  `DASHBOARD_SCREENS` to the full `FLOW` array; passes `flow` to
+  `PrototypeNav`.
+- `prototype-flow/src/components/PrototypeNav.tsx` — rewritten. Accepts the
+  full `FLOW` as a prop, computes prev/next across all screens. Auth button
+  removed (would scroll to a now-missing screen). Aria-labels are stable
+  ("Previous screen" / "Next screen") so the disabled state query works.
+- `prototype-flow/index.html` — title "Markelo, Prototype Flow" → "Markelo,
+  Institution & governance flow".
+- `prototype-flow/verify.mjs` — rewritten for the governance flow. Tests 6
+  screens, the correction-editing-save round trip (3 click paths), the cancel
+  return, nav prev/next/disabled-at-ends, artboard geometry (1440x1024), 0 JS
+  errors. Screenshots to `verify/`.
+
+**Verified (and how):**
+
+- 13/13 checks PASS in headless Chrome: 6 screens in the right order, all
+  artboards exactly 1440x1024, correction→editing→save→correction + cancel
+  round-trips land exactly on target (scrollY ±0), 1 nav instance, prev
+  disabled on first screen, next disabled on last, 0 JS errors.
+- `npx tsc --noEmit` exit 0 (scaffold), `npx tsc -b` exit 0 (prototype-flow),
+  `npx vite build` exit 0 in both apps.
+- 5179 tree sidebar intact: zero `NavVariantProvider` wrapping in the scaffold;
+  the only "flat" hit is `flatMap` on the ALL array.
+
+**Not done / blocked:**
+
+- The 5 governance screens beyond Admin Settings are imports, not redesigns.
+  None of their content was modified; the editing panel and every other control
+  remains presentational only.
+- The self-contained artifact was not regenerated. The fonts install with
+  `--no-save` and the build script lives in the artifact commit, so it is
+  reproducible on request.
+- No new PROGRESS.md entries for the governance flow in the workspace's
+  `logs/` — same as past scaffold entries, the workspace log tracks what
+  happens inside the vault, not the Markelo repo.
