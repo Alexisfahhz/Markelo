@@ -237,6 +237,28 @@ body {
 }
 
 /*
+  Tooltip entrance: a subtle bounce that lands softly. Scale starts at 0.85
+  (shrunk), overshoots to 1.06 at 60% (the bounce), then settles at 1. The
+  vertical slide is a 4px rise that reverses to -2px at the bounce peak and
+  returns to 0. Only opacity and transform are animated, matching the project
+  rule (no layout properties).
+
+  Duration is bound to --motion-quick (200ms), which already names tooltip as
+  one of its use cases. The curve is --motion-enter, the standard "arriving"
+  easing. At prefers-reduced-motion the global rule sets animation-duration
+  to 0.01ms, so the tooltip appears instantly — legible state change, no
+  movement.
+*/
+@keyframes tooltip-bounce {
+  0%   { opacity: 0; transform: scale(0.85) translateY(4px); }
+  60%  { opacity: 1; transform: scale(1.06) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1)    translateY(0);   }
+}
+.animate-tooltip-bounce {
+  animation: tooltip-bounce var(--motion-quick) var(--motion-enter) both;
+}
+
+/*
   Reduced motion is not optional. WCAG 2.2 and user stories K1/K2 require it. Movement is
   removed; a plain opacity change is allowed to survive so state changes are
   still legible.

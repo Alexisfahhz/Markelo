@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import { AppFrame } from "../ui/shell";
 import {
   Button, Card, CardHeader, Badge, Notice, Input, Field,
-  Select, EmptyState, ScriptId, Table, Td,
+  Select, EmptyState, ScriptId, Table, Td, Tooltip,
 } from "../ui/kit";
 import { ROLES } from "../roles";
 import {
@@ -109,19 +109,18 @@ function InstitutionSetupDefault() {
         <Card>
           <div className="flex items-start gap-6">
             <div className="flex shrink-0 flex-col items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setHasLogo((v) => !v)}
-                className="group relative shrink-0 transition-transform hover:scale-105 focus:outline-none"
-                aria-label={hasLogo ? "Change institution logo" : "Upload institution logo"}
-              >
-                <InstitutionBadge hasLogo={hasLogo} initials="YCT" />
-                <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-caption text-muted opacity-0 transition-opacity group-hover:opacity-100">
-                  {hasLogo ? "Change logo" : "Upload logo"}
-                </span>
-              </button>
+              <Tooltip content={hasLogo ? "Change institution logo" : "Upload institution logo"}>
+                <button
+                  type="button"
+                  onClick={() => setHasLogo((v) => !v)}
+                  className="shrink-0 transition-transform hover:scale-105 focus:outline-none"
+                  aria-label={hasLogo ? "Change institution logo" : "Upload institution logo"}
+                >
+                  <InstitutionBadge hasLogo={hasLogo} initials="YCT" />
+                </button>
+              </Tooltip>
               {!hasLogo && (
-                <span className="text-caption text-muted">
+                <span className="mt-2 text-caption text-muted">
                   Your initials appear as a placeholder. Upload a logo to personalise the institution.
                 </span>
               )}
@@ -137,9 +136,11 @@ function InstitutionSetupDefault() {
               </div>
             </div>
 
-            <Button variant="ghost" size="sm" icon={Pencil} aria-label="Edit institution details">
-              Edit
-            </Button>
+            <Tooltip content="Edit institution name, type, and details" position="bottom">
+              <Button variant="ghost" size="sm" icon={Pencil} aria-label="Edit institution details">
+                Edit
+              </Button>
+            </Tooltip>
           </div>
         </Card>
 
@@ -213,8 +214,12 @@ function InstitutionSetupDefault() {
                   </Td>
                   <Td className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <Button variant="ghost" size="sm" icon={Pencil} aria-label={`Edit roles for ${r.n}`} />
-                      <Button variant="ghost" size="sm" icon={ShieldOff} aria-label={`Suspend ${r.n}`} />
+                      <Tooltip content="Edit roles">
+                        <Button variant="ghost" size="sm" icon={Pencil} aria-label={`Edit roles for ${r.n}`} />
+                      </Tooltip>
+                      <Tooltip content="Suspend account">
+                        <Button variant="ghost" size="sm" icon={ShieldOff} aria-label={`Suspend ${r.n}`} />
+                      </Tooltip>
                     </div>
                   </Td>
                 </tr>
@@ -353,8 +358,12 @@ function PeopleRolesDefault() {
               </Td>
               <Td className="text-right">
                 <div className="flex items-center justify-end gap-1">
-                  <Button variant="ghost" size="sm" icon={Pencil} aria-label={`Edit roles for ${r.n}`} />
-                  <Button variant="ghost" size="sm" icon={ShieldOff} aria-label={`Suspend ${r.n}`} />
+                  <Tooltip content="Edit roles">
+                    <Button variant="ghost" size="sm" icon={Pencil} aria-label={`Edit roles for ${r.n}`} />
+                  </Tooltip>
+                  <Tooltip content="Suspend account">
+                    <Button variant="ghost" size="sm" icon={ShieldOff} aria-label={`Suspend ${r.n}`} />
+                  </Tooltip>
                 </div>
               </Td>
             </tr>

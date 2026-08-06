@@ -26,6 +26,7 @@ const GROUPS: Group[] = [
     owner: "Team lead",
     screens: [
       { id: "cmp-notice", label: "Attention box", note: "all variants", el: <C.AttentionBoxes /> },
+      { id: "cmp-tooltip", label: "Tooltip", note: "10 samples + animation spec", el: <C.TooltipSamples /> },
     ],
   },
   {

@@ -4,6 +4,7 @@
   Figma variable mapping is 1:1 with the Tailwind name (bg-brand = color/brand).
 */
 import React from "react";
+import { createPortal } from "react-dom";
 import type { LucideIcon } from "lucide-react";
 import { CircleCheck, CircleAlert, Info, TriangleAlert, Inbox, X, ChevronDown } from "lucide-react";
 
@@ -575,5 +576,106 @@ export function Row({ children, className = "" }: { children: React.ReactNode; c
     <div className={`flex items-center gap-4 border-b border-border px-4 py-3 last:border-0 ${className}`}>
       {children}
     </div>
+  );
+}
+
+/* ----------------------------------------------------------------- Tooltip */
+
+/*
+  Dark tooltip with a subtle bounce entrance and a triangular arrow pointing
+  toward the target element. Rendered via createPortal to document.body, so it
+  can never be clipped by a parent's overflow (tables, cards, sidebars).
+
+  Automatically flips direction when the trigger is near the top of the
+  viewport (top → bottom with an upward-pointing arrow), so controls at the
+  top of the page never push a tooltip off screen. Explicit "top", "bottom",
+  or "right" overrides the auto behaviour when needed.
+
+  Animation: 200ms (--motion-quick), --motion-enter easing, three-stop bounce
+  keyframe (0%: scale 0.85 + 4px rise → 60%: scale 1.06 + -2px overshoot →
+  100%: settle). At prefers-reduced-motion the bounce is stripped globally.
+*/
+export function Tooltip({
+  content,
+  children,
+  position = "auto",
+  delay = 300,
+}: {
+  content: string;
+  children: React.ReactNode;
+  position?: "top" | "bottom" | "right" | "auto";
+  delay?: number;
+}) {
+  const [visible, setVisible] = React.useState(false);
+  const [coords, setCoords] = React.useState({ x: 0, y: 0, dir: "top" as "top" | "bottom" | "right" });
+  const triggerRef = React.useRef<HTMLSpanElement>(null);
+  const timerRef = React.useRef<ReturnType<typeof setTimeout>>();
+
+  const show = () => {
+    timerRef.current = setTimeout(() => {
+      if (!triggerRef.current) return;
+      const rect = triggerRef.current.getBoundingClientRect();
+      let dir: "top" | "bottom" | "right";
+      if (position === "right") {
+        dir = "right";
+      } else if (position === "auto") {
+        dir = rect.top < 180 ? "bottom" : "top";
+      } else {
+        dir = position;
+      }
+      setCoords({
+        x: rect.left + rect.width / 2,
+        y: dir === "top" ? rect.top - 8 : rect.bottom + 8,
+        dir,
+      });
+      setVisible(true);
+    }, delay);
+  };
+
+  const hide = () => {
+    clearTimeout(timerRef.current);
+    setVisible(false);
+  };
+
+  const transform = {
+    top: "-translate-x-1/2 -translate-y-full",
+    bottom: "-translate-x-1/2",
+    right: "translate-x-1.5 -translate-y-1/2",
+  }[coords.dir];
+
+  const arrowPos = {
+    top: "bottom-[-4px] left-1/2 -translate-x-1/2 border-t-[#1A1A1A]",
+    bottom: "top-[-4px] left-1/2 -translate-x-1/2 border-b-[#1A1A1A]",
+    right: "left-[-4px] top-1/2 -translate-y-1/2 border-r-[#1A1A1A]",
+  }[coords.dir];
+
+  return (
+    <span
+      ref={triggerRef}
+      className="relative inline-flex"
+      onMouseEnter={show}
+      onMouseLeave={hide}
+      onFocus={show}
+      onBlur={hide}
+    >
+      {children}
+      {visible &&
+        createPortal(
+          <span
+            className={`fixed z-[9999] ${transform} animate-tooltip-bounce pointer-events-none select-none`}
+            style={{ top: coords.y, left: coords.x }}
+            role="tooltip"
+          >
+            <span className="relative block whitespace-nowrap rounded-[4px] bg-[#1A1A1A] px-2 py-1 text-[10px] leading-[14px] text-white">
+              {content}
+              <span
+                className={`absolute ${arrowPos} h-0 w-0 border-4 border-transparent`}
+                aria-hidden
+              />
+            </span>
+          </span>,
+          document.body
+        )}
+    </span>
   );
 }
