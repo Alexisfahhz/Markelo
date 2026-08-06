@@ -35,7 +35,7 @@ async function main() {
     )
   );
   const ids = Object.keys(tops);
-  console.log("screens:", ids.length, ids.length === 5 ? "PASS" : "FAIL");
+  console.log("screens:", ids.length, ids.length === 6 ? "PASS" : "FAIL");
   console.log("order:", ids.join(", "));
 
   const scrollY = () => page.evaluate(() => Math.round(window.scrollY));
@@ -116,8 +116,9 @@ async function main() {
   await settle();
   expect("nav-prev->institution-setup", await scrollY(), tops["institution-setup"]);
 
-  await go("result-correction-editing");
+  await go("scan-batch-upload");
   await settle();
+  await sleep(500);
   const nextDisabled = await page.evaluate(
     () => document.querySelector("nav.fixed button[aria-label^='Next']")?.hasAttribute("disabled")
   );

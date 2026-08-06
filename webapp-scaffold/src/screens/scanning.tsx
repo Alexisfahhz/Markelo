@@ -69,68 +69,128 @@ function UploadShell({ children, role = ROLES.officer }: { children: React.React
 export function ScanBatchUpload() {
   return (
     <UploadShell>
-      <div className="flex max-w-3xl flex-col gap-6">
-        {/*
-          B1 in one sentence. This notice is the story, not decoration. Say it
-          plainly so nobody sorts a 500-booklet stack by hand first.
-        */}
-        <Notice tone="brand" title="Scan in whatever order the booklets are in">
-          You do not need to sort the stack by name or matric number first. Markelo reads each cover
-          page and assembles every student's script for you.
-        </Notice>
+      <div className="flex gap-0">
+        {/* Left column — Figma: 703px content width */}
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+          <Notice tone="brand" title="Scan in whatever order the booklets are in">
+            You do not need to sort the stack by name or matric number first. Markelo reads each cover
+            page and assembles every student's script for you.
+          </Notice>
 
-        <Card>
-          <CardHeader title="Which exam is this batch for?" sub="Pages are matched against this exam's student list" />
-          <Field label="Exam">
-            <Select defaultValue="csc401">
-              <option value="csc401">CSC 401 Compiler Construction, First Semester</option>
-              <option value="csc312">CSC 312 Operating Systems, First Semester</option>
-              <option value="mth201">MTH 201 Linear Algebra, First Semester</option>
-            </Select>
-          </Field>
-        </Card>
+          <Card>
+            <CardHeader title="Which exam is this batch for?" sub="Pages are matched against this exam's student list" />
+            <Field label="Exam" required>
+              <Select defaultValue="csc401">
+                <option value="csc401">CSC 401 Compiler Construction, First Semester</option>
+                <option value="csc312">CSC 312 Operating Systems, First Semester</option>
+                <option value="mth201">MTH 201 Linear Algebra, First Semester</option>
+              </Select>
+            </Field>
+          </Card>
 
-        <Card>
-          <CardHeader
-            title="Scanned pages"
-            sub="A multi-page PDF, or a sequence of images"
-            action={<Badge tone="success" icon={CircleCheck}>3 files ready</Badge>}
-          />
-          <div className="flex flex-col gap-4">
-            <div className="rounded-card border-2 border-dashed border-border-control bg-bg px-6 py-8 text-center">
-              <Upload size={28} strokeWidth={1.5} className="mx-auto mb-3 text-muted" aria-hidden />
-              <p className="text-body font-medium text-text">Drop scanned files here</p>
-              <p className="text-caption text-muted">PDF or images. Add as many as your scanner produced.</p>
-              <Button className="mt-3" variant="secondary" icon={FileUp}>Choose files</Button>
+          <Card>
+            <CardHeader
+              title="Scanned pages"
+              sub="A multi-page PDF, or a sequence of images"
+              action={
+                <span className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#EBF5ED] px-2 py-1">
+                  <CircleCheck size={14} strokeWidth={2} className="text-[#0E6C40]" aria-hidden />
+                  <span className="text-[12px] font-medium leading-4 tracking-[-0.01em] text-[#0E6C40]">Completed</span>
+                </span>
+              }
+            />
+            <div className="flex flex-col gap-4">
+              {/* Upload drop zone — made visually prominent */}
+              <div className="rounded-[12px] border-2 border-dashed border-[#1A56A0] bg-[#E8F1FB] px-6 py-10 text-center">
+                <span className="mx-auto mb-4 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#1A56A0]/10">
+                  <Upload size={26} strokeWidth={1.75} className="text-[#1A56A0]" aria-hidden />
+                </span>
+                <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Drop scanned files here</p>
+                <p className="mt-1 text-[12px] leading-[18px] text-muted">
+                  PDF or images. Add as many as your scanner produced.
+                </p>
+                <Button className="mt-4" variant="secondary" icon={FileUp}>Choose files</Button>
+              </div>
+
+              <ul className="flex flex-col gap-2">
+                {STAGED.map((f) => (
+                  <li
+                    key={f.n}
+                    className="flex items-center gap-4 rounded-lg border border-border bg-white px-4 py-3"
+                  >
+                    <div className="flex h-6 w-6 items-center justify-center rounded bg-bg">
+                      <Layers size={14} strokeWidth={1.67} className="text-muted" aria-hidden />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[14px] font-medium leading-5 tracking-[-0.01em] text-text">{f.n}</p>
+                      <p className="text-[12px] leading-[18px] text-muted">
+                        <span className="tabular-nums">{f.pages}</span> pages, {f.size}
+                      </p>
+                    </div>
+                    <Button variant="ghost" size="sm" icon={X} aria-label={`Remove ${f.n}`} />
+                  </li>
+                ))}
+              </ul>
+              <p className="text-[12px] leading-[18px] text-muted">
+                <span className="tabular-nums font-medium">512</span> pages in total. Markelo will work out how many scripts that is.
+              </p>
+            </div>
+          </Card>
+
+          <div className="flex items-center gap-4">
+            <Button variant="secondary" size="xl" full>Cancel</Button>
+            <Button size="xl" full icon={ScanLine}>Start processing</Button>
+          </div>
+        </div>
+
+        {/* Right column — upload progress panel */}
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+          <div className="flex flex-col gap-6 px-8 py-6">
+            <div>
+              <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Upload progress</h3>
+              <p className="text-[12px] leading-[18px] text-muted">Live feedback as Markelo reads your pages</p>
             </div>
 
-            <ul className="flex flex-col gap-2">
-              {STAGED.map((f) => (
-                <li
-                  key={f.n}
-                  className="flex items-center gap-4 rounded-control border border-border bg-white px-4 py-3"
-                >
-                  <Layers size={16} strokeWidth={2} className="shrink-0 text-muted" aria-hidden />
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-body font-medium text-text">{f.n}</p>
-                    <p className="text-caption text-muted">
-                      <span className="tabular-nums">{f.pages}</span> pages, {f.size}
-                    </p>
-                  </div>
-                  <Button variant="ghost" size="sm" icon={X} aria-label={`Remove ${f.n}`} />
-                </li>
-              ))}
-            </ul>
-            <p className="text-caption text-muted">
-              <span className="tabular-nums">512</span> pages in total. Markelo will work out how many
-              scripts that is.
-            </p>
-          </div>
-        </Card>
+            {/* Script count */}
+            <div className="rounded-lg border border-border bg-bg p-4">
+              <div className="flex items-baseline gap-2">
+                <span className="text-[36px] font-bold leading-[44px] tabular-nums text-brand">0</span>
+                <span className="text-[14px] leading-6 text-muted">scripts found</span>
+              </div>
+              <p className="mt-1 text-[12px] leading-[18px] text-muted">
+                This updates as each cover page is read. Nothing to show yet because processing has not started.
+              </p>
+            </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="secondary" size="xl">Cancel</Button>
-          <Button size="xl" icon={ScanLine}>Start processing</Button>
+            {/* First page preview */}
+            <div className="rounded-lg border border-border bg-bg p-4">
+              <p className="text-[12px] font-semibold leading-4 tracking-[-0.01em] text-text">First page preview</p>
+              <p className="mt-1 text-[12px] leading-[18px] text-muted">
+                The first cover page Markelo recognises appears here so you can confirm the scan is clear.
+              </p>
+              <div className="mt-3 flex aspect-[3/4] items-center justify-center rounded-lg border-2 border-dashed border-[#1A56A0]/30 bg-[#F5F5F5]">
+                <div className="flex flex-col items-center gap-2 text-muted">
+                  <Upload size={24} strokeWidth={1.5} aria-hidden />
+                  <span className="text-[12px] leading-[18px]">Waiting for processing</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Processing status info */}
+            <div className="rounded-lg bg-brand-light p-4">
+              <div className="flex items-start gap-3">
+                <CircleCheck size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-brand" aria-hidden />
+                <div>
+                  <p className="text-[12px] font-semibold leading-4 text-text">What happens next</p>
+                  <p className="mt-1 text-[12px] leading-[18px] text-muted">
+                    After processing, every script is matched against your student list. Matched scripts
+                    can be assigned for marking immediately, even while the rest of the batch is still
+                    being assembled.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </UploadShell>

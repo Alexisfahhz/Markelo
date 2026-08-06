@@ -17,6 +17,7 @@
 import React from "react";
 import * as AD from "../../webapp-scaffold/src/screens/admin";
 import * as ST from "../../webapp-scaffold/src/screens/settings";
+import * as SC from "../../webapp-scaffold/src/screens/scanning";
 import { NavVariantProvider } from "../../webapp-scaffold/src/ui/shell";
 
 /*
@@ -97,6 +98,16 @@ export const FLOW: FlowScreen[] = [
       { match: "Save correction and re-lock", to: "result-correction" },
       { match: "Cancel, re-lock unchanged", to: "result-correction" },
     ],
+  },
+  {
+    id: "scan-batch-upload",
+    label: "Scan Batch Upload",
+    group: "governance",
+    el: (
+      <Flat>
+        <SC.ScanBatchUpload />
+      </Flat>
+    ),
   },
 ];
 
