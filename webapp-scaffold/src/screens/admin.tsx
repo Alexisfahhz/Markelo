@@ -20,7 +20,7 @@ import {
   Upload, FileUp, ScanLine,
   PenLine, Archive,
   ScrollText, Lock, Unlock,
-  Check, RotateCcw,
+  Check, RotateCcw, Save,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ helpers */
@@ -48,6 +48,97 @@ function SkeletonCard() {
         <div className="h-4 w-3/4 animate-pulse rounded bg-bg" />
       </div>
     </Card>
+  );
+}
+
+/* ----------------------------------------------- 0. Institution Setup */
+
+export function InstitutionSetup() { return <InstitutionSetupDefault />; }
+
+function InstitutionSetupDefault() {
+  return (
+    <AppFrame role={ROLES.admin} activeLabel="Courses" title="Institution setup" sub="Set up your institution profile and manage who has access. You can change any of this later in Settings">
+      <div className="flex flex-col gap-6">
+        <Card>
+          <CardHeader
+            title="Institution profile"
+            sub="Your institution name appears on result exports and audit records"
+          />
+          <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Institution name" required>
+                <Input defaultValue="Yaba College of Technology" />
+              </Field>
+              <Field label="Short code" hint="Appears in exported filenames and reports">
+                <Input defaultValue="YCT" />
+              </Field>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Institution type" required>
+                <Select defaultValue="poly">
+                  <option value="uni">University</option>
+                  <option value="poly">Polytechnic</option>
+                  <option value="coe">College of Education</option>
+                  <option value="mono">Monotechnic</option>
+                </Select>
+              </Field>
+              <Field label="Current academic session">
+                <Select defaultValue="2025-2026-1">
+                  <option value="2025-2026-1">2025/2026, First Semester</option>
+                  <option value="2024-2025-2">2024/2025, Second Semester</option>
+                </Select>
+              </Field>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <Button variant="secondary" size="lg">Cancel</Button>
+              <Button size="lg" icon={Save}>Save profile</Button>
+            </div>
+          </form>
+        </Card>
+
+        <Card>
+          <CardHeader
+            title="People & roles"
+            sub="Who has access to Markelo, and what they can do"
+          />
+          <Notice tone="brand" title="A person can hold more than one role">
+            A Lecturer can also be an HOD. Permissions are the union of all active roles. Suspending an
+            account revokes access immediately.
+          </Notice>
+          <div className="mt-4 flex items-center justify-between">
+            <p className="text-body text-muted">48 active accounts, 2 waiting for a role</p>
+            <Button icon={UserPlus}>Invite someone</Button>
+          </div>
+          <div className="mt-3">
+            <Table head={["Name", "Email", "Roles", "Status", ""]}>
+              {[
+                { n: "Dr. Balogun Salami", e: "b.salami@yabatech.edu.ng", r: "Lecturer, HOD", s: "Active" },
+                { n: "Mrs. Adaeze Okonkwo", e: "a.okonkwo@yabatech.edu.ng", r: "Exam Officer", s: "Active" },
+                { n: "Chidinma Eze", e: "c.eze@yabatech.edu.ng", r: "Teaching Assistant", s: "Active" },
+                { n: "Prof. Eze Nwachukwu", e: "e.nwachukwu@yabatech.edu.ng", r: "Moderator / HOD", s: "Active" },
+                { n: "Grace Obi", e: "g.obi@yabatech.edu.ng", r: "Not set", s: "Awaiting role" },
+                { n: "Samuel Idowu", e: "s.idowu@yabatech.edu.ng", r: "Not set", s: "Awaiting role" },
+              ].map((r) => (
+                <tr key={r.e}>
+                  <Td className="font-medium">{r.n}</Td>
+                  <Td className="text-muted">{r.e}</Td>
+                  <Td><span className="text-body text-text">{r.r}</span></Td>
+                  <Td>
+                    <Badge tone={r.s === "Active" ? "success" : "warning"}>{r.s}</Badge>
+                  </Td>
+                  <Td className="text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      <Button variant="ghost" size="sm" icon={Pencil} aria-label={`Edit roles for ${r.n}`} />
+                      <Button variant="ghost" size="sm" icon={ShieldOff} aria-label={`Suspend ${r.n}`} />
+                    </div>
+                  </Td>
+                </tr>
+              ))}
+            </Table>
+          </div>
+        </Card>
+      </div>
+    </AppFrame>
   );
 }
 

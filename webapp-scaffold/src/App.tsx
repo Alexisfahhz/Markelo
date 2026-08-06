@@ -103,6 +103,9 @@ const GROUPS: Group[] = [
     title: "Phase 2: Institution Admin",
     owner: "KingFizzy",
     screens: [
+      /* --- Institution Setup (combined: profile + People & Roles) --- */
+      { id: "ad-setup", label: "Institution setup: default", note: "profile + People & Roles", el: <AD.InstitutionSetup /> },
+
       /* --- Institution Courses (I1) --- */
       { id: "ad-courses", label: "Courses: default", note: "I1", el: <AD.InstitutionCourses /> },
       { id: "ad-courses-empty", label: "Courses: empty", el: <AD.InstitutionCoursesEmpty /> },

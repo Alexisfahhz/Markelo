@@ -6,8 +6,8 @@
   NOT a route table. This is a demo-order list for the scroll canvas.
 
   Every screen is imported live from webapp-scaffold/src/screens/*, zero copies.
-  The order tells the governance story: establish the institution, who has
-  access, settings and security, accountability through the audit trail, and
+  The order tells the governance story: establish the institution (profile and
+  people), settings and security, accountability through the audit trail, and
   the controlled correction of locked results.
 
   `actions` maps a click on a button/link (matched by its visible text,
@@ -47,17 +47,7 @@ export const FLOW: FlowScreen[] = [
     group: "governance",
     el: (
       <Flat>
-        <AD.InstitutionCourses />
-      </Flat>
-    ),
-  },
-  {
-    id: "people-roles",
-    label: "People & Roles",
-    group: "governance",
-    el: (
-      <Flat>
-        <AD.PeopleRoles />
+        <AD.InstitutionSetup />
       </Flat>
     ),
   },

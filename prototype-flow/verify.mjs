@@ -35,7 +35,7 @@ async function main() {
     )
   );
   const ids = Object.keys(tops);
-  console.log("screens:", ids.length, ids.length === 6 ? "PASS" : "FAIL");
+  console.log("screens:", ids.length, ids.length === 5 ? "PASS" : "FAIL");
   console.log("order:", ids.join(", "));
 
   const scrollY = () => page.evaluate(() => Math.round(window.scrollY));
@@ -110,7 +110,7 @@ async function main() {
 
   await page.evaluate(() => document.querySelector("nav.fixed button[aria-label^='Next']").click());
   await settle();
-  expect("nav-next->people-roles", await scrollY(), tops["people-roles"]);
+  expect("nav-next->admin-settings", await scrollY(), tops["admin-settings"]);
 
   await page.evaluate(() => document.querySelector("nav.fixed button[aria-label^='Previous']").click());
   await settle();
