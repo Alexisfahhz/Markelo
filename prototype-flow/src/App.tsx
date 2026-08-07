@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { FLOW } from "./flow";
+import { FLOW, FlowScreen } from "./flow";
 import { ScreenShell } from "./components/ScreenShell";
 import { PrototypeNav } from "./components/PrototypeNav";
 
 /*
-  Markelo prototype flow, Institution & governance.
+  Markelo prototype flow, Exam Setup · Student Data · Triage & Review.
 
   Every screen sits on one long vertical canvas, one viewport each. There is
   no routing, movement is smooth scrolling between artboards.
@@ -12,11 +12,17 @@ import { PrototypeNav } from "./components/PrototypeNav";
   The floating prototype navigation is app-level (one instance, scroll-spied),
   so it can never stack or shadow itself.
 */
+function isScreen(entry: (typeof FLOW)[number]): entry is FlowScreen {
+  return "id" in entry;
+}
+
+const SCREENS = FLOW.filter(isScreen);
+
 export default function App() {
   const [currentId, setCurrentId] = useState<string | null>(null);
 
   useEffect(() => {
-    const ids = FLOW.map((s) => s.id);
+    const ids = SCREENS.map((s) => s.id);
     let ticking = false;
 
     const spy = () => {
@@ -43,16 +49,28 @@ export default function App() {
 
   return (
     <div className="bg-bg text-text">
-      {FLOW.map((screen, i) => (
-        <ScreenShell key={screen.id} screen={screen} index={i} />
-      ))}
-      {currentId && <PrototypeNav flow={FLOW} currentId={currentId} />}
+      {FLOW.map((entry, i) =>
+        isScreen(entry) ? (
+          <ScreenShell key={entry.id} screen={entry} index={SCREENS.indexOf(entry)} />
+        ) : (
+          <section key={`ch-${i}`} className="scroll-mt-0">
+            <div className="flex flex-col items-center gap-1.5 py-3">
+              <div className="flex items-center gap-3">
+                <span className="h-px w-40 bg-border" aria-hidden />
+                <p className="shrink-0 text-label uppercase tracking-[0.14em] text-brand">{entry.chapter}</p>
+                <span className="h-px w-40 bg-border" aria-hidden />
+              </div>
+            </div>
+          </section>
+        )
+      )}
+      {currentId && <PrototypeNav flow={SCREENS} currentId={currentId} />}
       <div className="flex flex-col items-center gap-1.5 py-12">
         <p className="text-label uppercase tracking-[0.12em] text-muted">
-          End of prototype, {FLOW.length} screens
+          End of prototype, {SCREENS.length} screens
         </p>
         <p className="text-caption text-muted">
-          Markelo · Institution & governance · presentation layer only, no routing or backend
+          Markelo · Exam Setup · Student Data · Triage & Review · presentation layer only, no routing or backend
         </p>
       </div>
     </div>

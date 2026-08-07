@@ -20,7 +20,7 @@ import {
   Upload, FileUp, ScanLine,
   PenLine, Archive,
   ScrollText, Lock, Unlock,
-  Check, RotateCcw, Save, Camera,
+  Check, CircleCheck, RotateCcw, Save, Camera,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ helpers */
@@ -452,50 +452,161 @@ export function BookletProfileSetup() { return <BookletProfileSetupDefault />; }
 function BookletProfileSetupDefault() {
   return (
     <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet profile" sub="Teach Markelo what your answer booklet looks like">
-      <div className="flex flex-col gap-6 max-w-2xl">
-        <Notice tone="brand" title="Only your cover page is required">
-          The normal answer page, extra sheet, and continuation sheet are optional. If you skip them,
-          Markelo will still work. It just cannot recognise those page types automatically.
-        </Notice>
-        <Card>
-          <CardHeader
-            title="Cover page"
-            sub="The front page of your institution's answer booklet"
-            action={<Badge tone="success" icon={Check}>Required</Badge>}
-          />
-          <div className="flex flex-col gap-4">
-            <div className="rounded-card border-2 border-dashed border-border-control bg-bg px-6 py-10 text-center">
+      <div className="flex gap-0">
+        {/* Left column — 703px content */}
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+          <Notice tone="brand" title="Only your cover page is required">
+            The normal answer page, extra sheet, and continuation sheet are optional. If you skip them,
+            Markelo will still work. It just cannot recognise those page types automatically.
+          </Notice>
+          <Card>
+            <CardHeader
+              title="Cover page"
+              sub="The front page of your institution's answer booklet"
+              action={<Badge tone="success" icon={Check}>Required</Badge>}
+            />
+            <div className="flex flex-col gap-4">
+              <div className="rounded-card border-2 border-dashed border-border-control bg-bg px-6 py-10 text-center">
+                <Upload size={28} strokeWidth={1.5} className="mx-auto mb-3 text-muted" aria-hidden />
+                <p className="text-body font-medium text-text">Upload a scanned cover page</p>
+                <p className="text-caption text-muted">PDF or image, up to 10 MB</p>
+                <Button className="mt-3" variant="secondary" icon={FileUp}>Choose file</Button>
+              </div>
+            </div>
+          </Card>
+          <Card>
+            <CardHeader title="Normal answer page" sub="The pages students write their answers on" action={<Badge tone="neutral">Optional</Badge>} />
+            <div className="rounded-card border-2 border-dashed border-border bg-bg px-6 py-8 text-center">
               <Upload size={28} strokeWidth={1.5} className="mx-auto mb-3 text-muted" aria-hidden />
-              <p className="text-body font-medium text-text">Upload a scanned cover page</p>
-              <p className="text-caption text-muted">PDF or image, up to 10 MB</p>
-              <Button className="mt-3" variant="secondary" icon={FileUp}>Choose file</Button>
+              <Button variant="ghost" icon={FileUp}>Upload (optional)</Button>
+            </div>
+          </Card>
+          <Card>
+            <CardHeader title="Extra sheet" sub="An additional sheet the institution may provide" action={<Badge tone="neutral">Optional</Badge>} />
+            <div className="rounded-card border-2 border-dashed border-border bg-bg px-6 py-8 text-center">
+              <Upload size={28} strokeWidth={1.5} className="mx-auto mb-3 text-muted" aria-hidden />
+              <Button variant="ghost" icon={FileUp}>Upload (optional)</Button>
+            </div>
+          </Card>
+          <Card>
+            <CardHeader title="Continuation sheet" sub="A page for continuing an answer from a previous sheet" action={<Badge tone="neutral">Optional</Badge>} />
+            <div className="rounded-card border-2 border-dashed border-border bg-bg px-6 py-8 text-center">
+              <Upload size={28} strokeWidth={1.5} className="mx-auto mb-3 text-muted" aria-hidden />
+              <Button variant="ghost" icon={FileUp}>Upload (optional)</Button>
+            </div>
+          </Card>
+          <div className="flex items-center justify-end gap-3">
+            <Button variant="secondary">Cancel</Button>
+            <Button icon={ScanLine}>Validate this profile</Button>
+          </div>
+        </div>
+
+        {/* Right column — 407px side panel */}
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+          <div className="flex flex-col gap-6 px-8 py-6">
+            <div>
+              <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Cover page preview</h3>
+              <p className="text-[12px] leading-[18px] text-muted">What Markelo sees from your uploaded cover page</p>
+            </div>
+
+            <div className="rounded-lg border border-border bg-bg p-4">
+              <p className="text-[12px] font-semibold leading-4 tracking-[-0.01em] text-text">Yaba College of Technology</p>
+              <p className="mt-1 text-[12px] leading-[18px] text-muted">The cover page design Markelo will read during scanning</p>
+              <div className="mt-3 overflow-hidden rounded-lg border border-border">
+                <svg viewBox="0 0 280 340" className="w-full" role="img" aria-label="Answer booklet cover page template">
+                  <rect width="280" height="340" fill="#FAFAFA" rx="2" />
+                  <rect x="12" y="12" width="256" height="316" fill="none" stroke="#1A56A0" strokeWidth="1.5" rx="2" />
+
+                  <rect x="24" y="24" width="232" height="30" fill="#1A56A0" rx="4" />
+                  <text x="140" y="43" textAnchor="middle" fill="white" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="11">YABA COLLEGE OF TECHNOLOGY</text>
+
+                  <rect x="24" y="62" width="140" height="28" fill="white" stroke="#CCCCCC" strokeWidth="0.5" rx="4" />
+                  <text x="34" y="80" fill="#999999" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="9">Student name</text>
+
+                  <rect x="172" y="62" width="84" height="28" fill="white" stroke="#CCCCCC" strokeWidth="0.5" rx="4" />
+                  <text x="182" y="80" fill="#999999" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="9">Matric no.</text>
+
+                  <rect x="24" y="98" width="232" height="22" fill="#F0F4FA" rx="4" />
+                  <text x="34" y="113" fill="#1A56A0" fontFamily="JetBrains Mono, monospace" fontWeight="700" fontSize="12">MK-______</text>
+
+                  <text x="24" y="138" fill="#1A1A1A" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="600" fontSize="9">INSTRUCTIONS</text>
+                  <rect x="24" y="144" width="232" height="40" fill="#F5F5F5" rx="4" />
+                  <text x="34" y="158" fill="#666666" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="8">1. Write answers in the spaces provided.</text>
+                  <text x="34" y="170" fill="#666666" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="8">2. Do not write your name anywhere on this booklet.</text>
+                  <text x="34" y="182" fill="#666666" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="8">3. The Script ID above identifies your work.</text>
+
+                  <rect x="24" y="192" width="232" height="26" fill="#FAFAFA" stroke="#CCCCCC" strokeWidth="0.5" rx="4" />
+                  <g transform="translate(36, 200)">
+                    {Array.from({ length: 50 }).map((_, i) => (
+                      <rect key={i} x={i * 4} y={0} width={2} height={6 + Math.round(Math.abs(Math.sin(i * 0.7)) * 10)} fill="#1A1A1A" opacity={0.65 + Math.random() * 0.35} rx="0.5" />
+                    ))}
+                  </g>
+                  <text x="140" y="215" textAnchor="middle" fill="#999999" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="7">Scan Verification Strip</text>
+
+                  <text x="24" y="236" fill="#1A1A1A" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="600" fontSize="9">QUESTIONS</text>
+                  {[1, 2, 3, 4, 5].map((q, i) => (
+                    <g key={q}>
+                      <rect x={24 + i * 47} y="242" width="44" height="22" fill="white" stroke="#DDDDDD" strokeWidth="0.5" rx="3" />
+                      <text x={24 + i * 47 + 6} y="255" fill="#1A1A1A" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="600" fontSize="8">Q{q}</text>
+                      <text x={24 + i * 47 + 6} y="263" fill="#666666" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="7">marks</text>
+                    </g>
+                  ))}
+
+                  <rect x="24" y="274" width="104" height="36" fill="white" stroke="#DDDDDD" strokeWidth="0.5" strokeDasharray="3 2" rx="3" />
+                  <text x="30" y="290" fill="#999999" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="7">Answer page</text>
+                  <text x="30" y="300" fill="#999999" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="6">(not uploaded)</text>
+
+                  <rect x="152" y="274" width="104" height="36" fill="white" stroke="#DDDDDD" strokeWidth="0.5" strokeDasharray="3 2" rx="3" />
+                  <text x="158" y="290" fill="#999999" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="7">Extra sheet</text>
+                  <text x="158" y="300" fill="#999999" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="6">(not uploaded)</text>
+
+                  <rect x="24" y="318" width="232" height="12" fill="#F0F4FA" rx="2" />
+                  <text x="140" y="327" textAnchor="middle" fill="#999999" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="7">Markelo Examination OS · Cover Page</text>
+                </svg>
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-border bg-bg p-4">
+              <p className="text-[12px] font-semibold leading-4 tracking-[-0.01em] text-text">Profile readiness</p>
+              <div className="mt-2 space-y-2">
+                <div className="flex items-center gap-2">
+                  <CircleCheck size={14} strokeWidth={2} className="shrink-0 text-success" aria-hidden />
+                  <span className="text-[12px] leading-4 text-text">Cover page uploaded</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="flex h-[14px] w-[14px] shrink-0 items-center justify-center">
+                    <span className="h-[6px] w-[6px] rounded-full bg-muted/40" />
+                  </span>
+                  <span className="text-[12px] leading-4 text-muted">Normal answer page <span className="text-[11px]">— optional, not uploaded</span></span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="flex h-[14px] w-[14px] shrink-0 items-center justify-center">
+                    <span className="h-[6px] w-[6px] rounded-full bg-muted/40" />
+                  </span>
+                  <span className="text-[12px] leading-4 text-muted">Extra sheet <span className="text-[11px]">— optional, not uploaded</span></span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="flex h-[14px] w-[14px] shrink-0 items-center justify-center">
+                    <span className="h-[6px] w-[6px] rounded-full bg-muted/40" />
+                  </span>
+                  <span className="text-[12px] leading-4 text-muted">Continuation sheet <span className="text-[11px]">— optional, not uploaded</span></span>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-lg bg-brand-light p-4">
+              <div className="flex items-start gap-3">
+                <CircleCheck size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-brand" aria-hidden />
+                <div>
+                  <p className="text-[12px] font-semibold leading-4 text-text">What happens next</p>
+                  <p className="mt-1 text-[12px] leading-[18px] text-muted">
+                    Validation runs automatically. Markelo reads the cover page and detects the name
+                    field, matric field, and layout regions. You confirm anything it missed.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </Card>
-        <Card>
-          <CardHeader title="Normal answer page" sub="The pages students write their answers on" action={<Badge tone="neutral">Optional</Badge>} />
-          <div className="rounded-card border-2 border-dashed border-border bg-bg px-6 py-8 text-center">
-            <Upload size={28} strokeWidth={1.5} className="mx-auto mb-3 text-muted" aria-hidden />
-            <Button variant="ghost" icon={FileUp}>Upload (optional)</Button>
-          </div>
-        </Card>
-        <Card>
-          <CardHeader title="Extra sheet" sub="An additional sheet the institution may provide" action={<Badge tone="neutral">Optional</Badge>} />
-          <div className="rounded-card border-2 border-dashed border-border bg-bg px-6 py-8 text-center">
-            <Upload size={28} strokeWidth={1.5} className="mx-auto mb-3 text-muted" aria-hidden />
-            <Button variant="ghost" icon={FileUp}>Upload (optional)</Button>
-          </div>
-        </Card>
-        <Card>
-          <CardHeader title="Continuation sheet" sub="A page for continuing an answer from a previous sheet" action={<Badge tone="neutral">Optional</Badge>} />
-          <div className="rounded-card border-2 border-dashed border-border bg-bg px-6 py-8 text-center">
-            <Upload size={28} strokeWidth={1.5} className="mx-auto mb-3 text-muted" aria-hidden />
-            <Button variant="ghost" icon={FileUp}>Upload (optional)</Button>
-          </div>
-        </Card>
-        <div className="flex items-center justify-end gap-3">
-          <Button variant="secondary">Cancel</Button>
-          <Button icon={ScanLine}>Validate this profile</Button>
         </div>
       </div>
     </AppFrame>
@@ -568,43 +679,149 @@ const DETECTION: { l: string; v: string; t: DetectionTone }[] = [
 export function BookletProfileValidation() { return <BookletProfileValidationDefault />; }
 
 function BookletProfileValidationDefault() {
+  const [boxDrawn, setBoxDrawn] = useState(false);
+
   return (
     <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet profile validation" sub="Markelo checked what it could detect from your pages">
-      {/* TODO(token): max-w-2xl is Tailwind's default 672px, not a Markelo
-          token. Needs a form-width decision from KingFizzy. See the audit. */}
-      <div className="flex max-w-2xl flex-col gap-6">
-        {/*
-          Story A2/A3: the profile CANNOT be marked ready while any field is
-          still flagged. The button below is gated on `outstanding`, not
-          decorative. See the acceptance criterion in the implementation plan.
-        */}
-        <Notice tone="warning" title="One field still needs your attention">
-          Markelo read your cover page and located both identity fields. The extra sheet layout could
-          not be detected, so you need to draw the box by hand. You can mark this profile as ready
-          once that is done.
-        </Notice>
-        <Card>
-          <CardHeader title="Detection report" sub="What Markelo found on your pages" />
-          <div className="flex flex-col">
-            {DETECTION.map((r) => (
-              <div key={r.l} className="flex items-center justify-between border-b border-border px-4 py-3 last:border-0">
-                <span className="text-body text-text">{r.l}</span>
-                <div className="flex items-center gap-2">
-                  <Badge tone={r.t}>{r.v}</Badge>
-                  {r.t === "warning" && (
-                    <Button variant="ghost" size="sm" icon={PenLine}>Draw box</Button>
+      <div className="flex gap-0">
+        {/* Left column — 703px content */}
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+          <Notice tone={boxDrawn ? "success" : "warning"} title={boxDrawn ? "All fields resolved" : "One field still needs your attention"}>
+            {boxDrawn
+              ? "Markelo read your cover page and located every field. This profile is ready to be marked as the active version."
+              : "Markelo read your cover page and located both identity fields. The extra sheet layout could not be detected, so you need to draw the box by hand. You can mark this profile as ready once that is done."}
+          </Notice>
+          <Card>
+            <CardHeader title="Detection report" sub="What Markelo found on your pages" />
+            <div className="flex flex-col">
+              {DETECTION.map((r) => {
+                const t = r.l === "Extra sheet layout" && boxDrawn ? ("success" as DetectionTone) : r.t;
+                const v = r.l === "Extra sheet layout" && boxDrawn ? "Confirmed" : r.v;
+                return (
+                  <div key={r.l} className="flex items-center justify-between border-b border-border px-4 py-3 last:border-0">
+                    <span className="text-body text-text">{r.l}</span>
+                    <div className="flex items-center gap-2">
+                      <Badge tone={t}>{v}</Badge>
+                      {r.t === "warning" && !boxDrawn && (
+                        <Button variant="ghost" size="sm" icon={PenLine} onClick={() => setBoxDrawn(true)}>Draw box</Button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+          <div className="flex items-center justify-end gap-3">
+            <span className="mr-auto text-caption text-muted">
+              {boxDrawn ? "All fields resolved. Ready to use." : "1 field unresolved. Draw the extra sheet box to continue."}
+            </span>
+            <Button variant="secondary">Cancel</Button>
+            <Button icon={Check} disabled={!boxDrawn}>Mark as ready to use</Button>
+          </div>
+        </div>
+
+        {/* Right column — 407px side panel with detection overlay */}
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+          <div className="flex flex-col gap-6 px-8 py-6">
+            <div>
+              <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Detection overlay</h3>
+              <p className="text-[12px] leading-[18px] text-muted">Regions Markelo detected on your cover page</p>
+            </div>
+
+            {/* Cover page with detection overlays */}
+            <div className="rounded-lg border border-border bg-bg p-4">
+              <p className="text-[12px] font-semibold leading-4 tracking-[-0.01em] text-text">Cover page analysis</p>
+              <p className="mt-1 text-[12px] leading-[18px] text-muted">
+                {boxDrawn ? "All layout regions confirmed" : "The extra sheet area needs a manual box drawn around it"}
+              </p>
+              <div className="mt-3 relative overflow-hidden rounded-lg border border-border">
+                <svg viewBox="0 0 280 340" className="w-full" role="img" aria-label="Booklet cover page with detection regions">
+                  {/* Base cover page */}
+                  <rect width="280" height="340" fill="#FAFAFA" rx="2" />
+                  <rect x="12" y="12" width="256" height="316" fill="none" stroke="#1A56A0" strokeWidth="1.5" rx="2" />
+                  <rect x="24" y="24" width="232" height="30" fill="#1A56A0" rx="4" />
+                  <text x="140" y="43" textAnchor="middle" fill="white" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="700" fontSize="11">YABA COLLEGE OF TECHNOLOGY</text>
+
+                  <rect x="24" y="62" width="140" height="28" fill="white" stroke="#CCCCCC" strokeWidth="0.5" rx="4" />
+                  <text x="34" y="80" fill="#999999" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="9">Student name</text>
+                  <rect x="172" y="62" width="84" height="28" fill="white" stroke="#CCCCCC" strokeWidth="0.5" rx="4" />
+                  <text x="182" y="80" fill="#999999" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="400" fontSize="9">Matric no.</text>
+
+                  <rect x="24" y="98" width="232" height="22" fill="#F0F4FA" rx="4" />
+                  <text x="34" y="113" fill="#1A56A0" fontFamily="JetBrains Mono, monospace" fontWeight="700" fontSize="12">MK-______</text>
+
+                  {/* Detection overlays */}
+                  {/* 1. Cover page — green */}
+                  <rect x="14" y="14" width="252" height="312" fill="none" stroke="#0E6C40" strokeWidth="1.5" rx="3" strokeDasharray="5 3" />
+                  <rect x="14" y="8" width="72" height="14" fill="#0E6C40" rx="3" />
+                  <text x="50" y="18" textAnchor="middle" fill="white" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="600" fontSize="8">Cover page</text>
+
+                  {/* 2. Name field — green */}
+                  <rect x="26" y="64" width="136" height="24" fill="none" stroke="#0E6C40" strokeWidth="1.5" rx="3" strokeDasharray="5 3" />
+                  <rect x="26" y="58" width="88" height="12" fill="#0E6C40" rx="2" />
+                  <text x="70" y="67" textAnchor="middle" fill="white" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="600" fontSize="7">Name field</text>
+
+                  {/* 3. Matric field — green */}
+                  <rect x="174" y="64" width="80" height="24" fill="none" stroke="#0E6C40" strokeWidth="1.5" rx="3" strokeDasharray="5 3" />
+                  <rect x="174" y="58" width="80" height="12" fill="#0E6C40" rx="2" />
+                  <text x="214" y="67" textAnchor="middle" fill="white" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="600" fontSize="7">Matric no.</text>
+
+                  {/* 4. Extra sheet area — amber (shows box state) */}
+                  <rect x="150" y="266" width="110" height="44" fill="none" stroke={boxDrawn ? "#0E6C40" : "#E09E01"} strokeWidth={boxDrawn ? 1.5 : 2} rx="3" strokeDasharray={boxDrawn ? "5 3" : "4 2"} />
+                  <rect x="150" y={boxDrawn ? 260 : 258} width={boxDrawn ? 88 : 96} height="14" fill={boxDrawn ? "#0E6C40" : "#E09E01"} rx="3" />
+                  <text x={boxDrawn ? 194 : 198} y={boxDrawn ? 270 : 268} textAnchor="middle" fill="white" fontFamily="Plus Jakarta Sans, sans-serif" fontWeight="600" fontSize="8">
+                    {boxDrawn ? "Extra sheet" : "Draw a box"}
+                  </text>
+
+                  {!boxDrawn && (
+                    <>
+                      {/* Corner handles on amber box */}
+                      {[{ x: 148, y: 264 }, { x: 258, y: 264 }, { x: 148, y: 308 }, { x: 258, y: 308 }].map((h, i) => (
+                        <rect key={i} x={h.x} y={h.y} width="6" height="6" fill="white" stroke="#E09E01" strokeWidth="1.5" rx="1" />
+                      ))}
+                    </>
                   )}
+                </svg>
+
+                {!boxDrawn && (
+                  <div className="mt-3 flex flex-col gap-2">
+                    <p className="text-[12px] leading-[18px] text-muted">
+                      Markelo could not detect the extra sheet layout. Drag the amber box corners to enclose the region,
+                      or click <span className="font-medium text-text">Draw box</span> in the detection table to mark it.
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Button size="sm" icon={PenLine} onClick={() => setBoxDrawn(true)}>Draw box</Button>
+                      {boxDrawn ? null : (
+                        <span className="text-[11px] text-muted">Then save to unlock Mark as ready</span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {boxDrawn && (
+                  <div className="mt-3 rounded bg-success-light p-2">
+                    <div className="flex items-center gap-1.5">
+                      <CircleCheck size={12} strokeWidth={2} className="text-success" aria-hidden />
+                      <span className="text-[12px] font-medium leading-4 text-success">Extra sheet layout confirmed</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="rounded-lg bg-brand-light p-4">
+              <div className="flex items-start gap-3">
+                <CircleCheck size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-brand" aria-hidden />
+                <div>
+                  <p className="text-[12px] font-semibold leading-4 text-text">What happens next</p>
+                  <p className="mt-1 text-[12px] leading-[18px] text-muted">
+                    Marking this profile as ready creates its first version. Every script scanned against this
+                    version is matched using the layout you confirmed here.
+                  </p>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
-        </Card>
-        <div className="flex items-center justify-end gap-3">
-          <span className="mr-auto text-caption text-muted">
-            1 field unresolved. Draw the extra sheet box to continue.
-          </span>
-          <Button variant="secondary">Cancel</Button>
-          <Button icon={Check} disabled>Mark as ready to use</Button>
         </div>
       </div>
     </AppFrame>
@@ -672,6 +889,23 @@ function BookletProfileVersioningDefault() {
           When your institution redesigns its booklet, create a new version. Scripts processed under
           the old version stay exactly as they were.
         </Notice>
+
+        <Card>
+          <CardHeader title="Active version" sub="The profile currently being used for scanning" />
+          <div className="flex items-stretch gap-4">
+            <div className="flex-1 rounded-lg border border-border bg-bg p-4">
+              <p className="text-[12px] leading-[18px] text-muted">Current version</p>
+              <p className="mt-0.5 text-[24px] font-bold leading-8 tabular-nums text-text">v2</p>
+              <p className="text-[12px] leading-[18px] text-muted">Created 12 Jul 2026</p>
+            </div>
+            <div className="flex-1 rounded-lg border border-border bg-bg p-4">
+              <p className="text-[12px] leading-[18px] text-muted">Scripts processed</p>
+              <p className="mt-0.5 text-[24px] font-bold leading-8 tabular-nums text-text">4,182</p>
+              <p className="text-[12px] leading-[18px] text-muted">Across 7 exams</p>
+            </div>
+          </div>
+        </Card>
+
         <div className="flex items-center justify-between">
           <p className="text-body text-muted">2 versions</p>
           <Button icon={Plus} variant="secondary">New version</Button>

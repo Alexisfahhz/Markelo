@@ -1,5 +1,5 @@
 /*
-  Vision-free verification, Institution & governance flow.
+  Vision-free verification, Exam Setup · Student Data · Triage & Review flow.
   Measures scroll positions, click-through actions, artboard geometry, and
   navigation behaviour. Run: node verify.mjs
 */
@@ -35,16 +35,10 @@ async function main() {
     )
   );
   const ids = Object.keys(tops);
-  console.log("screens:", ids.length, ids.length === 7 ? "PASS" : "FAIL");
+  console.log("screens:", ids.length, ids.length === 10 ? "PASS" : "FAIL");
   console.log("order:", ids.join(", "));
 
   const scrollY = () => page.evaluate(() => Math.round(window.scrollY));
-  const click = (selector) =>
-    page.evaluate((sel) => {
-      const el = document.querySelector(sel);
-      if (!el) throw new Error(`not found: ${sel}`);
-      el.click();
-    }, selector);
   const go = (id) =>
     page.evaluate(
       (i) => document.getElementById(i)?.scrollIntoView({ block: "start" }),
@@ -62,69 +56,65 @@ async function main() {
       if (Math.abs(a - b) <= 2) return;
     }
   };
+  const clickBtn = (scopeId, text) =>
+    page.evaluate(([sid, txt]) => {
+      const el = document.getElementById(sid);
+      if (!el) throw new Error(`section not found: ${sid}`);
+      const btn = [...el.querySelectorAll("button")].find((b) =>
+        b.textContent.toLowerCase().includes(txt.toLowerCase())
+      );
+      if (!btn) throw new Error(`button "${txt}" not found in ${sid}`);
+      btn.click();
+    }, [scopeId, text]);
 
-  /* 1. Result Correction "Correct" button -> editing panel */
-  await go("result-correction");
-  await settle();
-  await page.evaluate(() => {
-    const btn = [...document.querySelectorAll("#result-correction button")].find((b) =>
-      b.textContent.includes("Correct")
-    );
-    if (btn) btn.click();
-  });
-  await settle();
-  expect("correction->editing", await scrollY(), tops["result-correction-editing"]);
+  /* =========================================== 1. Create exam -> Marking Scheme */
+  await go("exam-creation");
+  await sleep(1500);
+  await clickBtn("exam-creation", "Create exam");
+  await sleep(2000);
+  expect("exam-creation->marking-scheme", await scrollY(), tops["marking-scheme"]);
 
-  /* 2. Editing "Save correction and re-lock" -> back to correction */
-  await page.evaluate(() => {
-    const btn = [...document.querySelectorAll("#result-correction-editing button")].find((b) =>
-      b.textContent.includes("Save correction and re-lock")
-    );
-    if (btn) btn.click();
-  });
-  await settle();
-  expect("editing-save->correction", await scrollY(), tops["result-correction"]);
+  /* ====================================== 2. Confirm scheme -> Student Upload */
+  await go("marking-scheme");
+  await sleep(1500);
+  await clickBtn("marking-scheme", "Confirm scheme");
+  await sleep(2000);
+  expect("marking-scheme->student-upload", await scrollY(), tops["student-upload"]);
 
-  /* 3. Editing "Cancel, re-lock unchanged" -> back to correction */
-  await go("result-correction-editing");
-  await settle();
-  await page.evaluate(() => {
-    const btn = [...document.querySelectorAll("#result-correction-editing button")].find((b) =>
-      b.textContent.includes("Cancel, re-lock unchanged")
-    );
-    if (btn) btn.click();
-  });
-  await settle();
-  expect("editing-cancel->correction", await scrollY(), tops["result-correction"]);
+  /* ==================================== 3. Exception Queue -> Resolve */
+  await go("exception-queue");
+  await sleep(1500);
+  await clickBtn("exception-queue", "Open and resolve");
+  await sleep(2000);
+  expect("exception-queue->exception-resolve", await scrollY(), tops["exception-resolve"]);
 
-  /* 4. Nav: single instance, prev/next/top */
+  /* ============================================================ 4. Nav */
   const navCount = await page.evaluate(() => document.querySelectorAll("nav.fixed").length);
   console.log("nav instances:", navCount, navCount === 1 ? "PASS" : "FAIL");
 
-  await go("institution-setup");
-  await settle();
+  await go("exam-creation");
+  await sleep(1500);
   const prevDisabled = await page.evaluate(
     () => document.querySelector("nav.fixed button[aria-label^='Previous']")?.hasAttribute("disabled")
   );
   console.log("prev disabled on first screen:", prevDisabled, prevDisabled ? "PASS" : "FAIL");
 
   await page.evaluate(() => document.querySelector("nav.fixed button[aria-label^='Next']").click());
-  await settle();
-  expect("nav-next->admin-settings", await scrollY(), tops["admin-settings"]);
+  await sleep(2000);
+  expect("nav-next->marking-scheme", await scrollY(), tops["marking-scheme"]);
 
   await page.evaluate(() => document.querySelector("nav.fixed button[aria-label^='Previous']").click());
-  await settle();
-  expect("nav-prev->institution-setup", await scrollY(), tops["institution-setup"]);
+  await sleep(2000);
+  expect("nav-prev->exam-creation", await scrollY(), tops["exam-creation"]);
 
-  await go("scan-batch-with-preview");
-  await settle();
-  await sleep(1000);
+  await go("moderation-return");
+  await sleep(1500);
   const nextDisabled = await page.evaluate(
     () => document.querySelector("nav.fixed button[aria-label^='Next']")?.hasAttribute("disabled")
   );
   console.log("next disabled on last screen:", nextDisabled, nextDisabled ? "PASS" : "FAIL");
 
-  /* 5. Artboard geometry */
+  /* ======================================================= 5. Artboard geometry */
   const geo = await page.evaluate(() => {
     const sections = [...document.querySelectorAll("section[id]")];
     return sections.map((sec) => {
@@ -141,16 +131,19 @@ async function main() {
     if (!ok) geoPass = false;
   }
 
-  /* 6. Screenshots */
+  /* ============================================================ 6. Screenshots */
   await page.evaluate(() => document.querySelector("nav.fixed button[aria-label='Scroll to top']").click());
-  await settle();
-  await page.screenshot({ path: "verify/01-institution-setup.png" });
-  await go("audit-trail");
-  await settle();
-  await page.screenshot({ path: "verify/04-audit-trail.png" });
-  await go("result-correction-editing");
-  await settle();
-  await page.screenshot({ path: "verify/06-result-correction-editing.png" });
+  await sleep(1500);
+  await page.screenshot({ path: "verify/01-exam-creation.png" });
+  await go("marking-scheme");
+  await sleep(1500);
+  await page.screenshot({ path: "verify/02-marking-scheme.png" });
+  await go("student-upload");
+  await sleep(1500);
+  await page.screenshot({ path: "verify/03-student-upload.png" });
+  await go("identity-registry");
+  await sleep(1500);
+  await page.screenshot({ path: "verify/04-identity-registry.png" });
 
   console.log("js errors:", errors.length ? errors : "none");
   await browser.close();

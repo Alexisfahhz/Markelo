@@ -169,6 +169,13 @@ const GROUPS: Group[] = [
     title: "Exam setup",
     owner: "Designer 3",
     screens: [
+      /* --- Exam Creation (PRD §10 step 1) --- */
+      { id: "ex-create", label: "Exam creation: default", note: "PRD §10 step 1", el: <EX.ExamCreationScreen /> },
+      { id: "ex-create-empty", label: "Exam creation: empty", note: "no courses exist", el: <EX.ExamCreationScreenEmpty /> },
+      { id: "ex-create-loading", label: "Exam creation: loading", el: <EX.ExamCreationScreenLoading /> },
+      { id: "ex-create-error", label: "Exam creation: error", el: <EX.ExamCreationScreenError /> },
+      { id: "ex-create-denied", label: "Exam creation: denied", el: <EX.ExamCreationScreenDenied /> },
+
       /* --- Marking Scheme Setup (D1) --- */
       { id: "ms-setup", label: "Marking scheme: default", note: "D1", el: <EX.MarkingSchemeSetup /> },
       { id: "ms-setup-empty", label: "Marking scheme: empty", note: "marking cannot begin", el: <EX.MarkingSchemeSetupEmpty /> },

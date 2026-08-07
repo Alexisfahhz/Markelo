@@ -595,6 +595,65 @@ export function IntegrityReportComplete() {
             </div>
           </div>
         </Card>
+
+        <div className="grid grid-cols-3 gap-3">
+          <Card>
+            <div className="text-center">
+              <p className="text-[12px] leading-[18px] text-muted">Assembled</p>
+              <p className="mt-1 text-[32px] font-bold leading-[40px] tabular-nums text-text">64</p>
+              <p className="text-[12px] leading-[18px] text-muted">scripts from 512 pages</p>
+            </div>
+          </Card>
+          <Card>
+            <div className="text-center">
+              <p className="text-[12px] leading-[18px] text-muted">Matched</p>
+              <p className="mt-1 text-[32px] font-bold leading-[40px] tabular-nums text-success">61</p>
+              <p className="text-[12px] leading-[18px] text-muted">ready to assign now</p>
+            </div>
+          </Card>
+          <Card>
+            <div className="text-center">
+              <p className="text-[12px] leading-[18px] text-muted">Need Review</p>
+              <p className="mt-1 text-[32px] font-bold leading-[40px] tabular-nums text-warning">3</p>
+              <p className="text-[12px] leading-[18px] text-muted">open in exception queue</p>
+            </div>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader
+            title="Exceptions for this batch"
+            sub="Scripts that need your decision before they can be assigned"
+            action={<Badge tone="warning" icon={ListChecks}>3 flagged</Badge>}
+          />
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-3 rounded-lg border border-border bg-bg px-4 py-3">
+              <TriangleAlert size={14} strokeWidth={2} className="shrink-0 text-warning" aria-hidden />
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-medium leading-5 text-text">MK-000247 — Extra sheet mismatch</p>
+                <p className="text-[12px] leading-[18px] text-muted">Identity details on the extra sheet do not match the cover page</p>
+              </div>
+              <Button variant="ghost" size="sm" icon={ListChecks}>Open and resolve</Button>
+            </div>
+            <div className="flex items-center gap-3 rounded-lg border border-border bg-bg px-4 py-3">
+              <TriangleAlert size={14} strokeWidth={2} className="shrink-0 text-warning" aria-hidden />
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-medium leading-5 text-text">MK-000249 — Missing pages</p>
+                <p className="text-[12px] leading-[18px] text-muted">Pages 5 and 6 are not in this batch</p>
+              </div>
+              <Button variant="ghost" size="sm" icon={ListChecks}>Open and resolve</Button>
+            </div>
+            <div className="flex items-center gap-3 rounded-lg border border-border bg-bg px-4 py-3">
+              <TriangleAlert size={14} strokeWidth={2} className="shrink-0 text-warning" aria-hidden />
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-medium leading-5 text-text">MK-000251 — Unreadable matric number</p>
+                <p className="text-[12px] leading-[18px] text-muted">Two digits on the cover page are too faint to read</p>
+              </div>
+              <Button variant="ghost" size="sm" icon={ListChecks}>Open and resolve</Button>
+            </div>
+          </div>
+        </Card>
+
         <div className="grid grid-cols-2 gap-3">
           <Button variant="secondary" size="xl" icon={ListChecks}>Review the 3 flagged</Button>
           <Button size="xl" icon={Send}>Assign the 61 matched</Button>

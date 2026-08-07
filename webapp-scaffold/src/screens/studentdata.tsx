@@ -34,7 +34,7 @@ import { ROLES } from "../roles";
 import {
   Upload, FileUp, FileSpreadsheet, RotateCcw, Check, X,
   IdCard, Search, ScrollText,
-  FileCheck2, PenLine, Send, Layers,
+  FileCheck2, PenLine, Send, Layers, CircleCheck,
 } from "lucide-react";
 
 const EXAM_SUB = "CSC 401 Compiler Construction, 2025/2026 First Semester";
@@ -63,70 +63,133 @@ export function StudentDataUpload() { return <StudentDataUploadDefault />; }
 function StudentDataUploadDefault() {
   return (
     <UploadShell>
-      <div className="flex max-w-3xl flex-col gap-6">
-        <Notice tone="brand" title="Handles a full cohort in about a minute">
-          Upload the student list for this exam as a spreadsheet. Markelo checks every row, an
-          institution's full exam cohort, 5,000 records or more, validates in about a minute.
-        </Notice>
+      <div className="flex gap-0" style={{ minHeight: "calc(100vh - 120px)" }}>
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+          <Notice tone="brand" title="Handles a full cohort in about a minute">
+            Upload the student list for this exam as a spreadsheet. Markelo checks every row, an
+            institution's full exam cohort, 5,000 records or more, validates in about a minute.
+          </Notice>
 
-        <Card>
-          <CardHeader title="Which exam is this list for?" sub="Scripts are matched against this list once scanning starts" />
-          <Field label="Exam">
-            <Select defaultValue="csc401">
-              <option value="csc401">CSC 401 Compiler Construction, First Semester</option>
-              <option value="csc312">CSC 312 Operating Systems, First Semester</option>
-              <option value="mth201">MTH 201 Linear Algebra, First Semester</option>
-            </Select>
-          </Field>
-        </Card>
+          <Card>
+            <CardHeader title="Which exam is this list for?" sub="Scripts are matched against this list once scanning starts" />
+            <Field label="Exam">
+              <Select defaultValue="csc401">
+                <option value="csc401">CSC 401 Compiler Construction, First Semester</option>
+                <option value="csc312">CSC 312 Operating Systems, First Semester</option>
+                <option value="mth201">MTH 201 Linear Algebra, First Semester</option>
+              </Select>
+            </Field>
+          </Card>
 
-        <Card>
-          <CardHeader
-            title="Student list"
-            sub="A spreadsheet with name, matric number, and course code"
-            action={<Badge tone="warning">4 rows need attention</Badge>}
-          />
-          <div className="flex flex-col gap-4">
-            <div className="rounded-card border-2 border-dashed border-border-control bg-bg px-6 py-8 text-center">
-              <Upload size={28} strokeWidth={1.5} className="mx-auto mb-3 text-muted" aria-hidden />
-              <p className="text-body font-medium text-text">Drop the student list here</p>
-              <p className="text-caption text-muted">CSV or Excel, one row per student</p>
-              <Button className="mt-3" variant="secondary" icon={FileUp}>Choose file</Button>
+          <Card>
+            <CardHeader
+              title="Student list"
+              sub="A spreadsheet with name, matric number, and course code"
+              action={<Badge tone="warning">4 rows need attention</Badge>}
+            />
+            <div className="flex flex-col gap-4">
+              <div className="rounded-[12px] border-2 border-dashed border-[#1A56A0] bg-[#E8F1FB] px-6 py-10 text-center">
+                <span className="mx-auto mb-4 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#1A56A0]/10">
+                  <Upload size={26} strokeWidth={1.75} className="text-[#1A56A0]" aria-hidden />
+                </span>
+                <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Drop the student list here</p>
+                <p className="mt-1 text-[12px] leading-[18px] text-muted">CSV or Excel, one row per student</p>
+                <Button className="mt-4" variant="secondary" icon={FileUp}>Choose file</Button>
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <Stat label="Total records" value="4,812" icon={FileSpreadsheet} />
+                <Stat label="Valid" value="4,808" tone="success" icon={Check} />
+                <Stat label="Need attention" value={4} tone="warning" icon={X} />
+              </div>
             </div>
-            <div className="grid grid-cols-3 gap-4">
-              <Stat label="Total records" value="4,812" icon={FileSpreadsheet} />
-              <Stat label="Valid" value="4,808" tone="success" icon={Check} />
-              <Stat label="Need attention" value={4} tone="warning" icon={X} />
+          </Card>
+
+          <Card pad={false}>
+            <div className="p-6 pb-4">
+              <CardHeader title="Rows that need attention" sub="Fix the file and upload again, or correct these directly" />
+            </div>
+            <Table head={["Row", "Name", "Matric number", "Issue"]}>
+              {FLAGGED.map((f) => (
+                <tr key={f.row}>
+                  <Td className="tabular-nums text-muted">{f.row}</Td>
+                  <Td className="font-medium">{f.name}</Td>
+                  <Td className="tabular-nums text-muted">{f.matric}</Td>
+                  <Td className="text-warning">{f.issue}</Td>
+                </tr>
+              ))}
+            </Table>
+            <TablePagination
+              currentPage={1}
+              totalPages={10}
+              perPage={4}
+              perPageOptions={[4, 10, 25]}
+              onPageChange={() => {}}
+            />
+          </Card>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Button variant="secondary" size="xl" full>Cancel</Button>
+            <Button size="xl" full icon={Check} disabled>Confirm student list</Button>
+          </div>
+        </div>
+
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+          <div className="flex flex-col gap-6 px-8 py-6">
+            <div>
+              <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Cohort overview</h3>
+              <p className="text-[12px] leading-[18px] text-muted">What Markelo found in your file</p>
+            </div>
+
+            <div className="rounded-lg border border-border bg-bg p-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <span className="text-[36px] font-bold leading-[44px] tabular-nums text-brand">{FLAGGED.length + 4808}</span>
+                  <p className="text-[12px] leading-[18px] text-muted">total records</p>
+                </div>
+                <div>
+                  <span className="text-[36px] font-bold leading-[44px] tabular-nums text-success">4,808</span>
+                  <p className="text-[12px] leading-[18px] text-muted">valid</p>
+                </div>
+              </div>
+              <div className="mt-4 border-t border-border pt-4">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-[28px] font-bold leading-[36px] tabular-nums text-warning">{FLAGGED.length}</span>
+                  <span className="text-[12px] leading-[18px] text-muted">need attention</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-[12px] font-semibold leading-4 tracking-[-0.01em] text-text">Validation rules applied</p>
+              <ul className="mt-2 flex flex-col gap-1.5">
+                <li className="flex items-start gap-2 text-[12px] leading-[18px] text-muted">
+                  <Check size={12} className="mt-1 shrink-0 text-success" aria-hidden />
+                  Matric number format checked against institution standard
+                </li>
+                <li className="flex items-start gap-2 text-[12px] leading-[18px] text-muted">
+                  <Check size={12} className="mt-1 shrink-0 text-success" aria-hidden />
+                  Duplicate matric numbers flagged across every row
+                </li>
+                <li className="flex items-start gap-2 text-[12px] leading-[18px] text-muted">
+                  <Check size={12} className="mt-1 shrink-0 text-success" aria-hidden />
+                  Every row checked for a matching course code
+                </li>
+              </ul>
+            </div>
+
+            <div className="rounded-lg bg-brand-light p-4">
+              <div className="flex items-start gap-3">
+                <CircleCheck size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-brand" aria-hidden />
+                <div>
+                  <p className="text-[12px] font-semibold leading-4 text-text">What happens next</p>
+                  <p className="mt-1 text-[12px] leading-[18px] text-muted">
+                    Once the student list is confirmed, scanning can begin. Correct the four flagged
+                    rows above first, then the Confirm button is available.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </Card>
-
-        <Card pad={false}>
-          <div className="p-6 pb-4">
-            <CardHeader title="Rows that need attention" sub="Fix the file and upload again, or correct these directly" />
-          </div>
-          <Table head={["Row", "Name", "Matric number", "Issue"]}>
-            {FLAGGED.map((f) => (
-              <tr key={f.row}>
-                <Td className="tabular-nums text-muted">{f.row}</Td>
-                <Td className="font-medium">{f.name}</Td>
-                <Td className="tabular-nums text-muted">{f.matric}</Td>
-                <Td className="text-warning">{f.issue}</Td>
-              </tr>
-            ))}
-          </Table>
-          <TablePagination
-            currentPage={1}
-            totalPages={10}
-            perPage={4}
-            perPageOptions={[4, 10, 25]}
-            onPageChange={() => {}}
-          />
-        </Card>
-
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="secondary" size="xl">Cancel</Button>
-          <Button size="xl" icon={Check} disabled>Confirm student list</Button>
         </div>
       </div>
     </UploadShell>
@@ -224,71 +287,70 @@ export function IdentityRegistry() { return <IdentityRegistryDefault />; }
 function IdentityRegistryDefault() {
   return (
     <RegistryShell>
-      {/*
-        All three cards below share this one wrapper's width on purpose. The
-        Recent lookups table needs the room, forcing scroll on. But widening
-        only that card while Look up a script and Result stayed narrow would
-        read as a mistake, not a decision, so the whole column moved together.
-      */}
-      <div className="flex max-w-4xl flex-col gap-6">
-        <Notice tone="warning" title="The only place a name appears">
-          Every lookup here is logged with your name, the record you looked at, and the reason you
-          gave. This never appears on a marking or moderation screen.
-        </Notice>
+      <div className="flex gap-0" style={{ minHeight: "calc(100vh - 120px)" }}>
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+          <Notice tone="warning" title="The only place a name appears">
+            Every lookup here is logged with your name, the record you looked at, and the reason you
+            gave. This never appears on a marking or moderation screen.
+          </Notice>
 
-        <Card>
-          <CardHeader title="Look up a script" sub="By Script ID or matric number" />
-          <div className="flex flex-col gap-4">
-            <Field label="Script ID or matric number">
-              <Input defaultValue="MK-000891" />
-            </Field>
-            <Field label="Reason for this lookup" required hint="This is recorded exactly as written">
-              <Input defaultValue="Confirming a name mismatch flagged in the exception queue" />
-            </Field>
-            <Button icon={Search} className="self-start">Look up</Button>
-          </div>
-        </Card>
+          <Card>
+            <CardHeader title="Look up a script" sub="By Script ID or matric number" />
+            <div className="flex flex-col gap-4">
+              <Field label="Script ID or matric number">
+                <Input defaultValue="MK-000891" />
+              </Field>
+              <Field label="Reason for this lookup" required hint="This is recorded exactly as written">
+                <Input defaultValue="Confirming a name mismatch flagged in the exception queue" />
+              </Field>
+              <Button icon={Search} className="self-start">Look up</Button>
+            </div>
+          </Card>
 
-        <Card>
-          <CardHeader title="Result" action={<Badge tone="warning" icon={ScrollText}>Logged</Badge>} />
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between border-b border-border pb-3">
-              <span className="text-caption text-muted">Script</span>
-              <ScriptId id="MK-000891" />
+          <Card>
+            <CardHeader title="Result" action={<Badge tone="warning" icon={ScrollText}>Logged</Badge>} />
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <span className="text-caption text-muted">Script</span>
+                <ScriptId id="MK-000891" />
+              </div>
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <span className="text-caption text-muted">Student</span>
+                <span className="text-body font-medium text-text">Grace Obi</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-caption text-muted">Matric number</span>
+                <span className="text-body tabular-nums text-text">YCT/20/0745</span>
+              </div>
             </div>
-            <div className="flex items-center justify-between border-b border-border pb-3">
-              <span className="text-caption text-muted">Student</span>
-              <span className="text-body font-medium text-text">Grace Obi</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-caption text-muted">Matric number</span>
-              <span className="text-body tabular-nums text-text">YCT/20/0745</span>
-            </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
 
-        <Card pad={false}>
-          <div className="p-6 pb-4">
-            <CardHeader title="Recent lookups" sub="Every one of these, yours included, is permanent" />
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+          <div className="flex flex-col gap-6 px-8 py-6">
+            <div>
+              <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Recent lookups</h3>
+              <p className="text-[12px] leading-[18px] text-muted">Every lookup is permanent. Nothing here can be edited or removed.</p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              {LOOKUPS.map((l) => (
+                <div key={l.id} className="rounded-md border border-border bg-bg px-3 py-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <ScriptId id={l.id} />
+                    <span className="shrink-0 text-[11px] leading-4 text-muted tabular-nums">{l.when}</span>
+                  </div>
+                  <p className="mt-1 text-[12px] leading-[18px] text-muted">{l.by}</p>
+                  <p className="mt-0.5 text-[12px] leading-[18px] text-text line-clamp-2">{l.reason}</p>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-[12px] leading-[18px] text-muted">
+              <span className="tabular-nums font-medium text-text">2</span> of 13 lookups for this exam
+            </p>
           </div>
-          <Table head={["Script", "Looked up by", "Reason", "When"]}>
-            {LOOKUPS.map((l) => (
-              <tr key={l.id}>
-                <Td><ScriptId id={l.id} /></Td>
-                <Td className="text-muted">{l.by}</Td>
-                <Td className="text-muted">{l.reason}</Td>
-                <Td className="tabular-nums text-muted">{l.when}</Td>
-              </tr>
-            ))}
-          </Table>
-          <TablePagination
-            currentPage={1}
-            totalPages={10}
-            perPage={4}
-            perPageOptions={[4, 10, 25]}
-            onPageChange={() => {}}
-          />
-        </Card>
+        </div>
       </div>
     </RegistryShell>
   );

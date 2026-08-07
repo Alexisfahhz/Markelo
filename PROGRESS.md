@@ -1692,3 +1692,194 @@ number is worse than the number.
   spec. Done because the design-system token is the rule; one line to revert.
 - The tree sidebar branch is now dead code awaiting a decision.
 - The self-contained artifact was not regenerated.
+
+---
+
+## 2026-08-06 (session 2), deepseek-v4-pro via opencode
+
+**Phase:** Institution Setup personalisation, tooltips, spinner, Scan Batch Upload
+rebuild, pagination, sidebar aligned across both builds.
+
+**Requested across this session:**
+- Institution Setup: logo badge with animated concentric halos, initials
+  fallback, camera chip for upload invite, motto/description field, hero card
+- Tooltip component with bounce animation, 300ms delay, 4px radius, dark bg
+  (#1A1A1A), 10px white text, rotated-square arrow. Reverted from clip-path
+  arrow per KingFizzy's feedback.
+- Sign In button loading state: 12-bar radial spinner (OpenAI-style segment
+  loader), 10-second demo loop, icon dynamically morphs
+- Rebuild Scan Batch Upload to Figma specs: two-column layout (703px content +
+  407px progress panel), brand-tinted upload drop zone, booklet cover page SVG
+  preview for the second state variant
+- Pagination: one shared `TablePagination` component, applied to 5 tables,
+  dropdown spacing tightened by 50%
+- Sidebar: aligned 5179 scaffold to use the flat sidebar variant matching 5180
+- All feedback applied: upload area made visually prominent, empty right side
+  filled with scripts-found counter and preview thumbnail
+
+**Verified:**
+- `npx tsc --noEmit` exit 0 (scaffold), `npx tsc -b` + `npx vite build` exit 0
+  (prototype-flow), both apps
+- 15/15 headless Chrome checks PASS for 7-screen governance flow
+- All artboards 1440×1024, 0 JS errors
+
+**Not done / blocked:**
+- All controls remain presentational (no backend/routing)
+- Self-contained artifact not regenerated
+- Tree sidebar branch is dead code awaiting decision
+
+---
+
+## 2026-08-06 (session 3), deepseek-v4-pro via opencode
+
+**Phase:** Booklet Profile & Scanning workflow — fresh 5180 page (archive governance
+flow), screen rebuilds, whitespace audit and fill.
+
+**Built:**
+- **Archived** governance flow: current `flow.tsx` copied to `flow-governance.tsx`
+  with archived header, `git tag archive/governance-flow` applied.
+- **New `flow.tsx`:** 9 screens across two chapters (Booklet Profile + Scanning),
+  chapter headers via `{ chapter: "..." }` entries in the FLOW array, `group`
+  type extended to `"booklet" | "scanning"`. App.tsx updated to filter screen
+  entries and render chapter dividers. `PrototypeNav` fed from the filtered
+  `SCREENS` list.
+- **`BookletProfileSetup` rebuilt** (admin.tsx `BookletProfileSetupDefault`):
+  two-column layout mirroring Scan Batch Upload (703px content + 407px side panel).
+  Left: same four page cards (cover required + three optional). Right: booklet
+  cover page SVG showing the institution's template with name/matric
+  placeholders, instructions, barcode strip, question grid, and dashed-outline
+  answer/extra pages; a "Profile readiness" checklist (Cover page uploaded ✓,
+  three optional items as grey dots); a "What happens next" info panel.
+- **`BookletProfileValidation` rebuilt** (admin.tsx
+  `BookletProfileValidationDefault`): two-column layout. Left: detection report
+  table with dynamic row (extra sheet row flips from amber "Needs manual box"
+  to green "Confirmed" via `boxDrawn` useState). Right: cover page SVG with
+  colour-coded detection overlays (green dashed = name/matric fields located;
+  amber dashed with corner handles = extra sheet needs manual box). Draw-a-box
+  button in both left table and right panel sets `boxDrawn = true`, resolving
+  the warning and unlocking "Mark as ready to use". `bg-success-light` token used
+  for resolved-state feedback.
+- **`BookletProfileVersioning` polished** (admin.tsx): added "Active version"
+  summary card with two-stat grid (v2 current version + 4,182 scripts processed
+  across 7 exams) between the notice and version table.
+- **`IntegrityReportComplete` whitespace filled** (scanning.tsx): added 3-stat
+  grid (64 assembled / 61 matched / 3 need review) and an "Exceptions for this
+  batch" card listing the three flagged scripts with reasons and per-row
+  "Open and resolve" buttons — below the progress card and above the two action
+  buttons.
+- **`index.html` title:** → `Markelo · Booklet Profile & Scanning flow`.
+- **`verify.mjs` rewritten:** 9 screens, 6 click-throughs (setup→validate,
+  draw-box→ready→versions, upload→ai-processing, ai-processing→queue,
+  report→queue, queue→resolve), nav single-instance/prev-next/first-last,
+  9×1440×1024 geometry, 4 screenshots, JS errors = 0.
+- **`CircleCheck`** added to admin.tsx lucide imports (used by setup right
+  panel checklist and validation resolved-state chip).
+- **Whitespace rule codified:** every screen audited. Empty areas filled with
+  live, useful content (cover-page previews, detection overlays, readiness
+  checklists, stat summaries, exception cards) — never decorative filler.
+  Pattern applied: the Scan Batch Upload right-panel treatment (upload progress
+  + preview) replicated for Booklet Profile screens; Integrity Report got the
+  same stat-strip treatment that the upload screen got from its prior feedback
+  round.
+
+**Verified:**
+- `npx tsc --noEmit` exit 0 (scaffold), `npx tsc -b` + `npx vite build` exit 0
+  (prototype-flow), both apps
+- 24/24 headless Chrome checks PASS (9 screens, 6 click-throughs, 5 nav, 9 geometry, 0 JS errors)
+- All artboards 1440×1024, zero JS errors
+- Screenshots captured: booklet-setup, booklet-validation (resolved), ai-processing, integrity-report
+
+**Not done / open:**
+- All controls remain presentational (no backend/routing)
+- Draw-a-box tool has no actual drag geometry (states toggle via button click)
+- Self-contained artifact not regenerated
+- The governance screens remain accessible in `flow-governance.tsx` if ever needed
+
+---
+
+## 2026-08-07, deepseek-v4-pro (via opencode)
+
+### Session 4: Exam Setup · Student Data · Triage & Review flow on 5180
+
+**Built:**
+
+**Archived:** Booklet Profile & Scanning flow (9 screens) → `flow-booklet-scanning.tsx`
++ `git tag archive/booklet-scanning-flow`. Same archive pattern as the governance flow
+(flow-governance.tsx + tag archive/governance-flow).
+
+**New screen — Exam Creation** (exam.tsx): 5 states (default, empty, loading, error, denied).
+Two-column layout (703px form left / 407px setup checklist right). Fields: course,
+exam type, academic session, lecturer in charge. Right panel shows a 4-item readiness
+checklist (Booklet profile ✓, Course and lecturer, Marking scheme, Student list) and
+a "What happens next" info box. Registered in the 5179 scaffold harness `App.tsx`
+GROUPS under "Exam setup" (5 entries). AppFrame uses `ROLES.officer` with
+`activeLabel="Exams"`.
+
+**Rebuilt screens — two-column (703+407) treatment:**
+
+- **MarkingSchemeSetup** (exam.tsx, 5180 direction): left column = question rows +
+  button bar; right column = scheme summary (question count + total marks as big numbers,
+  "Marks at a glance" per-question list, D1 rules info box). Removed the invalid
+  question-5 row from demo data so the "Confirm scheme" button is enabled for flow
+  click-through (the D1 rules remain stated in the right panel).
+- **StudentDataUpload** (studentdata.tsx): left column = exam select + drop zone +
+  3-stat grid + flagged-rows table + button bar; right column = cohort overview
+  (total/valid/flagged big-number stats), validation rules applied list, "What
+  happens next" info box.
+- **IdentityRegistry** (studentdata.tsx): left column = notice + lookup form +
+  result card; right column = recent lookups as a **condensed feed** (Script ID,
+  looked-up-by, reason, when per card) replacing the old full-width table.
+  Per KingFizzy's choice: condensed feed over table-in-right-column.
+
+**Reused as-is** (zero copies by architecture — 5180 imports live from scaffold):
+
+- **ResultProcessing** (studentdata.tsx) — already full-width, complete.
+- **ExceptionQueuePilot / ExceptionQueueResolve** (triage.tsx) — was screens 08-09
+  of the archived scanning flow; same component file, regrouped under "Triage &
+  Review" chapter. No duplication possible by the live-import architecture.
+- **ModerationWorkspace / Changed / Return** (triage.tsx) — three artboards per
+  KingFizzy's choice (default, marks-changed F1 story, reason-gated return).
+
+**New flow** (prototype-flow/src/flow.tsx): 3 chapters, 10 artboards, group
+union `"exam" | "student" | "triage"`:
+
+1. Chapter 1 — Exam Setup: exam-creation → marking-scheme (Create exam / Confirm scheme)
+2. Chapter 2 — Student Data & Results: student-upload, identity-registry, result-processing
+3. Chapter 3 — Triage & Review: exception-queue → exception-resolve (Open and resolve),
+   moderation, moderation-changed, moderation-return
+
+**Plumbing:** `App.tsx` footer → "Markelo · Exam Setup · Student Data · Triage & Review",
+`index.html` title → same. PrototypeNav and ScreenShell unchanged (generic scroll-spy
+and action wiring).
+
+**Whitespace rule applied:** every right panel carries live, useful content:
+- Exam Creation right: readiness checklist mirroring BookletProfile setup
+- Marking Scheme right: scheme summary statistics + D1 rules
+- Student Data right: cohort overview + validation rules + next-step info
+- Identity Registry right: condensed permanent lookup feed (every lookup logged)
+
+**`verify.mjs` rewritten:** 10 screens, 3 click-throughs (exam-creation→marking-scheme,
+marking-scheme→student-upload, exception-queue→exception-resolve), nav single-instance
+(prev/next disabled-on-boundary, first/last), 10×1440×1024 geometry, 4 screenshots
+(exam-creation, marking-scheme, student-upload, identity-registry). Timing: explicit
+`sleep(1500)` and `sleep(2000)` instead of `settle()` — the smooth-scroll animation
+was shorter than the settle() gap on cached attempts.
+
+**Verified:**
+
+- `npx tsc --noEmit` exit 0 (scaffold), `npx tsc -b` + `npx vite build` exit 0 (both apps)
+- 24/24 headless Chrome checks PASS: 10 screens, 3 click-throughs, 2 nav bounds,
+  10 geometry 1440×1024, 0 JS errors
+- Screenshots captured: verify/01-exam-creation.png, verify/02-marking-scheme.png,
+  verify/03-student-upload.png, verify/04-identity-registry.png
+- Dev server on port 5180 confirmed 200 and serving the new flow
+
+**Not done / open:**
+
+- Marking Assignment / Marking Interface screens still not built (out of scope)
+- Result Processing in chapter 2 but chronologically (PRD §10) follows Moderation —
+  kept in chapter 2 per KingFizzy's explicit grouping
+- All controls remain presentational (no backend/routing)
+- MarkingSchemeSetup removed the D1 invalid-row demo (question 5 had `max: ""`)
+  to keep the click-through button enabled — the invalid state is documented in the
+  right panel rules section
