@@ -138,9 +138,28 @@ resolves to a **1200px content area and a 78px column**. The 1440 frame width is
 *inferred* from those numbers landing cleanly. It is not stated anywhere, so
 treat it as ASSUMED.
 
-**Markelo is DESKTOP ONLY.** Ruled by KingFizzy on 28 July. There is no tablet
-grid, no mobile grid, and **no breakpoints**. Do not add a second grid, and do
-not propose responsive behaviour. This closes what used to be open question 1.
+**REVERSED 10 August 2026. Markelo now supports desktop AND tablet.** The
+28 July desktop-only ruling stood for two weeks and is superseded by KingFizzy's
+instruction to add tablet breakpoints across every screen.
+
+There is **one** breakpoint, tablet, covering **768px to 1023px**. Phones remain
+out of scope and there is still no mobile grid; do not add a third breakpoint.
+
+| Property | Desktop | Tablet |
+|---|---|---|
+| Range | 1024px and up | 768px to 1023px |
+| Columns | 12 | **8** |
+| Margin | 120px | **32px** |
+| Gutter | 24px | 24px, unchanged |
+| Sidebar | 236px | **72px icon rail** |
+| Column at range floor | 78px at 1440 | 67px at 768 |
+
+The sidebar collapses because at 768 the full 236px sidebar leaves only **468px**
+of usable content, narrower than most phones in landscape, on a product built
+around wide tables.
+
+**Authoring rule:** the codebase is desktop-first. Add `max-lg:` overrides. Never
+rewrite existing classes into a mobile-first order.
 
 **In code:** `--grid-columns`, `--grid-margin`, `--grid-gutter` in
 `src/index.css`, plus a `.page-grid` utility, `.col-1` … `.col-12` spans, and a
@@ -249,7 +268,10 @@ gap. Say so. Do not invent a one-off value.
 **Layout.** Every full-canvas screen binds to the Desktop Grid, 12 columns,
 120px margin, 24px gutter, stretch. Use `.page-grid` and the `.col-N` spans.
 Add `data-grid` temporarily to check alignment against Figma, then remove it.
-**Desktop only. Never add a breakpoint or a mobile layout.**
+**Desktop and tablet. Never add a phone layout or a third breakpoint.** Tablet is
+768 to 1023, 8 columns, 32px margin, and it is expressed with `max-lg:` overrides
+on top of the desktop classes, never by rewriting them mobile-first. Full table in
+section 3.
 
 **Icons, Lucide only.** `lucide-react`. Not Tabler, not Feather, not Material,
 not a mix. Sizes are fixed:
@@ -304,8 +326,9 @@ Phases are ordered by dependency. Do not skip ahead, phase 1 blocks everything.
 Done in Figma by KingFizzy. **Do not redo this and do not invent alternatives
 to it.**
 
-1. ✅ **Desktop Grid**, 12 / stretch / 120 margin / 24 gutter. Desktop only,
-   no breakpoints. Full spec in section 3.
+1. ✅ **Desktop Grid**, 12 / stretch / 120 margin / 24 gutter. Joined by a
+   **Tablet Grid** on 10 August, 8 / 32 margin / 24 gutter, 768 to 1023.
+   Full spec in section 3.
 2. ✅ **Input fields and forms**
 3. ✅ **Tables**
 4. ✅ **Modals**
@@ -395,8 +418,9 @@ Do not build these. They are deliberately deferred by the PRD.
 
 Do not guess at these. Ask KingFizzy, or state the assumption you made.
 
-1. ~~Minimum supported screen width.~~ **CLOSED 28 July**, desktop only, no
-   breakpoints, Desktop Grid confirmed. See section 3.
+1. ~~Minimum supported screen width.~~ **CLOSED 28 July as desktop only, then
+   REOPENED AND RE-CLOSED 10 August.** Minimum supported width is now **768px**.
+   One tablet breakpoint, 768 to 1023; phones remain out of scope. See section 3.
 2. ~~Does the 120px page margin apply inside the app shell?~~ **CLOSED 10 August
    2026 by KingFizzy.** It does not. The app shell gets a **32px content inset**,
    and the sidebar gets a **12px inner margin**. The 120px page margin now applies

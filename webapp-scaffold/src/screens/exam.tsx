@@ -73,8 +73,8 @@ export function ExamCreationScreen() { return <ExamCreationScreenDefault />; }
 function ExamCreationScreenDefault() {
   return (
     <AppFrame role={ROLES.officer} activeLabel="Exams" title="Create an exam" sub="Set up a new exam record so Markelo knows what it is marking">
-      <div className="flex gap-0" style={{ minHeight: "calc(100vh - 120px)" }}>
-        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+      <div className="flex gap-0 max-lg:flex-col" style={{ minHeight: "calc(100vh - 120px)" }}>
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6 max-lg:max-w-none" style={{ maxWidth: "min(703px, 100%)" }}>
           <Notice tone="brand" title="Create the record first, everything else follows">
             The marking scheme and student list are attached to this exam record. Create it once, then
             set those up, and scanning can begin.
@@ -120,7 +120,7 @@ function ExamCreationScreenDefault() {
           </div>
         </div>
 
-        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white max-lg:w-full max-lg:border-l-0 max-lg:border-t">
           <div className="flex flex-col gap-6 px-8 py-6">
             <div>
               <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Exam setup checklist</h3>
@@ -250,8 +250,8 @@ export function MarkingSchemeSetup() { return <MarkingSchemeSetupDefault />; }
 function MarkingSchemeSetupDefault() {
   return (
     <AppFrame role={ROLES.officer} activeLabel="Marking scheme" title="Marking scheme" sub="Set the maximum mark for each question">
-      <div className="flex gap-0" style={{ minHeight: "calc(100vh - 120px)" }}>
-        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+      <div className="flex gap-0 max-lg:flex-col" style={{ minHeight: "calc(100vh - 120px)" }}>
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6 max-lg:max-w-none" style={{ maxWidth: "min(703px, 100%)" }}>
           <Notice tone="brand" title="No rubric builder in V1">
             Set only the question number and its maximum mark. Marking cannot begin until every
             question has a mark greater than zero.
@@ -284,7 +284,7 @@ function MarkingSchemeSetupDefault() {
           </div>
         </div>
 
-        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white max-lg:w-full max-lg:border-l-0 max-lg:border-t">
           <div className="flex flex-col gap-6 px-8 py-6">
             <div>
               <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Scheme summary</h3>

@@ -173,7 +173,7 @@ function MarkingProgressTeam() {
   return (
     <AppFrame role={ROLES.lecturer} activeLabel="Marking progress" title="Marking progress" sub="How your class is moving, marker by marker">
       <div className="flex flex-col gap-6">
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2">
           <Stat label="Scripts marked" value={totalMarked} sub={`of ${totalAssigned} assigned`} icon={ChartNoAxesColumn} />
           <Stat label="Remaining" value={totalAssigned - totalMarked} icon={Timer} />
           <Stat label="Markers on pace" value="3 of 4" tone="success" icon={CircleCheckBig} />
@@ -209,7 +209,7 @@ export function MarkingProgressOwn() {
   return (
     <AppFrame role={ROLES.ta} activeLabel="Marking progress" title="Marking progress" sub="Your own pace">
       <div className="flex flex-col gap-6 max-w-2xl">
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2">
           <Stat label="Assigned to you" value={120} icon={PenLine} />
           <Stat label="Marked" value={82} tone="success" icon={CircleCheckBig} />
           <Stat label="Remaining" value={38} icon={Timer} />

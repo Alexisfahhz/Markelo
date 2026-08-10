@@ -452,9 +452,9 @@ export function BookletProfileSetup() { return <BookletProfileSetupDefault />; }
 function BookletProfileSetupDefault() {
   return (
     <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet profile" sub="Teach Markelo what your answer booklet looks like">
-      <div className="flex gap-0">
+      <div className="flex gap-0 max-lg:flex-col">
         {/* Left column — 703px content */}
-        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6 max-lg:max-w-none" style={{ maxWidth: "min(703px, 100%)" }}>
           <Notice tone="brand" title="Only your cover page is required">
             The normal answer page, extra sheet, and continuation sheet are optional. If you skip them,
             Markelo will still work. It just cannot recognise those page types automatically.
@@ -502,7 +502,7 @@ function BookletProfileSetupDefault() {
         </div>
 
         {/* Right column — 407px side panel */}
-        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white max-lg:w-full max-lg:border-l-0 max-lg:border-t">
           <div className="flex flex-col gap-6 px-8 py-6">
             <div>
               <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Cover page preview</h3>
@@ -683,9 +683,9 @@ function BookletProfileValidationDefault() {
 
   return (
     <AppFrame role={ROLES.admin} activeLabel="Booklet profile" title="Booklet profile validation" sub="Markelo checked what it could detect from your pages">
-      <div className="flex gap-0">
+      <div className="flex gap-0 max-lg:flex-col">
         {/* Left column — 703px content */}
-        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6 max-lg:max-w-none" style={{ maxWidth: "min(703px, 100%)" }}>
           <Notice tone={boxDrawn ? "success" : "warning"} title={boxDrawn ? "All fields resolved" : "One field still needs your attention"}>
             {boxDrawn
               ? "Markelo read your cover page and located every field. This profile is ready to be marked as the active version."
@@ -721,7 +721,7 @@ function BookletProfileValidationDefault() {
         </div>
 
         {/* Right column — 407px side panel with detection overlay */}
-        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white max-lg:w-full max-lg:border-l-0 max-lg:border-t">
           <div className="flex flex-col gap-6 px-8 py-6">
             <div>
               <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Detection overlay</h3>

@@ -63,8 +63,8 @@ export function StudentDataUpload() { return <StudentDataUploadDefault />; }
 function StudentDataUploadDefault() {
   return (
     <UploadShell>
-      <div className="flex gap-0" style={{ minHeight: "calc(100vh - 120px)" }}>
-        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+      <div className="flex gap-0 max-lg:flex-col" style={{ minHeight: "calc(100vh - 120px)" }}>
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6 max-lg:max-w-none" style={{ maxWidth: "min(703px, 100%)" }}>
           <Notice tone="brand" title="Handles a full cohort in about a minute">
             Upload the student list for this exam as a spreadsheet. Markelo checks every row, an
             institution's full exam cohort, 5,000 records or more, validates in about a minute.
@@ -96,7 +96,7 @@ function StudentDataUploadDefault() {
                 <p className="mt-1 text-[12px] leading-[18px] text-muted">CSV or Excel, one row per student</p>
                 <Button className="mt-4" variant="secondary" icon={FileUp}>Choose file</Button>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2">
                 <Stat label="Total records" value="4,812" icon={FileSpreadsheet} />
                 <Stat label="Valid" value="4,808" tone="success" icon={Check} />
                 <Stat label="Need attention" value={4} tone="warning" icon={X} />
@@ -133,7 +133,7 @@ function StudentDataUploadDefault() {
           </div>
         </div>
 
-        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white max-lg:w-full max-lg:border-l-0 max-lg:border-t">
           <div className="flex flex-col gap-6 px-8 py-6">
             <div>
               <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Cohort overview</h3>
@@ -287,8 +287,8 @@ export function IdentityRegistry() { return <IdentityRegistryDefault />; }
 function IdentityRegistryDefault() {
   return (
     <RegistryShell>
-      <div className="flex gap-0" style={{ minHeight: "calc(100vh - 120px)" }}>
-        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+      <div className="flex gap-0 max-lg:flex-col" style={{ minHeight: "calc(100vh - 120px)" }}>
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6 max-lg:max-w-none" style={{ maxWidth: "min(703px, 100%)" }}>
           <Notice tone="warning" title="The only place a name appears">
             Every lookup here is logged with your name, the record you looked at, and the reason you
             gave. This never appears on a marking or moderation screen.
@@ -326,7 +326,7 @@ function IdentityRegistryDefault() {
           </Card>
         </div>
 
-        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white max-lg:w-full max-lg:border-l-0 max-lg:border-t">
           <div className="flex flex-col gap-6 px-8 py-6">
             <div>
               <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Recent lookups</h3>
@@ -461,7 +461,7 @@ function ResultProcessingDefault() {
           file is generated, not shown on this screen.
         </Notice>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2">
           <Stat label="Ready to export" value={426} icon={FileCheck2} />
           <Stat label="Moderation complete" value={426} tone="success" icon={Check} />
           <Stat label="Manual overrides" value={1} tone="warning" icon={PenLine} />

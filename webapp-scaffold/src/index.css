@@ -135,6 +135,21 @@
   */
   --content-inset: 32px;
   --sidebar-inset: 12px;
+
+  /*
+    ---- Tablet ---- ADDED 10 August 2026. KingFizzy reversed the desktop-only
+    ruling of 28 July and asked for tablet support.
+
+    One breakpoint, 768 to 1023. Phones remain out of scope.
+
+    The sidebar collapses to a 72px icon rail here, because at 768 the full
+    236px sidebar leaves 468px of usable content, narrower than a phone in
+    landscape, on a product built around wide tables.
+  */
+  --tablet-columns: 8;
+  --tablet-margin: 32px;
+  --tablet-gutter: 24px;      /* unchanged from desktop, deliberately */
+  --sidebar-width-tablet: 72px;
 }
 
 /*
@@ -239,6 +254,16 @@ body {
   width: 100%;
 }
 
+@media (max-width: 1023px) {
+  .page-grid {
+    grid-template-columns: repeat(var(--tablet-columns), minmax(0, 1fr));
+    column-gap: var(--tablet-gutter);
+    padding-inline: var(--tablet-margin);
+  }
+  /* Spans wider than the tablet column count would overflow the grid. */
+  .col-9, .col-10, .col-11, .col-12 { grid-column: span 8; }
+}
+
 .col-1  { grid-column: span 1; }
 .col-2  { grid-column: span 2; }
 .col-3  { grid-column: span 3; }
@@ -320,6 +345,19 @@ body {
     transparent 0,
     transparent calc(((100% - (var(--grid-columns) - 1) * var(--grid-gutter)) / var(--grid-columns)) + var(--grid-gutter))
   );
+}
+
+@media (max-width: 1023px) {
+  .page-grid[data-grid]::before {
+    inset-inline: var(--tablet-margin);
+    background: repeating-linear-gradient(
+      to right,
+      rgb(255 0 0 / 0.1) 0,
+      rgb(255 0 0 / 0.1) calc((100% - (var(--tablet-columns) - 1) * var(--tablet-gutter)) / var(--tablet-columns)),
+      transparent 0,
+      transparent calc(((100% - (var(--tablet-columns) - 1) * var(--tablet-gutter)) / var(--tablet-columns)) + var(--tablet-gutter))
+    );
+  }
 }
 
 .uppercase-label {

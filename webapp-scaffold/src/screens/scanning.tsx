@@ -69,9 +69,9 @@ function UploadShell({ children, role = ROLES.officer }: { children: React.React
 export function ScanBatchUpload() {
   return (
     <UploadShell>
-      <div className="flex gap-0">
+      <div className="flex gap-0 max-lg:flex-col">
         {/* Left column — Figma: 703px content width */}
-        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6 max-lg:max-w-none" style={{ maxWidth: "min(703px, 100%)" }}>
           <Notice tone="brand" title="Scan in whatever order the booklets are in">
             You do not need to sort the stack by name or matric number first. Markelo reads each cover
             page and assembles every student's script for you.
@@ -144,7 +144,7 @@ export function ScanBatchUpload() {
         </div>
 
         {/* Right column — upload progress panel */}
-        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white max-lg:w-full max-lg:border-l-0 max-lg:border-t">
           <div className="flex flex-col gap-6 px-8 py-6">
             <div>
               <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Upload progress</h3>
@@ -200,8 +200,8 @@ export function ScanBatchUpload() {
 export function ScanBatchUploadWithPreview() {
   return (
     <UploadShell>
-      <div className="flex gap-0">
-        <div className="flex flex-1 flex-col gap-6 px-8 py-6" style={{ maxWidth: 703 }}>
+      <div className="flex gap-0 max-lg:flex-col">
+        <div className="flex flex-1 flex-col gap-6 px-8 py-6 max-lg:max-w-none" style={{ maxWidth: "min(703px, 100%)" }}>
           <Notice tone="brand" title="Scan in whatever order the booklets are in">
             You do not need to sort the stack by name or matric number first. Markelo reads each cover
             page and assembles every student's script for you.
@@ -266,7 +266,7 @@ export function ScanBatchUploadWithPreview() {
         </div>
 
         {/* Right panel — with booklet cover page preview */}
-        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white">
+        <div className="flex w-[407px] shrink-0 flex-col border-l border-border bg-white max-lg:w-full max-lg:border-l-0 max-lg:border-t">
           <div className="flex flex-col gap-6 px-8 py-6">
             <div>
               <h3 className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Upload progress</h3>
@@ -596,7 +596,7 @@ export function IntegrityReportComplete() {
           </div>
         </Card>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-3 max-lg:grid-cols-2">
           <Card>
             <div className="text-center">
               <p className="text-[12px] leading-[18px] text-muted">Assembled</p>

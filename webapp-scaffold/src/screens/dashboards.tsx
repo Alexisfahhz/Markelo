@@ -52,7 +52,7 @@ export function DashOfficer() {
           and confirm each one.
         </Notice>
 
-        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4 max-lg:grid-cols-2">
           <Stat label="Exams this session" value={7} sub="3 still being marked" icon={ClipboardList} />
           <Stat label="Scripts processed" value="4,182" sub="of 4,196 scanned" icon={FileStack} />
           <Stat label="Needs your review" value={14} sub="in the exception queue" tone="warning" icon={TriangleAlert} />
@@ -103,7 +103,7 @@ export function DashOfficer() {
             <CardHeader title="Latest scan batch" sub="CSC 401, uploaded 14 minutes ago" />
             <div className="flex flex-col gap-3">
               <Progress value={412} max={426} />
-              <div className="grid grid-cols-3 gap-3 text-center">
+              <div className="grid grid-cols-3 gap-3 text-center max-lg:grid-cols-2">
                 <div>
                   <p className="text-card font-semibold tabular-nums text-success">398</p>
                   <p className="text-caption text-muted">Accepted</p>
@@ -192,7 +192,7 @@ export function DashLecturer() {
           <Button size="xl" icon={PenLine}>Continue marking</Button>
         </Card>
 
-        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4 max-lg:grid-cols-2">
           <Stat label="Assigned to you" value={62} sub="24 marked" icon={PenLine} />
           <Stat label="Assigned to your TAs" value={326} sub="across 3 assistants" icon={Users} />
           <Stat label="Flagged for you" value={3} sub="a TA asked for your view" tone="warning" icon={Flag} />
@@ -290,7 +290,7 @@ export function DashTa() {
           <Button size="xl" icon={PenLine}>Start marking</Button>
         </Card>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2">
           <Stat label="Assigned to you" value={120} icon={PenLine} />
           <Stat label="Marked" value={82} sub="saved on this device" tone="success" icon={CircleCheckBig} />
           <Stat label="Waiting to upload" value={9} sub="will send automatically" tone="warning" icon={Timer} />
@@ -334,7 +334,7 @@ export function DashModerator() {
       heldRoles={["moderator", "lecturer"]}
     >
       <div className="flex flex-col gap-6">
-        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4 max-lg:grid-cols-2">
           <Stat label="Waiting for you" value={21} sub="sampled scripts" tone="warning" icon={ShieldCheck} />
           <Stat label="Approved this week" value={186} icon={CircleCheckBig} />
           <Stat label="Returned to markers" value={7} sub="all with a reason" icon={Undo2} />
@@ -425,7 +425,7 @@ export function DashAdmin() {
           the account.
         </Notice>
 
-        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4 max-lg:grid-cols-2">
           <Stat label="Active accounts" value={48} icon={Users} />
           <Stat label="Waiting for a role" value={2} tone="warning" icon={UserPlus} />
           <Stat label="Courses active" value={14} sub="of 18 added" icon={Building2} />
@@ -526,7 +526,7 @@ export function DashManagement() {
   return (
     <AppFrame role={ROLES.management} title="Dashboard" sub="Examinations across the institution">
       <div className="flex flex-col gap-6">
-        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4 max-lg:grid-cols-2">
           <Stat label="Exams this session" value={41} sub="across 6 departments" icon={ClipboardList} />
           <Stat label="Results finalised" value="18" sub="44% of the session" icon={FileCheck2} />
           <Stat label="Average scan to result" value="9 days" sub="baseline was 31 days" tone="success" icon={Timer} />
