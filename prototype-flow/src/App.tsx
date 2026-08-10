@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FLOW, FlowScreen } from "./flow";
 import { ScreenShell } from "./components/ScreenShell";
-import { PrototypeNav } from "./components/PrototypeNav";
 
 /*
-  Markelo prototype flow, Exam Setup · Student Data · Triage & Review.
+  Markelo prototype flow, batch 1: Institution & governance, then Booklet profile.
 
-  Every screen sits on one long vertical canvas, one viewport each. There is
-  no routing, movement is smooth scrolling between artboards.
-
-  The floating prototype navigation is app-level (one instance, scroll-spied),
-  so it can never stack or shadow itself.
+  Every screen sits on one long vertical canvas at the 1440 Desktop Grid frame,
+  one artboard each. There is no routing and no floating navigation: movement is
+  by the per-screen trigger points ScreenShell renders in each artboard's margin
+  (see ScreenShell for why the floating nav was removed).
 */
 function isScreen(entry: (typeof FLOW)[number]): entry is FlowScreen {
   return "id" in entry;
@@ -19,58 +17,40 @@ function isScreen(entry: (typeof FLOW)[number]): entry is FlowScreen {
 const SCREENS = FLOW.filter(isScreen);
 
 export default function App() {
-  const [currentId, setCurrentId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const ids = SCREENS.map((s) => s.id);
-    let ticking = false;
-
-    const spy = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const mid = window.scrollY + window.innerHeight * 0.5;
-        let found: string | null = null;
-        for (const id of ids) {
-          const el = document.getElementById(id);
-          if (!el) continue;
-          const top = el.getBoundingClientRect().top + window.scrollY;
-          if (top <= mid) found = id;
-        }
-        setCurrentId(found);
-        ticking = false;
-      });
-    };
-
-    spy();
-    window.addEventListener("scroll", spy, { passive: true });
-    return () => window.removeEventListener("scroll", spy);
-  }, []);
-
   return (
     <div className="bg-bg text-text">
-      {FLOW.map((entry, i) =>
-        isScreen(entry) ? (
-          <ScreenShell key={entry.id} screen={entry} index={SCREENS.indexOf(entry)} />
-        ) : (
-          <section key={`ch-${i}`} className="scroll-mt-0">
-            <div className="flex flex-col items-center gap-1.5 py-3">
-              <div className="flex items-center gap-3">
-                <span className="h-px w-40 bg-border" aria-hidden />
-                <p className="shrink-0 text-label uppercase tracking-[0.14em] text-brand">{entry.chapter}</p>
-                <span className="h-px w-40 bg-border" aria-hidden />
+      {FLOW.map((entry, i) => {
+        if (!isScreen(entry)) {
+          return (
+            <section key={`ch-${i}`} className="scroll-mt-0">
+              <div className="flex flex-col items-center gap-1.5 pt-10 pb-2">
+                <div className="flex items-center gap-3">
+                  <span className="h-px w-40 bg-border" aria-hidden />
+                  <p className="shrink-0 text-label uppercase tracking-[0.14em] text-brand">{entry.chapter}</p>
+                  <span className="h-px w-40 bg-border" aria-hidden />
+                </div>
               </div>
-            </div>
-          </section>
-        )
-      )}
-      {currentId && <PrototypeNav flow={SCREENS} currentId={currentId} />}
+            </section>
+          );
+        }
+        const si = SCREENS.indexOf(entry);
+        return (
+          <ScreenShell
+            key={entry.id}
+            screen={entry}
+            index={si}
+            prev={si > 0 ? SCREENS[si - 1] : null}
+            next={si < SCREENS.length - 1 ? SCREENS[si + 1] : null}
+          />
+        );
+      })}
+
       <div className="flex flex-col items-center gap-1.5 py-12">
         <p className="text-label uppercase tracking-[0.12em] text-muted">
           End of prototype, {SCREENS.length} screens
         </p>
         <p className="text-caption text-muted">
-          Markelo · Exam Setup · Student Data · Triage & Review · presentation layer only, no routing or backend
+          Markelo · Institution &amp; governance · Booklet profile · default states only · presentation layer, no routing or backend
         </p>
       </div>
     </div>
