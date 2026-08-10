@@ -1883,3 +1883,87 @@ was shorter than the settle() gap on cached attempts.
 - MarkingSchemeSetup removed the D1 invalid-row demo (question 5 had `max: ""`)
   to keep the click-through button enabled — the invalid state is documented in the
   right panel rules section
+
+---
+
+## 2026-08-10, claude-opus-5
+
+### Session 5: audit against the Definition of Done, then four rulings applied
+
+**Phase:** cross-cutting, no new screens.
+
+**Audited** all 138 screens against section 8 of IMPLEMENTATION_PLAN.md. Method:
+static sweep of `screens/` and `ui/`, plus a live pass stepping every harness
+position with `console.error`, `window.onerror` and `unhandledrejection`
+instrumented.
+
+**Passed, verified not assumed:**
+
+- **The identity rule holds.** All 42 identity mentions checked one by one. Each
+  is an Exam Officer surface where a name is meant to appear, a permission-denied
+  notice explaining to a marker why they cannot see it, or a description of what
+  failed to read ("the matric number could not be read") rather than a value.
+- **Attention box** matches the standing rule exactly: flat tinted fill, no left
+  accent bar, `rounded-control`, neutral text, icon forced on for
+  success/warning/error via `iconRequired`.
+- `tsc` 0 both apps, `vite build` clean both apps, **0 console errors and 0 blank
+  screens across all 138 screens**.
+- Global focus ring: `2px solid var(--color-brand)` at `outline-offset: 2px`.
+
+**Found and fixed this session:**
+
+- **61 raw hex values in classNames, now 0.** Five were hardcodes of tokens that
+  already existed (`#1A56A0`, `#E8F1FB`, `#1A1A1A`, `#0C3D7A`, `#F5F5F5`) and were
+  swapped. Five were a real, coherent sidebar family with no tokens, and are now
+  tokens on KingFizzy's instruction: `--color-nav-label`, `--color-nav-brand`,
+  `--color-nav-strong`, `--color-nav-active`. Each was measured against the
+  `#0c3d7a` sidebar ground before naming (4.98, 8.30, 10.42, and 2.38 for the
+  active pill, which is a surface carrying white text at 4.49).
+- **Two greens collapsed rather than added.** `#EBF5ED` sits 2/255 mean per
+  channel from `--color-success-light`, below perceptual threshold, so adding it
+  would have put two near-identical greens in the Figma collection. Mapped to the
+  existing success pair instead. One line to revert if KingFizzy disagrees.
+- **`ScanBatchUploadWithPreview` was reachable in neither app.** Built and
+  exported, but referenced only from two archived flow files, so absent from the
+  5179 `GROUPS` array and from the active `flow.tsx`. Registered in both. The 5180
+  flow gains a Scanning chapter placed before Triage & Review, because scanning is
+  what produces the exceptions that chapter triages.
+- **Harness footer said "Phase 1 to 3"** while serving a Phase 4 group. Now 1 to 4.
+
+**Rulings applied (KingFizzy, 2026-08-10):**
+
+- Open question 2 is CLOSED. App shell content inset **32px**, sidebar inner
+  margin **12px**, 120px page margin reserved for full-canvas screens. Both are
+  tokens and both go into the Figma grid system.
+- The six dashboards do **not** need their remaining four states for now. He will
+  say when other states are wanted. Section 8 still says a default-only screen is
+  incomplete; this is a deliberate exception, not drift.
+
+**A mistake worth recording.** The first pass wrote the sidebar padding as
+`px-[--sidebar-inset]`, which is Tailwind v3 syntax. v4 drops it silently, so the
+sidebar rendered at **0px padding** and both the typecheck and the build passed.
+Only sampling `paddingLeft` in the live DOM caught it. Correct form is
+`px-[var(--sidebar-inset)]`. A bulk replace had also applied the token to a
+horizontal tab button, which is not the sidebar; reverted to `px-3`.
+
+**Verified after the fixes:** `tsc` 0 and clean build both apps; live sample on
+screen 108 of 139 gives sidebar padding 12px/12px, content inset 32px/32px,
+sidebar ground `rgb(12,61,122)`, nav label `rgb(143,180,224)`, wordmark
+`rgb(219,226,253)`, active pill `rgb(74,118,196)`, signed-in name
+`rgb(251,252,255)`. Every token resolves to its declared value.
+
+**Not done / blocked:**
+
+- **252 arbitrary pixel values** remain in classNames. Not touched this session:
+  unlike the hex, many encode traced Figma measurements (`h-[38.39px]`,
+  `py-[7.28px]`) and collapsing them to a spacing scale is a design decision, not
+  a mechanical swap. Needs KingFizzy or Alex to rule on the scale first.
+- **19 responsive breakpoints** in 4 files (11 in `dashboards.tsx`), against the
+  desktop-only rule. Mechanical, not done, no ruling needed.
+- **25 em dashes**, against the standing ban. 409 were removed on 2026-07-29;
+  these are new since.
+- **12 off-table icon sizes** (11, 15, 22, 24, 26, 30).
+- **Four off-scale control heights**: one `h-12` at `auth.tsx:171`, the retired
+  48px `lg`; plus two `h-9` and one `h-[42px]`.
+- **Marking Interface and Answer Viewer still not built.** Marking Assignment and
+  Marking Progress ARE built, contrary to what CURRENT.md said before today.

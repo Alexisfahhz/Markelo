@@ -35,6 +35,28 @@
   --color-on-dark: #f0f4fa;        /* neutral/text-on-dark */
   --color-border-control: #8a8a8a; /* control boundary, WCAG 3:1-passing grey */
 
+  /*
+    ---- Sidebar scale ---- ADDED 10 August 2026 on KingFizzy's instruction.
+
+    These five values were already in the built sidebar as raw hex. They are a
+    real, coherent family, not stray one-offs, so they are tokens now rather
+    than being swapped for an approximate existing colour. Every one was
+    measured against the #0c3d7a sidebar ground before being named:
+
+      nav-label   4.98:1   nav item and icon at rest, and the footer divider
+      nav-brand   8.30:1   the mark and the Markelo wordmark
+      nav-strong 10.42:1   the signed-in person's name, the strongest thing here
+      nav-active  2.38:1   active pill and the active indicator bar
+
+    nav-active is a SURFACE, not text, so 2.38:1 is not a failure: the label on
+    top of it is white, which measures 4.49:1 and passes AA. Do not put grey or
+    nav-label text on nav-active.
+  */
+  --color-nav-label: #8fb4e0;
+  --color-nav-brand: #dbe2fd;
+  --color-nav-strong: #fbfcff;
+  --color-nav-active: #4a76c4;
+
   /* status-badge text tokens (paired colours from the PDF) */
   --color-badge-graded-text: #1a7a4a;
   --color-badge-progress-text: #0c3d7a;
@@ -96,16 +118,23 @@
   /*
     The app shell is NOT on the page grid. The sidebar is fixed chrome that sits
     outside every grid, and the content region beside it gets its own inset.
-    Ruled by KingFizzy 28 July 2026.
 
-      Sidebar        236px, fixed
-      Content inset   32px, left and right
-      Gutter          24px, same as the page grid
+    RULED BY KINGFIZZY 10 AUGUST 2026, and going into the Figma grid system.
+    This closes open question 2 in IMPLEMENTATION_PLAN.md, which had been open
+    since 28 July. The 32px content inset was a placeholder the scaffold had
+    been guessing with; it is now the decision. The 120px page margin applies
+    to full-canvas screens only (sign-in, onboarding) and never inside the shell.
+
+      Sidebar          236px, fixed
+      Sidebar inset     12px, left and right, inside the sidebar
+      Content inset     32px, left and right, beside the sidebar
+      Gutter            24px, same as the page grid
 
     At a 1440 frame: 1440 − 236 = 1204 content region, − 64 inset = 1140,
     − (11 × 24 gutters) = 876, ÷ 12 = a clean 73px column.
   */
   --content-inset: 32px;
+  --sidebar-inset: 12px;
 }
 
 /*

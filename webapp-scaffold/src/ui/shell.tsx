@@ -244,15 +244,15 @@ function FlatSidebar({
   const activeGroup = groupOf(activeLabel);
 
   return (
-    <nav className="flex w-[236px] shrink-0 flex-col bg-[#0C3D7A]">
+    <nav className="flex w-[236px] shrink-0 flex-col bg-brand-dark">
       {/* Logo + Working as — Figma: 136.77px top section */}
-      <div className="flex flex-col gap-4 px-3 py-4">
+      <div className="flex flex-col gap-4 px-[var(--sidebar-inset)] py-4">
         <span className="inline-flex items-center gap-2">
-          <MarkeloMark className="h-6 w-auto text-[#DBE2FD]" />
-          <span className="text-[16px] font-extrabold leading-6 tracking-[0.01em] text-[#DBE2FD]">Markelo</span>
+          <MarkeloMark className="h-6 w-auto text-nav-brand" />
+          <span className="text-[16px] font-extrabold leading-6 tracking-[0.01em] text-nav-brand">Markelo</span>
         </span>
         <div className="rounded-lg bg-white/[0.08] px-3 py-[7.28px]">
-          <p className="text-[10px] font-semibold leading-4 tracking-[-0.01em] text-[#8FB4E0]">WORKING AS</p>
+          <p className="text-[10px] font-semibold leading-4 tracking-[-0.01em] text-nav-label">WORKING AS</p>
           <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-white">{role.title}</p>
         </div>
       </div>
@@ -270,24 +270,24 @@ function FlatSidebar({
 
           return (
             <li key={group.label ?? `g${gi}`} className={`flex h-[38.39px] w-full items-center gap-2 ${locked ? "opacity-50" : ""}`}>
-              <span aria-hidden className={`h-6 w-1 shrink-0 rounded-r-[4px] ${active && !locked ? "bg-[#4A76C4]" : "bg-transparent"}`} />
+              <span aria-hidden className={`h-6 w-1 shrink-0 rounded-r-[4px] ${active && !locked ? "bg-nav-active" : "bg-transparent"}`} />
               <a
                 href="#"
                 onClick={(e) => e.preventDefault()}
                 aria-current={active && !locked ? "page" : undefined}
                 aria-disabled={locked || undefined}
                 className={`flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 ${
-                  active && !locked ? "bg-[#4A76C4]" : locked ? "" : "hover:bg-white/[0.06]"
+                  active && !locked ? "bg-nav-active" : locked ? "" : "hover:bg-white/[0.06]"
                 }`}
               >
-                <Icon size={16} strokeWidth={1.33} className={`shrink-0 ${active && !locked ? "text-white" : "text-[#8FB4E0]"}`} aria-hidden />
+                <Icon size={16} strokeWidth={1.33} className={`shrink-0 ${active && !locked ? "text-white" : "text-nav-label"}`} aria-hidden />
                 <span className={`min-w-0 flex-1 truncate text-[14px] tracking-[-0.01em] leading-6 ${
-                  active && !locked ? "font-bold text-white" : "font-semibold text-[#8FB4E0]"
+                  active && !locked ? "font-bold text-white" : "font-semibold text-nav-label"
                 }`}>{label}</span>
               </a>
               {locked && (
                 <span className="mr-3 flex h-[38.39px] w-[40px] shrink-0 items-center justify-center">
-                  <UserLock size={16} strokeWidth={1} className="text-[#8FB4E0]" aria-label="You do not have access to this" />
+                  <UserLock size={16} strokeWidth={1} className="text-nav-label" aria-label="You do not have access to this" />
                 </span>
               )}
             </li>
@@ -296,10 +296,10 @@ function FlatSidebar({
       </ul>
 
       {/* Footer — Figma: 80.15px, border-t 0.15px #8FB4E0 */}
-      <div className="mt-auto flex flex-col gap-1 border-t border-[#8FB4E0]/[0.20] px-3 py-3">
+      <div className="mt-auto flex flex-col gap-1 border-t border-nav-label/20 px-[var(--sidebar-inset)] py-3">
         {heldRoles && heldRoles.length > 1 && <RoleSwitcher current={role.key} held={heldRoles} />}
-        <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-[#8FB4E0]">SIGNED IN AS</p>
-        <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-[#FBFCFF]">{role.person}</p>
+        <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-nav-label">SIGNED IN AS</p>
+        <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-nav-strong">{role.person}</p>
         <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-white">{role.title}</p>
       </div>
     </nav>
@@ -420,14 +420,14 @@ export function Sidebar({
     wordmark and WORKING AS badge. Footer 80.15px with #FBFCFF name.
   */
   return (
-    <nav className="flex w-[236px] shrink-0 flex-col bg-[#0C3D7A]">
-      <div className="flex flex-col gap-4 px-3 py-4">
+    <nav className="flex w-[236px] shrink-0 flex-col bg-brand-dark">
+      <div className="flex flex-col gap-4 px-[var(--sidebar-inset)] py-4">
         <span className="inline-flex items-center gap-2">
-          <MarkeloMark className="h-6 w-auto text-[#DBE2FD]" />
-          <span className="text-[16px] font-extrabold leading-6 tracking-[0.01em] text-[#DBE2FD]">Markelo</span>
+          <MarkeloMark className="h-6 w-auto text-nav-brand" />
+          <span className="text-[16px] font-extrabold leading-6 tracking-[0.01em] text-nav-brand">Markelo</span>
         </span>
         <div className="rounded-lg bg-white/[0.08] px-3 py-[7.28px]">
-          <p className="text-[10px] font-semibold leading-4 tracking-[-0.01em] text-[#8FB4E0]">WORKING AS</p>
+          <p className="text-[10px] font-semibold leading-4 tracking-[-0.01em] text-nav-label">WORKING AS</p>
           <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-white">{role.title}</p>
         </div>
       </div>
@@ -450,14 +450,14 @@ export function Sidebar({
                   aria-disabled={!permitted || undefined}
                   className={`flex h-[38.39px] w-full items-center gap-2 ${!permitted ? "opacity-50" : ""}`}
                 >
-                  <span aria-hidden className={`h-6 w-1 shrink-0 rounded-r-[4px] ${active && permitted ? "bg-[#4A76C4]" : "bg-transparent"}`} />
-                  <span className={`flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 ${active && permitted ? "bg-[#4A76C4]" : ""}`}>
-                    <OnlyIcon size={16} strokeWidth={1.33} className={`shrink-0 ${active && permitted ? "text-white" : "text-[#8FB4E0]"}`} aria-hidden />
-                    <span className={`min-w-0 flex-1 truncate text-[14px] tracking-[-0.01em] leading-6 ${active && permitted ? "font-bold text-white" : "font-semibold text-[#8FB4E0]"}`}>{only.label}</span>
+                  <span aria-hidden className={`h-6 w-1 shrink-0 rounded-r-[4px] ${active && permitted ? "bg-nav-active" : "bg-transparent"}`} />
+                  <span className={`flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 ${active && permitted ? "bg-nav-active" : ""}`}>
+                    <OnlyIcon size={16} strokeWidth={1.33} className={`shrink-0 ${active && permitted ? "text-white" : "text-nav-label"}`} aria-hidden />
+                    <span className={`min-w-0 flex-1 truncate text-[14px] tracking-[-0.01em] leading-6 ${active && permitted ? "font-bold text-white" : "font-semibold text-nav-label"}`}>{only.label}</span>
                   </span>
                   {!permitted && (
                     <span className="mr-3 flex h-[38.39px] w-[40px] shrink-0 items-center justify-center">
-                      <UserLock size={16} strokeWidth={1} className="text-[#8FB4E0]" aria-label="You do not have access to this" />
+                      <UserLock size={16} strokeWidth={1} className="text-nav-label" aria-label="You do not have access to this" />
                     </span>
                   )}
                 </a>
@@ -471,11 +471,11 @@ export function Sidebar({
                 <div key={group.label} className="flex h-[38.39px] w-full items-center gap-2 opacity-50">
                   <span aria-hidden className="h-6 w-1 shrink-0 rounded-r-[4px] bg-transparent" />
                   <span className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2">
-                    {ParentIcon && <ParentIcon size={16} strokeWidth={1.33} className="shrink-0 text-[#8FB4E0]" aria-hidden />}
-                    <span className="min-w-0 flex-1 truncate text-[14px] font-semibold tracking-[-0.01em] leading-6 text-[#8FB4E0]">{group.label}</span>
+                    {ParentIcon && <ParentIcon size={16} strokeWidth={1.33} className="shrink-0 text-nav-label" aria-hidden />}
+                    <span className="min-w-0 flex-1 truncate text-[14px] font-semibold tracking-[-0.01em] leading-6 text-nav-label">{group.label}</span>
                   </span>
                   <span className="mr-3 flex h-[38.39px] w-[40px] shrink-0 items-center justify-center">
-                    <UserLock size={16} strokeWidth={1} className="text-[#8FB4E0]" aria-label={`${group.label}: locked`} />
+                    <UserLock size={16} strokeWidth={1} className="text-nav-label" aria-label={`${group.label}: locked`} />
                   </span>
                 </div>
               );
@@ -495,12 +495,12 @@ export function Sidebar({
                 >
                   <span aria-hidden className="h-6 w-1 shrink-0 rounded-r-[4px] bg-transparent" />
                   <span className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2">
-                    {ParentIcon && <ParentIcon size={16} strokeWidth={1.33} className="shrink-0 text-[#8FB4E0]" aria-hidden />}
-                    <span className="min-w-0 flex-1 truncate text-[14px] font-semibold tracking-[-0.01em] leading-6 text-[#8FB4E0]">{group.label}</span>
+                    {ParentIcon && <ParentIcon size={16} strokeWidth={1.33} className="shrink-0 text-nav-label" aria-hidden />}
+                    <span className="min-w-0 flex-1 truncate text-[14px] font-semibold tracking-[-0.01em] leading-6 text-nav-label">{group.label}</span>
                   </span>
                   <span className="mr-3 flex h-[38.39px] w-[40px] shrink-0 items-center justify-center gap-1">
-                    {!isOpen && <span className="text-[12px] leading-4 text-[#8FB4E0]">{group.items.length}</span>}
-                    <ChevronDown size={14} strokeWidth={1.67} aria-hidden className={`shrink-0 text-[#8FB4E0] transition-transform duration-200 ${isOpen ? "" : "-rotate-90"}`} />
+                    {!isOpen && <span className="text-[12px] leading-4 text-nav-label">{group.items.length}</span>}
+                    <ChevronDown size={14} strokeWidth={1.67} aria-hidden className={`shrink-0 text-nav-label transition-transform duration-200 ${isOpen ? "" : "-rotate-90"}`} />
                   </span>
                 </button>
 
@@ -516,12 +516,12 @@ export function Sidebar({
                           onClick={(e) => e.preventDefault()}
                           aria-disabled={locked || undefined}
                           className={`flex items-center gap-2 rounded-lg px-2 py-1.5 text-[14px] tracking-[-0.01em] leading-6 ${locked ? "opacity-50 cursor-not-allowed" : ""} ${
-                            active ? "bg-[#4A76C4] font-bold text-white" : locked ? "font-semibold text-[#8FB4E0]" : "font-semibold text-[#8FB4E0] hover:bg-white/[0.06]"
+                            active ? "bg-nav-active font-bold text-white" : locked ? "font-semibold text-nav-label" : "font-semibold text-nav-label hover:bg-white/[0.06]"
                           }`}
                         >
                           <span className="min-w-0 flex-1 truncate">{item.label}</span>
                           {locked ? (
-                            <UserLock size={16} strokeWidth={1} className="shrink-0 text-[#8FB4E0]" aria-label="You do not have access to this" />
+                            <UserLock size={16} strokeWidth={1} className="shrink-0 text-nav-label" aria-label="You do not have access to this" />
                           ) : permitted?.badge ? (
                             <span className="shrink-0 rounded-pill bg-white/20 px-2 py-0.5 text-[12px] leading-4 tabular-nums text-white">{permitted.badge}</span>
                           ) : null}
@@ -536,10 +536,10 @@ export function Sidebar({
         </div>
       </div>
 
-      <div className="mt-auto flex flex-col gap-1 border-t border-[#8FB4E0]/[0.20] px-3 py-3">
+      <div className="mt-auto flex flex-col gap-1 border-t border-nav-label/20 px-[var(--sidebar-inset)] py-3">
         {heldRoles && heldRoles.length > 1 && <RoleSwitcher current={role.key} held={heldRoles} />}
-        <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-[#8FB4E0]">SIGNED IN AS</p>
-        <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-[#FBFCFF]">{role.person}</p>
+        <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-nav-label">SIGNED IN AS</p>
+        <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-nav-strong">{role.person}</p>
         <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-white">{role.title}</p>
       </div>
     </nav>
@@ -612,7 +612,7 @@ export function AppFrame({
         <div className="min-h-0 flex-1 overflow-y-auto p-8">{children}</div>
       </div>
       {overlay && (
-        <div className="absolute inset-0 z-20 grid place-items-center bg-[#1a1a1a]/45 p-6">
+        <div className="absolute inset-0 z-20 grid place-items-center bg-text/45 p-6">
           {overlay}
         </div>
       )}

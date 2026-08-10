@@ -221,6 +221,12 @@ const GROUPS: Group[] = [
       { id: "sc-upload-loading", label: "Scan batch upload: uploading", el: <S.ScanBatchUploadLoading /> },
       { id: "sc-upload-error", label: "Scan batch upload: error", el: <S.ScanBatchUploadError /> },
       { id: "sc-upload-denied", label: "Scan batch upload: denied", el: <S.ScanBatchUploadDenied /> },
+      {
+        id: "sc-upload-preview",
+        label: "Scan batch upload: booklet preview",
+        note: "B1",
+        el: <S.ScanBatchUploadWithPreview />,
+      },
 
       /* --- AI Processing and Integrity Report (B2) --- */
       { id: "sc-report", label: "Integrity report: processing", note: "B2", el: <S.IntegrityReport /> },
@@ -319,7 +325,7 @@ export default function App() {
 
         <div className="border-t border-border px-4 py-3">
           <p className="text-caption text-muted">
-            {ALL.length} screens · Phase 1 to 3
+            {ALL.length} screens · Phase 1 to 4
           </p>
         </div>
       </aside>

@@ -147,13 +147,12 @@ not propose responsive behaviour. This closes what used to be open question 1.
 `data-grid` attribute that draws the FF0000/10% overlay for checking a screen
 against Figma. The overlay is a review aid. Never leave it on a real screen.
 
-**One thing NOT yet decided.** Inside `AppFrame` the content region already sits
-behind a 236px sidebar. Applying the full 120px page margin there would leave
-roughly 964px usable at a 1440px frame, which is tight for a product built
-around thousands of table rows. The scaffold currently uses a 32px inset inside
-the app shell and reserves the 120px margin for full-canvas screens (sign-in,
-onboarding). **Ask KingFizzy to rule on this before building app-shell screens
-to the grid. Do not guess.**
+**DECIDED 10 August 2026 by KingFizzy.** The 120px page margin does **not** apply
+inside the app shell. Inside `AppFrame` the content region sits behind the 236px
+sidebar and takes a **32px inset**; the sidebar itself takes a **12px inner
+margin**. The 120px margin is reserved for full-canvas screens, sign-in and
+onboarding. Both values are tokens, `--content-inset` and `--sidebar-inset`, and
+both are going into the Figma grid system. This was the last open layout question.
 
 ### Border tokens, PROPOSED 28 July, awaiting KingFizzy's approval
 
@@ -398,9 +397,13 @@ Do not guess at these. Ask KingFizzy, or state the assumption you made.
 
 1. ~~Minimum supported screen width.~~ **CLOSED 28 July**, desktop only, no
    breakpoints, Desktop Grid confirmed. See section 3.
-2. **Does the 120px page margin apply inside the app shell?** The content region
-   already sits behind a 236px sidebar. Applying it there leaves ~964px usable
-   at 1440. The scaffold uses a 32px inset for now. Needs KingFizzy's ruling.
+2. ~~Does the 120px page margin apply inside the app shell?~~ **CLOSED 10 August
+   2026 by KingFizzy.** It does not. The app shell gets a **32px content inset**,
+   and the sidebar gets a **12px inner margin**. The 120px page margin now applies
+   to full-canvas screens only, sign-in and onboarding. Both values are going into
+   the Figma grid system, and both are tokens in `src/index.css`
+   (`--content-inset`, `--sidebar-inset`). The 32px was already in the scaffold as
+   a guess; it is now the decision, so stop treating it as provisional.
 3. **Border and motion tokens**, built or not? Not named in the 28 July Phase 1
    confirmation, so treat as unbuilt until he says otherwise.
 4. **Multi-institution theming.** Is one visual theme enough, or does each

@@ -64,7 +64,7 @@ export function SignIn() {
         </Field>
         <div className="flex items-center justify-between">
           <label className="flex items-center gap-2 text-body text-text">
-            <input type="checkbox" className="h-4 w-4 accent-[#1a56a0]" disabled={loading} />
+            <input type="checkbox" className="h-4 w-4 accent-brand" disabled={loading} />
             Keep me signed in
           </label>
           <a href="#" onClick={(e) => e.preventDefault()} className="text-body text-brand hover:underline">

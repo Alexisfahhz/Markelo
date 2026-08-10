@@ -93,17 +93,17 @@ export function ScanBatchUpload() {
               title="Scanned pages"
               sub="A multi-page PDF, or a sequence of images"
               action={
-                <span className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#EBF5ED] px-2 py-1">
-                  <CircleCheck size={14} strokeWidth={2} className="text-[#0E6C40]" aria-hidden />
-                  <span className="text-[12px] font-medium leading-4 tracking-[-0.01em] text-[#0E6C40]">Completed</span>
+                <span className="inline-flex items-center gap-1.5 rounded-[4px] bg-success-light px-2 py-1">
+                  <CircleCheck size={14} strokeWidth={2} className="text-success" aria-hidden />
+                  <span className="text-[12px] font-medium leading-4 tracking-[-0.01em] text-success">Completed</span>
                 </span>
               }
             />
             <div className="flex flex-col gap-4">
               {/* Upload drop zone — made visually prominent */}
-              <div className="rounded-[12px] border-2 border-dashed border-[#1A56A0] bg-[#E8F1FB] px-6 py-10 text-center">
-                <span className="mx-auto mb-4 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#1A56A0]/10">
-                  <Upload size={26} strokeWidth={1.75} className="text-[#1A56A0]" aria-hidden />
+              <div className="rounded-[12px] border-2 border-dashed border-brand bg-brand-light px-6 py-10 text-center">
+                <span className="mx-auto mb-4 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-brand/10">
+                  <Upload size={26} strokeWidth={1.75} className="text-brand" aria-hidden />
                 </span>
                 <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Drop scanned files here</p>
                 <p className="mt-1 text-[12px] leading-[18px] text-muted">
@@ -168,7 +168,7 @@ export function ScanBatchUpload() {
               <p className="mt-1 text-[12px] leading-[18px] text-muted">
                 The first cover page Markelo recognises appears here so you can confirm the scan is clear.
               </p>
-              <div className="mt-3 flex aspect-[3/4] items-center justify-center rounded-lg border-2 border-dashed border-[#1A56A0]/30 bg-[#F5F5F5]">
+              <div className="mt-3 flex aspect-[3/4] items-center justify-center rounded-lg border-2 border-dashed border-brand/30 bg-bg">
                 <div className="flex flex-col items-center gap-2 text-muted">
                   <Upload size={24} strokeWidth={1.5} aria-hidden />
                   <span className="text-[12px] leading-[18px]">Waiting for processing</span>
@@ -223,16 +223,16 @@ export function ScanBatchUploadWithPreview() {
               title="Scanned pages"
               sub="A multi-page PDF, or a sequence of images"
               action={
-                <span className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#EBF5ED] px-2 py-1">
-                  <CircleCheck size={14} strokeWidth={2} className="text-[#0E6C40]" aria-hidden />
-                  <span className="text-[12px] font-medium leading-4 tracking-[-0.01em] text-[#0E6C40]">Completed</span>
+                <span className="inline-flex items-center gap-1.5 rounded-[4px] bg-success-light px-2 py-1">
+                  <CircleCheck size={14} strokeWidth={2} className="text-success" aria-hidden />
+                  <span className="text-[12px] font-medium leading-4 tracking-[-0.01em] text-success">Completed</span>
                 </span>
               }
             />
             <div className="flex flex-col gap-4">
-              <div className="rounded-[12px] border-2 border-dashed border-[#1A56A0] bg-[#E8F1FB] px-6 py-10 text-center">
-                <span className="mx-auto mb-4 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#1A56A0]/10">
-                  <Upload size={26} strokeWidth={1.75} className="text-[#1A56A0]" aria-hidden />
+              <div className="rounded-[12px] border-2 border-dashed border-brand bg-brand-light px-6 py-10 text-center">
+                <span className="mx-auto mb-4 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-brand/10">
+                  <Upload size={26} strokeWidth={1.75} className="text-brand" aria-hidden />
                 </span>
                 <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Drop scanned files here</p>
                 <p className="mt-1 text-[12px] leading-[18px] text-muted">PDF or images. Add as many as your scanner produced.</p>

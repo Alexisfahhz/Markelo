@@ -22,13 +22,14 @@
 import React from "react";
 import * as EX from "../../webapp-scaffold/src/screens/exam";
 import * as SD from "../../webapp-scaffold/src/screens/studentdata";
+import * as SC from "../../webapp-scaffold/src/screens/scanning";
 import * as TQ from "../../webapp-scaffold/src/screens/triage";
 
 export type FlowAction = { match: string; to: string };
 export type FlowScreen = {
   id: string;
   label: string;
-  group: "exam" | "student" | "triage";
+  group: "exam" | "student" | "scanning" | "triage";
   el: React.ReactNode;
   actions?: FlowAction[];
   advanceAnywhereTo?: string;
@@ -78,7 +79,23 @@ export const FLOW: (FlowScreen | { chapter: string })[] = [
     el: <SD.ResultProcessing />,
   },
 
-  /* ======================================= Chapter 3: Triage & Review */
+  /* ============================================== Chapter 3: Scanning */
+  /*
+    Placed immediately before Triage & Review because it is what produces the
+    exceptions that chapter triages. This screen was built and then reachable
+    in neither app: it was registered only in two archived flows, so it was
+    invisible on 5180 and absent from the 5179 harness. Added to both on
+    KingFizzy's instruction, 2026-08-10.
+  */
+  { chapter: "Scanning" },
+  {
+    id: "scan-batch-with-preview",
+    label: "Scan Batch Upload, Booklet Preview",
+    group: "scanning",
+    el: <SC.ScanBatchUploadWithPreview />,
+  },
+
+  /* ======================================= Chapter 4: Triage & Review */
   { chapter: "Triage & Review" },
   {
     id: "exception-queue",

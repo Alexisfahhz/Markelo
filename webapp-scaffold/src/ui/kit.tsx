@@ -24,8 +24,8 @@ const btnBase =
   "transition-colors disabled:opacity-45 disabled:cursor-not-allowed whitespace-nowrap";
 
 const btnVariant: Record<BtnVariant, string> = {
-  primary: "bg-brand text-[#FBFCFF] hover:bg-brand-dark",
-  secondary: "bg-white text-[#1A1A1A] border border-border hover:bg-brand-light hover:border-brand",
+  primary: "bg-brand text-nav-strong hover:bg-brand-dark",
+  secondary: "bg-white text-text border border-border hover:bg-brand-light hover:border-brand",
   ghost: "bg-transparent text-brand hover:bg-brand-light",
   danger: "bg-error text-white hover:brightness-90",
 };
@@ -821,10 +821,10 @@ export function Tooltip({
             style={{ top: coords.y, left: coords.x }}
             role="tooltip"
           >
-            <span className="relative block whitespace-nowrap rounded-[4px] bg-[#1A1A1A] px-2 py-1 text-[10px] leading-[14px] text-white">
+            <span className="relative block whitespace-nowrap rounded-[4px] bg-text px-2 py-1 text-[10px] leading-[14px] text-white">
               {content}
               <span
-                className={`absolute ${arrowPos} h-[6px] w-[6px] rotate-45 rounded-[1px] bg-[#1A1A1A]`}
+                className={`absolute ${arrowPos} h-[6px] w-[6px] rotate-45 rounded-[1px] bg-text`}
                 aria-hidden
               />
             </span>

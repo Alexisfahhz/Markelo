@@ -88,9 +88,9 @@ function StudentDataUploadDefault() {
               action={<Badge tone="warning">4 rows need attention</Badge>}
             />
             <div className="flex flex-col gap-4">
-              <div className="rounded-[12px] border-2 border-dashed border-[#1A56A0] bg-[#E8F1FB] px-6 py-10 text-center">
-                <span className="mx-auto mb-4 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#1A56A0]/10">
-                  <Upload size={26} strokeWidth={1.75} className="text-[#1A56A0]" aria-hidden />
+              <div className="rounded-[12px] border-2 border-dashed border-brand bg-brand-light px-6 py-10 text-center">
+                <span className="mx-auto mb-4 flex h-[52px] w-[52px] items-center justify-center rounded-full bg-brand/10">
+                  <Upload size={26} strokeWidth={1.75} className="text-brand" aria-hidden />
                 </span>
                 <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-text">Drop the student list here</p>
                 <p className="mt-1 text-[12px] leading-[18px] text-muted">CSV or Excel, one row per student</p>
