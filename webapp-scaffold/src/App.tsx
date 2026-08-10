@@ -20,7 +20,7 @@ import { Logo } from "./ui/shell";
 type Screen = { id: string; label: string; note?: string; el: React.ReactNode };
 type Group = { title: string; owner: string; screens: Screen[] };
 
-const GROUPS: Group[] = [
+export const GROUPS: Group[] = [
   {
     title: "Component reference",
     owner: "Team lead",
@@ -282,7 +282,7 @@ const GROUPS: Group[] = [
   },
 ];
 
-const ALL = GROUPS.flatMap((g) => g.screens);
+export const ALL = GROUPS.flatMap((g) => g.screens);
 
 export default function App() {
   const [active, setActive] = useState("signin");

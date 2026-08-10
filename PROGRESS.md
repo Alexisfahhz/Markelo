@@ -2027,3 +2027,71 @@ different thing from responsive web, and there is still no phone grid.
 **Not done / blocked:** unchanged from Session 5. The 252 arbitrary pixel values
 still need a spacing-scale ruling, and the em dash, icon size and control height
 sweeps are still outstanding. Marking Interface and Answer Viewer still unbuilt.
+
+---
+
+## 2026-08-10, claude-opus-5
+
+### Session 7: a preview that can actually show the tablet layout
+
+**Phase:** tooling, no product screens changed.
+
+KingFizzy asked for a link to preview the tablet view on 5180. **Neither app can
+show it, and both reasons are structural rather than bugs.**
+
+- **5180** pins every artboard to `w-[1440px]` on purpose, so html-to-design
+  exports true Desktop Grid frames into Figma. Resizing does nothing, and that
+  pinning must not be removed.
+- **5179** carries a 256px screen-picker column of its own. At a 768px browser
+  the product frame receives only 512. At 1024px it would receive a true 768,
+  but by then `max-lg` (max-width: 1023px) has already switched off. **There is
+  no browser width at which the harness shows a real tablet.**
+
+The underlying reason is that a CSS media query reads the browser viewport and
+never an element's width, so no container inside either app can make `max-lg`
+fire.
+
+**A wrong turn worth recording.** The first attempt added a 1440/768 artboard
+toggle to 5180, setting the artboard width from a CSS variable. It was reverted
+before going anywhere, because it cannot work: it would have rendered *desktop*
+styles squeezed into 768px and looked exactly like a tablet preview while being
+a lie. Container queries would be needed, which means rewriting every `max-lg:`
+as `@container`, and that is not worth it for a preview.
+
+**What was built instead:** `webapp-scaffold/src/preview.tsx` plus
+`preview.html`, a second Vite entry that renders one screen full-bleed with the
+picker as a `fixed` overlay, so it contributes zero width and the screen
+measures the true viewport. `GROUPS` and `ALL` are now exported from `App.tsx`
+so the preview reuses the one screen registry rather than duplicating it.
+
+`vite.preview.config.ts` produces a single-file IIFE build for sharing.
+
+**Two traps found while building it:**
+
+1. **Concatenating ES module chunks does not work.** Splicing the entry chunk and
+   the shared chunk together leaves the named imports between them dangling.
+   React never mounts, the page renders blank, and **no error appears in the
+   console**. The fix is a real single-bundle build: `format: "iife"` with
+   `inlineDynamicImports`, not string surgery.
+2. **The band label must not come from JS.** A `resize` listener, and even a
+   `ResizeObserver`, can be throttled (hidden tab, programmatic resize), and a
+   chip reading "Tablet" while you are looking at desktop is worse than no chip.
+   The Desktop/Tablet label is now two spans shown and hidden by the same
+   `max-lg` query that drives the layout, so it cannot disagree with the screen.
+   Verified switching in both directions with no reload.
+
+Fonts are embedded as base64 woff2 (latin and latin-ext only, 282KB raw) because
+the sharing target blocks font CDNs and a silent system fallback would
+misrepresent the typography. Final self-contained file: 843KB.
+
+**Verified**, on the standalone build at a true 768 viewport with no chrome:
+sidebar 72px rail, both columns 630px and stacked, no horizontal scroll,
+Plus Jakarta Sans resolving, band label agreeing with the sidebar width. At 1440:
+sidebar 236, columns 703 and 407 side by side, label reads Desktop.
+
+**Not verified:** the published artifact itself. The in-app browser is not signed
+in to claude.ai, so the live URL 404s from here. The file was verified served
+locally over HTTP with a UTF-8 charset header. Note that a server sending **no**
+charset makes the page fall back to windows-1252 and mojibakes every non-ASCII
+character; the preview chrome is ASCII-only so its controls are immune, but the
+screens' own text is not.
