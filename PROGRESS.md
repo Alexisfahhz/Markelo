@@ -1967,3 +1967,63 @@ sidebar ground `rgb(12,61,122)`, nav label `rgb(143,180,224)`, wordmark
   48px `lg`; plus two `h-9` and one `h-[42px]`.
 - **Marking Interface and Answer Viewer still not built.** Marking Assignment and
   Marking Progress ARE built, contrary to what CURRENT.md said before today.
+
+---
+
+## 2026-08-10, claude-opus-5 (RESUME verification of a deepseek-v4-pro packet)
+
+### Session 6: tablet breakpoint, dispatched and verified
+
+**Phase:** cross-cutting. Packet `markelo-tablet-breakpoints`, model deepseek-v4-pro,
+commit `2d53200`. This entry is the Third Seat verification, not the delegated work.
+
+**Verdict: PASS.** Re-ran every acceptance check independently rather than reading
+the Result block.
+
+- Sidebar collapses in **both** implementations, `max-lg:w-[72px]` at lines 247
+  and 424 of `ui/shell.tsx`.
+- Two-column layouts stack: `flexDirection: column`, `border-left: 0px`,
+  `border-top: 1px`, right panel below left, confirmed by geometry not by grep.
+- **`lg:` min-width classes are still 14, unchanged from baseline.** This was the
+  packet's main risk: nothing was rewritten mobile-first, the desktop-first
+  authoring survived, and every tablet rule is an additive `max-lg:` override.
+- Raw hex introduced: 0.
+- tsc 0 and clean builds, both apps.
+
+**The packet was wrong and the model was right.** It expected 21 two-column sites;
+there are **8**. The packet's number came from a grep that counted every occurrence
+of the strings "703" and "407", including code comments. deepseek-v4-pro reported
+the discrepancy under its own count rather than manufacturing 21 matches, which is
+the behaviour the packet asked for and the reason the count check is worth writing.
+
+**Live verification at true tablet width, and a trap worth recording.**
+
+The 5179 harness **cannot faithfully preview tablet**. Its own screen-picker chrome
+is 256px, so at a 768px browser the product frame only receives 512px, while at
+1024px (where the product would receive a true 768) the `max-lg` query has already
+switched off. There is no browser width at which the harness shows a real tablet.
+Measured by hiding the harness aside via devtools, viewport held at 768:
+
+| Measure | Value |
+|---|---|
+| Product stage | 768px |
+| Sidebar | 72px rail |
+| Left column | 582px |
+| Right column | 582px, stacked below |
+| Tab row | 646 scroll / 646 client, no overflow |
+| Overflowing containers, whole page | 0 |
+| Document horizontal scroll | none |
+
+Before this change the content region had **468px** at 768. It now has 582. The
+rail returned width to the tables, which was the stated goal.
+
+**Fixed during verification:** `index.css` still carried a comment declaring
+"Markelo is DESKTOP ONLY ... Do not add a second grid" forty lines above the new
+tablet tokens. That is the packet's gap, not the model's error; it was never told
+to update that comment. Rewritten to record the reversal, and to keep the part
+that is still true: PRD §6 defers **native** tablet apps to V2, which is a
+different thing from responsive web, and there is still no phone grid.
+
+**Not done / blocked:** unchanged from Session 5. The 252 arbitrary pixel values
+still need a spacing-scale ruling, and the em dash, icon size and control height
+sweeps are still outstanding. Marking Interface and Answer Viewer still unbuilt.

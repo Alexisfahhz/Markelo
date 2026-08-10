@@ -102,9 +102,14 @@
       Margin  120
       Gutter  24
 
-    Markelo is DESKTOP ONLY. There is no tablet or mobile grid, and no
-    breakpoints. PRD §4 lists native mobile as a non-goal and KingFizzy
-    confirmed desktop-only scope on 28 July. Do not add a second grid.
+    SUPERSEDED 10 August 2026. This block used to say Markelo was desktop only
+    with no tablet grid and no breakpoints. KingFizzy reversed that: there is a
+    Tablet Grid now, defined below. PRD §6 still lists NATIVE mobile and tablet
+    apps as V2 non-goals, which is a different thing from responsive web and
+    remains true.
+
+    Still accurate: there is no PHONE grid, and there is exactly one breakpoint.
+    Do not add a third.
 
     "Stretch" means the columns are fluid: the content area is the viewport
     minus 2 x 120px margin, and the 12 columns divide whatever is left after
