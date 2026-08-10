@@ -74,8 +74,26 @@ function Preview() {
 
   return (
     <>
-      {/* The screen itself, full viewport. Nothing may sit beside this. */}
-      <div className="h-dvh w-full overflow-hidden">{screen.el}</div>
+      {/*
+        The screen, capped at the 1440 design frame and centred.
+
+        The first version of this was full-bleed, and on a 1920 monitor it
+        rendered every screen at 1920: the header and tab rows stretched to
+        1682 while the 703+407 content stayed at 1110, leaving 574px of dead
+        space on the right. Markelo is designed to a 1440 frame; anything wider
+        is not a wider design, it is a stretched one.
+
+        Capping does NOT weaken the breakpoint test, and that is the point worth
+        understanding: a media query reads the VIEWPORT, never this element. At
+        1920 the viewport is 1920, so desktop rules apply and the frame is a
+        true 1440. At 768 the cap does not bind, the screen fills the width, and
+        max-lg fires exactly as it will on a real tablet. Both cases stay honest.
+      */}
+      <div className="flex h-dvh w-full justify-center overflow-hidden bg-border/25">
+        <div className="h-full w-full max-w-[1440px] overflow-hidden bg-bg shadow-[0_0_0_1px_rgba(0,0,0,0.06)]">
+          {screen.el}
+        </div>
+      </div>
 
       {/*
         Every control below is `fixed`, so it is out of flow and contributes no

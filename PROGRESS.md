@@ -2095,3 +2095,60 @@ locally over HTTP with a UTF-8 charset header. Note that a server sending **no**
 charset makes the page fall back to windows-1252 and mojibakes every non-ASCII
 character; the preview chrome is ASCII-only so its controls are immune, but the
 screens' own text is not.
+
+---
+
+## 2026-08-10, claude-opus-5
+
+### Session 8: the screens were stretching, and it was the preview, not the tablet work
+
+KingFizzy reported every screen looking stretched, wider than 1440, while
+reviewing. **Diagnosed to the preview entry added in `0df7cfe`, not to the
+tablet breakpoint.**
+
+**Ruled out first, by measurement rather than assumption:** every tablet rule is
+correctly gated. Both `@media` blocks in `index.css` are `max-width: 1023px`, and
+every class the packet added carries a `max-lg:` prefix, so nothing it did can
+reach desktop. Confirmed by diffing `2d53200` for ungated class changes: there
+are none.
+
+**The actual cause.** `preview.tsx` rendered the screen full-bleed, which was
+deliberate (a media query reads the viewport, so the product had to occupy it)
+but incomplete: it never capped the frame. Measured on a 1920 viewport before
+the fix:
+
+| | Before | After |
+|---|---|---|
+| Product frame | **1920** | **1440** |
+| Header | 1682 | 1202 |
+| Columns | 703 + 407 | 703 + 407 |
+| Dead space right of content | **574px** | 94px |
+
+Markelo is designed to a 1440 frame. Anything wider is not a wider design, it is
+a stretched one: the header, tab rows and tables grow while the 703+407 content
+does not, leaving a widening gap.
+
+**The fix, and why it does not weaken the breakpoint test.** The screen is now
+capped at `max-w-[1440px]` and centred. A media query reads the VIEWPORT, never
+this element, so at 1920 the viewport is still 1920, desktop rules still apply,
+and the frame is a true 1440. At 768 the cap does not bind, the screen fills the
+width, and `max-lg` fires exactly as on a real tablet. Verified both.
+
+**A second defect found in the same screenshot.** The screens rendered
+"2025/2026 A. First Semester" where a middot belongs. A host that sends no
+charset makes the browser fall back to windows-1252 and mojibake every non-ASCII
+character. Rather than depend on a header we do not control, the preview build
+now sets `esbuild: { charset: "ascii" }`, so the bundle escapes every non-ASCII
+character to `\uXXXX`. **The final file contains 0 non-ASCII bytes** and renders
+identically under any charset. Verified by reloading on a server that declares
+none: `document.characterSet` reads windows-1252, no mojibake, and the middot
+renders as a correct U+00B7.
+
+**Verified after both fixes.** 1920 viewport: frame 1440, header 1202, columns
+703 and 407 side by side, band label Desktop. 768 viewport: frame 768, sidebar
+72px rail, columns 630 and 630 stacked, band label Tablet, no horizontal scroll.
+
+**Note for the next session:** the 5179 harness is also fluid, so on a wide
+monitor it renders screens wider than 1440 too, and always has. That is
+pre-existing and was not introduced today. If KingFizzy wants 1440-accurate
+review inside the harness as well, its stage needs the same cap.

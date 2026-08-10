@@ -15,6 +15,17 @@ import tailwindcss from "@tailwindcss/vite";
 */
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  /*
+    Escape every non-ASCII character to \uXXXX in the JS output.
+
+    This file gets inlined into a single HTML page and served by hosts we do not
+    control. A host that sends no charset makes the browser fall back to
+    windows-1252, and every middot, curly quote and accented character in the
+    screens renders as mojibake: "2025/2026 A. First Semester". Escaping makes
+    the bundle pure ASCII, so it reads identically under any charset instead of
+    depending on a header we cannot guarantee.
+  */
+  esbuild: { charset: "ascii" },
   build: {
     outDir: "dist-preview",
     emptyOutDir: true,
