@@ -492,3 +492,18 @@ tbody tr:last-child td {
   border-bottom: 0 !important;
 }
 
+/* ---------------------------------------------------- Scrollbar chrome
+   The horizontal nav (SectionTabs) can overflow when a section has many
+   destinations, so it must stay scrollable, but the Figma Top Bar Header
+   shows no visible scrollbar track. This hides the scrollbar chrome while
+   keeping the element scrollable (wheel, trackpad, keyboard). Apply with the
+   `no-scrollbar` class. Named the same across 5179 and 5180.
+*/
+.no-scrollbar {
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* old Edge/IE */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;                  /* Chrome, Safari */
+}
+

@@ -323,14 +323,22 @@ function FlatSidebar({
 export function SectionTabs({ role, activeLabel }: { role: Role; activeLabel: string }) {
   const group = groupOf(activeLabel);
   if (!group?.label || group.items.length < 2) return null;
-  const granted = new Set(role.nav.map((n) => n.label));
+  // Map, not Set, so a nav entry's optional count badge is reachable here.
+  const navByLabel = new Map(role.nav.map((n) => [n.label, n]));
 
   return (
-    <div className="border-b border-border bg-white px-8">
-      <div className="flex items-center gap-1 overflow-x-auto" role="tablist" aria-label={group.label}>
+    <div className="border-b border-border bg-white px-6">
+      {/*
+        no-scrollbar: the row stays horizontally scrollable for sections with
+        many destinations, but the visible scrollbar track is hidden to match
+        the Figma Top Bar Header, which showed one on the extreme right.
+      */}
+      <div className="no-scrollbar flex items-center gap-1 overflow-x-auto" role="tablist" aria-label={group.label}>
         {group.items.map((item) => {
-          const locked = !granted.has(item.label);
+          const entry = navByLabel.get(item.label);
+          const locked = !entry;
           const active = item.label === activeLabel;
+          const badge = entry?.badge;
           const Icon = item.icon;
           return (
             <button
@@ -340,16 +348,23 @@ export function SectionTabs({ role, activeLabel }: { role: Role; activeLabel: st
               aria-selected={active}
               aria-disabled={locked || undefined}
               onClick={(e) => e.preventDefault()}
-              className={`-mb-px flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 py-3 text-body transition-colors ${
+              /* Figma Horizontal Nav tab: color + weight only, active = brand,
+                 rest = muted. 14px / 600 active, 14px / 500 otherwise. */
+              className={`flex h-11 shrink-0 items-center gap-2 whitespace-nowrap px-3 text-[14px] leading-6 tracking-[-0.01em] transition-colors ${
                 active
-                  ? "border-brand font-semibold text-brand"
+                  ? "font-semibold text-brand"
                   : locked
-                    ? "cursor-not-allowed border-transparent text-muted/90"
-                    : "border-transparent text-muted hover:text-text"
+                    ? "cursor-not-allowed font-medium text-muted/90"
+                    : "font-medium text-muted hover:text-text"
               }`}
             >
-              <Icon size={16} strokeWidth={2} className="shrink-0" aria-hidden />
+              <Icon size={16} strokeWidth={2} className={`shrink-0 ${active ? "text-brand" : ""}`} aria-hidden />
               {item.label}
+              {badge != null && (
+                <span className="inline-flex items-center justify-center rounded-pill bg-error-light px-2 py-0.5 text-[10px] font-bold leading-[14px] text-error tabular-nums">
+                  {badge}
+                </span>
+              )}
               {locked && <UserLock size={14} strokeWidth={2.25} className="shrink-0" aria-hidden />}
             </button>
           );
@@ -552,25 +567,43 @@ export function Sidebar({
 export function TopBar({
   title,
   sub,
+  breadcrumb,
   right,
   offline = "online",
 }: {
   title: string;
   sub?: string;
+  /*
+    Course context for exam-scoped screens: "CSC 401 · Compiler Construction".
+    When present it replaces the `sub` sentence, matching the Figma Top Bar
+    Header. Institution-scoped screens (governance, booklet) pass no breadcrumb
+    and keep their descriptive `sub`.
+  */
+  breadcrumb?: { code: string; name: string };
   right?: React.ReactNode;
   offline?: "online" | "offline" | "syncing";
 }) {
   return (
-    <header className="flex items-center justify-between gap-6 border-b border-border bg-white px-8 py-4">
-      <div className="flex flex-col gap-0.5">
-        <h1 className="text-section font-semibold text-text">{title}</h1>
-        {sub && <p className="text-caption text-muted">{sub}</p>}
+    <header className="flex items-center justify-between gap-6 border-b border-border bg-white px-6 py-4">
+      <div className="flex flex-col justify-center gap-1">
+        {/* Bold Title / Title Large: 22px / 800 / -0.01em / #1A1A1A */}
+        <h1 className="text-[22px] font-extrabold leading-7 tracking-[-0.01em] text-text">{title}</h1>
+        {breadcrumb ? (
+          <div className="flex items-center gap-2 text-[12px] font-medium leading-4 tracking-[-0.01em] text-muted">
+            <span>{breadcrumb.code}</span>
+            <span aria-hidden className="h-2 w-px bg-muted/70" />
+            <span>{breadcrumb.name}</span>
+          </div>
+        ) : (
+          sub && <p className="text-caption text-muted">{sub}</p>
+        )}
       </div>
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-4">
         <OfflineIndicator state={offline} />
-        <div className="hidden text-right lg:block">
-          <p className="text-caption font-medium text-text">{INSTITUTION}</p>
-          <p className="text-caption text-muted">{SESSION}</p>
+        <div className="text-right">
+          {/* Bold Body / Body Small: 12px / 600 / #1A1A1A */}
+          <p className="text-[12px] font-semibold leading-4 tracking-[-0.01em] text-text">{INSTITUTION}</p>
+          <p className="text-[12px] font-medium leading-4 tracking-[-0.01em] text-muted">{SESSION}</p>
         </div>
       </div>
       {right}
@@ -584,6 +617,7 @@ export function AppFrame({
   activeLabel = "Dashboard",
   title,
   sub,
+  breadcrumb,
   offline,
   heldRoles,
   overlay,
@@ -593,6 +627,7 @@ export function AppFrame({
   activeLabel?: string;
   title: string;
   sub?: string;
+  breadcrumb?: { code: string; name: string };
   offline?: "online" | "offline" | "syncing";
   heldRoles?: RoleKey[];
   /** A modal rendered over the whole frame, used for session expiry (J4). */
@@ -604,7 +639,7 @@ export function AppFrame({
     <div className="relative flex h-full min-h-0 overflow-hidden rounded-card border border-border bg-bg">
       <Sidebar role={role} activeLabel={activeLabel} heldRoles={heldRoles} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar title={title} sub={sub} offline={offline} />
+        <TopBar title={title} sub={sub} breadcrumb={breadcrumb} offline={offline} />
         {/*
           Only the flat variant has a tab row, because only the flat variant
           took the destinations out of the sidebar. In the tree variant they
