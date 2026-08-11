@@ -348,14 +348,15 @@ export function SectionTabs({ role, activeLabel }: { role: Role; activeLabel: st
               aria-selected={active}
               aria-disabled={locked || undefined}
               onClick={(e) => e.preventDefault()}
-              /* Figma Horizontal Nav tab: color + weight only, active = brand,
-                 rest = muted. 14px / 600 active, 14px / 500 otherwise. */
-              className={`flex h-11 shrink-0 items-center gap-2 whitespace-nowrap px-3 text-[14px] leading-6 tracking-[-0.01em] transition-colors ${
+              /* Figma Horizontal Nav tab: 14px / 600 active, 14px / 500 otherwise.
+                 The active tab carries a brand bottom stroke; -mb-px drops it onto
+                 the row's own bottom border so the two read as one line. */
+              className={`-mb-px flex h-11 shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 text-[14px] leading-6 tracking-[-0.01em] transition-colors ${
                 active
-                  ? "font-semibold text-brand"
+                  ? "border-brand font-semibold text-brand"
                   : locked
-                    ? "cursor-not-allowed font-medium text-muted/90"
-                    : "font-medium text-muted hover:text-text"
+                    ? "cursor-not-allowed border-transparent font-medium text-muted/90"
+                    : "border-transparent font-medium text-muted hover:text-text"
               }`}
             >
               <Icon size={16} strokeWidth={2} className={`shrink-0 ${active ? "text-brand" : ""}`} aria-hidden />
