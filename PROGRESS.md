@@ -2152,3 +2152,41 @@ renders as a correct U+00B7.
 monitor it renders screens wider than 1440 too, and always has. That is
 pre-existing and was not introduced today. If KingFizzy wants 1440-accurate
 review inside the harness as well, its stage needs the same cap.
+
+---
+
+## 2026-08-23, ox-alpha
+
+**Phase:** bookkeeping, restoring a lost archive. No product screens changed.
+
+**Found:** the Exam Setup · Student Data & Results · Scanning · Triage & Review
+flow registry on 5180 was deleted by e6f5fee (2026-08-10) without an archive
+file or tag, even though that commit's header comment claims it was "archived
+alongside the earlier governance and booklet-scanning flows". The other three
+retired flows each got an archive file plus a tag; this one got neither, so the
+claim in the file header was false. Confirmed by listing `prototype-flow/src/`
+and `git tag --contains 077f775`, which returned nothing.
+
+**Built:** `prototype-flow/src/flow-exam-student-triage.tsx`, restored verbatim
+from git history (`e6f5fee^`). 4 chapters, 11 artboards: Exam Setup (2),
+Student Data & Results (3), Scanning (1), Triage & Review (5). The header
+records both the original archive date and the fact that the file was actually
+recovered from history on 2026-08-23, so nobody later trusts the false claim.
+
+**Verified:**
+- All 11 screen exports referenced by the registry still exist in the scaffold
+  (`exam.tsx`, `studentdata.tsx`, `scanning.tsx`, `triage.tsx`), checked by
+  grep before writing the file, not assumed from memory.
+- `npx tsc -b` exit 0 and `npx vite build` clean in prototype-flow with the
+  archived file included by tsconfig's `include: ["src"]`.
+- Tag `archive/exam-student-triage-flow` applied to this restore commit,
+  matching the pattern of the other three archive tags.
+
+**Not done / blocked:**
+- The active 5180 flow is untouched; it still shows Institution & governance +
+  Booklet profile only. Re-activating these chapters remains KingFizzy's call,
+  the restore path is documented in the archived file's header.
+- The two unrelated uncommitted changes present at session start (a mode-only
+  change to `Side Bar Nav/Side Bar Nav.svg` and puppeteer dep bumps in
+  `prototype-flow/package-lock.json`) were deliberately left out of this
+  commit.
