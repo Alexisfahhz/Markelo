@@ -1,7 +1,8 @@
 /*
-  Vision-free verification, Exam Setup · Student Data · Triage & Review flow.
-  Measures scroll positions, click-through actions, artboard geometry, and
-  navigation behaviour. Run: node verify.mjs
+  Vision-free verification, Exam Setup · Student Data & Results · Scanning ·
+  Triage & Review flow. Measures scroll positions, CTA click-through actions,
+  per-screen trigger-point navigation, artboard geometry, and JS errors.
+  Run: node verify.mjs
 */
 import { spawn } from "child_process";
 import puppeteer from "puppeteer-core";
@@ -10,6 +11,20 @@ const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PORT = 5180;
 const URL = `http://localhost:${PORT}`;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+const EXPECTED_ORDER = [
+  "exam-creation",
+  "marking-scheme",
+  "student-upload",
+  "identity-registry",
+  "result-processing",
+  "scan-batch-with-preview",
+  "exception-queue",
+  "exception-resolve",
+  "moderation",
+  "moderation-changed",
+  "moderation-return",
+];
 
 async function main() {
   const server = spawn("npx", ["vite", "preview", "--port", String(PORT), "--strictPort"], {
@@ -35,8 +50,10 @@ async function main() {
     )
   );
   const ids = Object.keys(tops);
-  console.log("screens:", ids.length, ids.length === 10 ? "PASS" : "FAIL");
-  console.log("order:", ids.join(", "));
+  console.log("screens:", ids.length, ids.length === EXPECTED_ORDER.length ? "PASS" : "FAIL");
+  const orderOk =
+    ids.length === EXPECTED_ORDER.length && EXPECTED_ORDER.every((id, i) => ids[i] === id);
+  console.log("order:", ids.join(", "), orderOk ? "PASS" : "FAIL");
 
   const scrollY = () => page.evaluate(() => Math.round(window.scrollY));
   const go = (id) =>
@@ -88,31 +105,42 @@ async function main() {
   await sleep(2000);
   expect("exception-queue->exception-resolve", await scrollY(), tops["exception-resolve"]);
 
-  /* ============================================================ 4. Nav */
+  /* ============================ 4. Per-screen trigger points (no floating nav) */
   const navCount = await page.evaluate(() => document.querySelectorAll("nav.fixed").length);
-  console.log("nav instances:", navCount, navCount === 1 ? "PASS" : "FAIL");
+  console.log("floating nav instances:", navCount, navCount === 0 ? "PASS" : "FAIL");
 
-  await go("exam-creation");
-  await sleep(1500);
-  const prevDisabled = await page.evaluate(
-    () => document.querySelector("nav.fixed button[aria-label^='Previous']")?.hasAttribute("disabled")
-  );
-  console.log("prev disabled on first screen:", prevDisabled, prevDisabled ? "PASS" : "FAIL");
+  const hasTrigger = (sid, dir) =>
+    page.evaluate(
+      ([s, d]) => {
+        const sec = document.getElementById(s);
+        return !!sec?.querySelector(`button[aria-label^='Go to ${d} screen']`);
+      },
+      [sid, dir]
+    );
 
-  await page.evaluate(() => document.querySelector("nav.fixed button[aria-label^='Next']").click());
+  const firstPrev = await hasTrigger(EXPECTED_ORDER[0], "previous");
+  console.log("prev trigger on FIRST screen:", firstPrev, firstPrev ? "FAIL" : "PASS");
+
+  const lastNext = await hasTrigger(EXPECTED_ORDER.at(-1), "next");
+  console.log("next trigger on LAST screen:", lastNext, lastNext ? "FAIL" : "PASS");
+
+  // Next trigger from identity-registry lands on result-processing.
+  await go("identity-registry");
+  await settle();
+  await page.evaluate(() => {
+    const sec = document.getElementById("identity-registry");
+    sec?.querySelector("button[aria-label^='Go to next screen']")?.click();
+  });
   await sleep(2000);
-  expect("nav-next->marking-scheme", await scrollY(), tops["marking-scheme"]);
+  expect("trigger-next identity-registry->result-processing", await scrollY(), tops["result-processing"]);
 
-  await page.evaluate(() => document.querySelector("nav.fixed button[aria-label^='Previous']").click());
+  // Previous trigger from result-processing returns to identity-registry.
+  await page.evaluate(() => {
+    const sec = document.getElementById("result-processing");
+    sec?.querySelector("button[aria-label^='Go to previous screen']")?.click();
+  });
   await sleep(2000);
-  expect("nav-prev->exam-creation", await scrollY(), tops["exam-creation"]);
-
-  await go("moderation-return");
-  await sleep(1500);
-  const nextDisabled = await page.evaluate(
-    () => document.querySelector("nav.fixed button[aria-label^='Next']")?.hasAttribute("disabled")
-  );
-  console.log("next disabled on last screen:", nextDisabled, nextDisabled ? "PASS" : "FAIL");
+  expect("trigger-prev result-processing->identity-registry", await scrollY(), tops["identity-registry"]);
 
   /* ======================================================= 5. Artboard geometry */
   const geo = await page.evaluate(() => {
@@ -131,25 +159,24 @@ async function main() {
     if (!ok) geoPass = false;
   }
 
-  /* ============================================================ 6. Screenshots */
-  await page.evaluate(() => document.querySelector("nav.fixed button[aria-label='Scroll to top']").click());
-  await sleep(1500);
-  await page.screenshot({ path: "verify/01-exam-creation.png" });
-  await go("marking-scheme");
-  await sleep(1500);
-  await page.screenshot({ path: "verify/02-marking-scheme.png" });
-  await go("student-upload");
-  await sleep(1500);
-  await page.screenshot({ path: "verify/03-student-upload.png" });
-  await go("identity-registry");
-  await sleep(1500);
-  await page.screenshot({ path: "verify/04-identity-registry.png" });
+  /* ======================================================= 6. Screenshots */
+  for (const [file, id] of [
+    ["verify/01-exam-creation.png", "exam-creation"],
+    ["verify/02-marking-scheme.png", "marking-scheme"],
+    ["verify/03-student-upload.png", "student-upload"],
+    ["verify/04-identity-registry.png", "identity-registry"],
+    ["verify/05-scan-batch-with-preview.png", "scan-batch-with-preview"],
+  ]) {
+    await go(id);
+    await sleep(1500);
+    await page.screenshot({ path: file });
+  }
 
   console.log("js errors:", errors.length ? errors : "none");
   await browser.close();
   server.kill();
 
-  if (errors.length > 0 || !geoPass) process.exit(1);
+  if (errors.length > 0 || !geoPass || !orderOk) process.exit(1);
 }
 
 main().catch((e) => {

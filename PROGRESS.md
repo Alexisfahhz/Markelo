@@ -2190,3 +2190,64 @@ recovered from history on 2026-08-23, so nobody later trusts the false claim.
   change to `Side Bar Nav/Side Bar Nav.svg` and puppeteer dep bumps in
   `prototype-flow/package-lock.json`) were deliberately left out of this
   commit.
+
+---
+
+## 2026-08-23 (later), ox-alpha
+
+**Phase:** presentation layer on 5180. The four Exam Officer flows re-activated
+as the live canvas, replacing Institution & governance + Booklet profile.
+
+**The ruling was KingFizzy's before any code:** replace, not append, following
+the one-flow-at-a-time pattern every previous canvas swap used.
+
+**Built:**
+
+- `prototype-flow/src/flow-institution-booklet.tsx`, new archive file holding
+  the two retired chapters (9 artboards) with the standard archived header and
+  restore path.
+- `prototype-flow/src/flow.tsx`, rewritten as the live four-chapter registry,
+  11 artboards: Exam Setup (exam-creation, marking-scheme), Student Data &
+  Results (student-upload, identity-registry, result-processing), Scanning
+  (scan-batch-with-preview), Triage & Review (exception-queue,
+  exception-resolve, moderation, moderation-changed, moderation-return). The
+  registry is byte-for-byte the one recovered from history earlier today; only
+  the header changed from ARCHIVED to active, recording its provenance.
+- `App.tsx`, header comment and footer line updated to name the four chapters.
+- `index.html`, title now reads "Exam Setup · Student Data & Results ·
+  Scanning · Triage & Review flow". It had been stale since e6f5fee: that
+  commit rebuilt the canvas to governance + booklet but never updated the
+  title or verify.mjs, which still described this same four-flow build.
+- `verify.mjs`, rewritten for the trigger-point architecture. The old version's
+  section 4 queried `nav.fixed`, but the floating PrototypeNav was deleted by
+  e6f5fee, so those checks were testing a component that no longer exists.
+  Replaced with checks on the per-screen prev/next triggers, plus the exact
+  11-screen order assertion and a fifth screenshot for the Scanning artboard.
+
+**Verified (and how):**
+
+- `npx tsc -b` exit 0 and `npx vite build` clean in prototype-flow.
+- `node verify.mjs`: all checks PASS in headless Chrome against the production
+  preview build. 11 screens in the expected order; 3 CTA click-throughs land
+  exactly (Create exam -> marking-scheme at scrollY 1280 vs 1280, Confirm
+  scheme -> student-upload 2562 vs 2562, Open and resolve ->
+  exception-resolve 8783 vs 8783); 0 floating navs; no prev trigger on the
+  first screen and no next trigger on the last; next/prev triggers move
+  identity-registry <-> result-processing exactly (5000/5000, 3781/3781); all
+  11 artboards exactly 1440x1024; 0 JS errors. Screenshots refreshed in
+  verify/, including a new 05-scan-batch-with-preview.png.
+- Scaffold `npx tsc --noEmit`: exit 0, BUT only via
+  `node node_modules/typescript/bin/tsc`. **webapp-scaffold/node_modules/.bin
+  does not exist**, so plain `npx tsc --noEmit` in the scaffold now silently
+  installs a bogus `tsc@2.0.4` stub package from the registry instead of
+  erroring. Any future session running the documented check there will hit
+  this; either reinstall deps or call the compiler by path.
+
+**Not done / blocked:**
+
+- Institution & governance and Booklet profile remain default-state-only and
+  are now off-canvas; their states were never requested and are not lost.
+- The self-contained artifact was not regenerated or republished.
+- The two unrelated dirty files present at session start (`Side Bar Nav.svg`
+  mode change, `prototype-flow/package-lock.json`) are again excluded from
+  this commit on purpose.

@@ -3,7 +3,9 @@ import { FLOW, FlowScreen } from "./flow";
 import { ScreenShell } from "./components/ScreenShell";
 
 /*
-  Markelo prototype flow, batch 1: Institution & governance, then Booklet profile.
+  Markelo prototype flow, active build: Exam Setup · Student Data & Results ·
+  Scanning · Triage & Review (4 chapters, 11 artboards). Institution &
+  governance + Booklet profile are archived in flow-institution-booklet.tsx.
 
   Every screen sits on one long vertical canvas at the 1440 Desktop Grid frame,
   one artboard each. There is no routing and no floating navigation: movement is
@@ -50,7 +52,7 @@ export default function App() {
           End of prototype, {SCREENS.length} screens
         </p>
         <p className="text-caption text-muted">
-          Markelo · Institution &amp; governance · Booklet profile · default states only · presentation layer, no routing or backend
+          Markelo · Exam Setup · Student Data &amp; Results · Scanning · Triage &amp; Review · default states only · presentation layer, no routing or backend
         </p>
       </div>
     </div>
