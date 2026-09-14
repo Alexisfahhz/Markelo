@@ -15,6 +15,10 @@ import * as SD from "./screens/studentdata";
 import * as S from "./screens/scanning";
 import * as T from "./screens/triage";
 import * as W from "./screens/workload";
+import * as MK from "./screens/marking";
+import * as MD from "./screens/moderation";
+import * as OV from "./screens/oversight";
+import * as SP from "./screens/support";
 import { Logo } from "./ui/shell";
 
 type Screen = { id: string; label: string; note?: string; el: React.ReactNode };
@@ -278,6 +282,40 @@ export const GROUPS: Group[] = [
       { id: "mod-loading", label: "Moderation: loading", el: <T.ModerationWorkspaceLoading /> },
       { id: "mod-error", label: "Moderation: not saved", el: <T.ModerationWorkspaceError /> },
       { id: "mod-denied", label: "Moderation: denied", el: <T.ModerationWorkspaceDenied /> },
+    ],
+  },
+  {
+    title: "Marking",
+    owner: "Designer 7 / Marking flow",
+    screens: [
+      { id: "my-courses", label: "My courses (Lecturer)", el: <MK.MyCourses /> },
+      { id: "flagged-for-review", label: "Flagged for review (TA)", el: <MK.FlaggedForReview /> },
+      { id: "marking-interface", label: "Marking interface", note: "Script ID only, zero student identity", el: <MK.MarkingInterface /> },
+      { id: "answer-viewer", label: "Answer viewer", note: "Screen #43, full-canvas inspector", el: <MK.AnswerViewer /> },
+    ],
+  },
+  {
+    title: "Moderation & dispute",
+    owner: "Moderation flow",
+    screens: [
+      { id: "returned-scripts", label: "Returned scripts", el: <MD.ReturnedScripts /> },
+      { id: "result-approval", label: "Result approval", note: "CSC 401 grade distribution & overrides", el: <MD.ResultApproval /> },
+      { id: "dispute-evidence", label: "Dispute evidence", note: "Full audit chain for one script", el: <MD.DisputeEvidence /> },
+    ],
+  },
+  {
+    title: "Oversight & analytics",
+    owner: "Senior Management",
+    screens: [
+      { id: "exam-performance", label: "Exam performance", note: "Screen #53, institutional KPIs", el: <OV.ExamPerformance /> },
+    ],
+  },
+  {
+    title: "Support & settings",
+    owner: "Universal / Marker",
+    screens: [
+      { id: "help-guidance", label: "Help & guidance", note: "Screen #55, interactive guide & shortcuts", el: <SP.HelpGuidance /> },
+      { id: "user-settings", label: "User settings", note: "Screen #56, marker cache & prefs", el: <ST.UserSettings /> },
     ],
   },
 ];

@@ -1,6 +1,6 @@
 /*
-  Vision-free verification, Exam Setup · Student Data & Results · Scanning ·
-  Triage & Review flow. Measures scroll positions, CTA click-through actions,
+  Vision-free verification, Institution & Governance · Booklet Profile · Marking ·
+  Moderation flow. Measures scroll positions, CTA click-through actions,
   per-screen trigger-point navigation, artboard geometry, and JS errors.
   Run: node verify.mjs
 */
@@ -13,17 +13,27 @@ const URL = `http://localhost:${PORT}`;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const EXPECTED_ORDER = [
-  "exam-creation",
-  "marking-scheme",
-  "student-upload",
-  "identity-registry",
-  "result-processing",
-  "scan-batch-with-preview",
-  "exception-queue",
-  "exception-resolve",
-  "moderation",
-  "moderation-changed",
-  "moderation-return",
+  "institution-setup",
+  "courses",
+  "people-roles",
+  "admin-settings",
+  "audit-trail",
+  "result-correction",
+  "booklet-setup",
+  "booklet-validation",
+  "booklet-versions",
+  "marking-assignment",
+  "marking-progress",
+  "my-courses",
+  "flagged-for-review",
+  "marking-interface",
+  "answer-viewer",
+  "returned-scripts",
+  "result-approval",
+  "dispute-evidence",
+  "exam-performance",
+  "help-guidance",
+  "user-settings",
 ];
 
 async function main() {
@@ -73,39 +83,8 @@ async function main() {
       if (Math.abs(a - b) <= 2) return;
     }
   };
-  const clickBtn = (scopeId, text) =>
-    page.evaluate(([sid, txt]) => {
-      const el = document.getElementById(sid);
-      if (!el) throw new Error(`section not found: ${sid}`);
-      const btn = [...el.querySelectorAll("button")].find((b) =>
-        b.textContent.toLowerCase().includes(txt.toLowerCase())
-      );
-      if (!btn) throw new Error(`button "${txt}" not found in ${sid}`);
-      btn.click();
-    }, [scopeId, text]);
 
-  /* =========================================== 1. Create exam -> Marking Scheme */
-  await go("exam-creation");
-  await sleep(1500);
-  await clickBtn("exam-creation", "Create exam");
-  await sleep(2000);
-  expect("exam-creation->marking-scheme", await scrollY(), tops["marking-scheme"]);
-
-  /* ====================================== 2. Confirm scheme -> Student Upload */
-  await go("marking-scheme");
-  await sleep(1500);
-  await clickBtn("marking-scheme", "Confirm scheme");
-  await sleep(2000);
-  expect("marking-scheme->student-upload", await scrollY(), tops["student-upload"]);
-
-  /* ==================================== 3. Exception Queue -> Resolve */
-  await go("exception-queue");
-  await sleep(1500);
-  await clickBtn("exception-queue", "Open and resolve");
-  await sleep(2000);
-  expect("exception-queue->exception-resolve", await scrollY(), tops["exception-resolve"]);
-
-  /* ============================ 4. Per-screen trigger points (no floating nav) */
+  /* ============================ 1. Per-screen trigger points (no floating nav) */
   const navCount = await page.evaluate(() => document.querySelectorAll("nav.fixed").length);
   console.log("floating nav instances:", navCount, navCount === 0 ? "PASS" : "FAIL");
 
@@ -124,25 +103,25 @@ async function main() {
   const lastNext = await hasTrigger(EXPECTED_ORDER.at(-1), "next");
   console.log("next trigger on LAST screen:", lastNext, lastNext ? "FAIL" : "PASS");
 
-  // Next trigger from identity-registry lands on result-processing.
-  await go("identity-registry");
+  // Next trigger from marking-assignment lands on marking-progress.
+  await go("marking-assignment");
   await settle();
   await page.evaluate(() => {
-    const sec = document.getElementById("identity-registry");
+    const sec = document.getElementById("marking-assignment");
     sec?.querySelector("button[aria-label^='Go to next screen']")?.click();
   });
   await sleep(2000);
-  expect("trigger-next identity-registry->result-processing", await scrollY(), tops["result-processing"]);
+  expect("trigger-next marking-assignment->marking-progress", await scrollY(), tops["marking-progress"]);
 
-  // Previous trigger from result-processing returns to identity-registry.
+  // Previous trigger from marking-progress returns to marking-assignment.
   await page.evaluate(() => {
-    const sec = document.getElementById("result-processing");
+    const sec = document.getElementById("marking-progress");
     sec?.querySelector("button[aria-label^='Go to previous screen']")?.click();
   });
   await sleep(2000);
-  expect("trigger-prev result-processing->identity-registry", await scrollY(), tops["identity-registry"]);
+  expect("trigger-prev marking-progress->marking-assignment", await scrollY(), tops["marking-assignment"]);
 
-  /* ======================================================= 5. Artboard geometry */
+  /* ======================================================= 2. Artboard geometry */
   const geo = await page.evaluate(() => {
     const sections = [...document.querySelectorAll("section[id]")];
     return sections.map((sec) => {
@@ -159,13 +138,13 @@ async function main() {
     if (!ok) geoPass = false;
   }
 
-  /* ======================================================= 6. Screenshots */
+  /* ======================================================= 3. Screenshots */
   for (const [file, id] of [
-    ["verify/01-exam-creation.png", "exam-creation"],
-    ["verify/02-marking-scheme.png", "marking-scheme"],
-    ["verify/03-student-upload.png", "student-upload"],
-    ["verify/04-identity-registry.png", "identity-registry"],
-    ["verify/05-scan-batch-with-preview.png", "scan-batch-with-preview"],
+    ["verify/01-institution-setup.png", "institution-setup"],
+    ["verify/02-booklet-setup.png", "booklet-setup"],
+    ["verify/03-marking-assignment.png", "marking-assignment"],
+    ["verify/04-marking-interface.png", "marking-interface"],
+    ["verify/05-returned-scripts.png", "returned-scripts"],
   ]) {
     await go(id);
     await sleep(1500);

@@ -2251,3 +2251,57 @@ the one-flow-at-a-time pattern every previous canvas swap used.
 - The two unrelated dirty files present at session start (`Side Bar Nav.svg`
   mode change, `prototype-flow/package-lock.json`) are again excluded from
   this commit on purpose.
+
+---
+
+## 2026-09-14, Antigravity
+
+**Phase:** Parity with Vercel deployment (`markelo-marking-flow.vercel.app`) and sidebar layout fix across 5179 & 5180.
+
+**Found:**
+- The Vercel build (`markelo-marking-flow.vercel.app`) contains the 4-chapter, 17-artboard flow: Institution & governance (6), Booklet profile (3), Marking (5), Moderation (3).
+- 6 of those screens (`MyCourses`, `FlaggedForReview`, `MarkingInterface`, `ReturnedScripts`, `ResultApproval`, `DisputeEvidence`) existed in the Vercel bundle but had not yet been committed to the local `webapp-scaffold`.
+- In `webapp-scaffold/src/ui/shell.tsx`, the active menu fill in `FlatSidebar` (and `TreeSidebar`) expanded to the rightmost edge of the 236px sidebar with 0px margin (`w-full` + `flex-1`), whereas it needed the standard `--sidebar-inset` (12px) right gap to float cleanly without touching the border edge.
+
+**Built:**
+- `webapp-scaffold/src/ui/shell.tsx`: Added `pr-[var(--sidebar-inset)]` to navigation row elements and cleaned up `locked` indicator spacing in both `FlatSidebar` and `TreeSidebar`. Active menu fills and hover states now maintain an exact 12px right gap, matching the 12px left margin and top/bottom header insets across all screens in both 5179 and 5180.
+- `webapp-scaffold/src/screens/marking.tsx`: Built `MyCourses`, `FlaggedForReview`, and `MarkingInterface` (including document viewer, thumbnail rail, page zoom/rotate, marks entry panel, score tally, and submit script).
+- `webapp-scaffold/src/screens/moderation.tsx`: Built `ReturnedScripts`, `ResultApproval`, and `DisputeEvidence` (with full immutable event history and no student identity leak).
+- `webapp-scaffold/src/App.tsx`: Registered the new Marking and Moderation & Dispute screens in `GROUPS`.
+- `prototype-flow/src/flow.tsx`: Rebuilt active 5180 flow registry to the exact 17-artboard 4-chapter narrative matching Vercel:
+  1. Institution & governance (6 screens: `institution-setup`, `courses`, `people-roles`, `admin-settings`, `audit-trail`, `result-correction`)
+  2. Booklet profile (3 screens: `booklet-setup`, `booklet-validation`, `booklet-versions`)
+  3. Marking (5 screens: `marking-assignment`, `marking-progress`, `my-courses`, `flagged-for-review`, `marking-interface`)
+  4. Moderation (3 screens: `returned-scripts`, `result-approval`, `dispute-evidence`)
+- `prototype-flow/src/App.tsx` & `prototype-flow/index.html`: Updated title and footer line to "Markelo · Institution & Governance · Booklet Profile · Marking flow" (4 chapters, 17 artboards).
+- `prototype-flow/verify.mjs`: Updated to test all 17 screens, triggers, artboard geometry (1440x1024), and refresh screenshots.
+
+**Verified:**
+- `webapp-scaffold`: `node node_modules/typescript/bin/tsc --noEmit` exit 0 (clean, 0 errors).
+- `prototype-flow`: `npm run build` (`tsc -b && vite build`) exit 0 (clean, 0 errors, bundle 266KB).
+- `node verify.mjs` in `prototype-flow`: All checks PASS against production preview build. 17 screens verified in exact order; geometry 1440x1024 on all 17 artboards PASS; trigger-points PASS; 0 floating navs; 0 JS errors.
+- Visual inspection of screenshots confirmed active sidebar menu fill has a clean 12px gap from the right border.
+- Both local dev servers running: 5179 (Webapp Scaffold) and 5180 (Prototype Flow).
+
+---
+
+## 2026-09-14 (session 2), Antigravity
+
+**Phase:** Building all remaining unbuilt screens from the 56-screen matrix and incorporating them into 5180 without altering prior flow structure.
+
+**Built:**
+- `webapp-scaffold/src/screens/marking.tsx`: Built `AnswerViewer` (Screen #43), a dedicated standalone full-canvas script inspection viewer for Lecturers, TAs, and Moderators with double-blind anonymity enforcement, page navigation, zoom/pan/rotate, thumbnail filmstrip, and collapsible marks audit inspector.
+- `webapp-scaffold/src/screens/oversight.tsx`: Built `ExamPerformance` (Screen #53), executive institutional examination oversight and Senate analytics dashboard with institution-wide KPI stat cards (14,820 candidates, 99.4% ingestion, 94.2% marking completion, 100% defensibility), filterable departmental pacing table, statistical grade distribution bell curve, and Senate dossier export.
+- `webapp-scaffold/src/screens/support.tsx`: Built `HelpGuidance` (Screen #55), universal support environment with instant task/policy search, role-based quick-start guides (Examiner, Officer, Moderator), interactive keyboard shortcuts reference, and examination defensibility FAQs.
+- `webapp-scaffold/src/screens/settings.tsx`: Built `UserSettings` (Screen #56), personal settings for markers and faculty featuring profile overview, local offline script cache pre-fetching controls (10-50 scripts), auto-save frequency, thumbnail positioning preferences, and notification alert thresholds.
+- `webapp-scaffold/src/App.tsx`: Registered all 4 screens in the review harness on port 5179.
+- `prototype-flow/src/flow.tsx`: Added all 4 screens into the vertical canvas flow on port 5180 (Answer Viewer seamlessly added into Chapter 3 Marking; Chapter 5 Oversight & Support added for Exam Performance, Help & Guidance, and User Settings). Flow expanded cleanly from 17 to 21 artboards without breaking prior flow structure.
+- `prototype-flow/src/App.tsx`: Updated footer description to reflect the 21 artboards across 5 chapters.
+- `prototype-flow/verify.mjs`: Updated verification sequence to test all 21 screens.
+
+**Verified:**
+- `webapp-scaffold`: `node node_modules/typescript/bin/tsc --noEmit` exit 0 (clean, 0 errors).
+- `prototype-flow`: `npm run build` (`tsc -b && vite build`) exit 0 (clean, 0 errors, 306KB bundle).
+- `prototype-flow/verify.mjs`: All 21 screens PASS geometry (1440x1024), trigger point transitions PASS, 0 floating navs, 0 JS errors.
+- Visual inspection: Captured and verified screenshots for all 4 new screens in `verify/`.
+- Dev servers running: 5179 (Webapp Scaffold) and 5180 (Prototype Flow).

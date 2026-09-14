@@ -269,7 +269,7 @@ function FlatSidebar({
             : activeLabel === label;
 
           return (
-            <li key={group.label ?? `g${gi}`} className={`flex h-[38.39px] w-full items-center gap-2 ${locked ? "opacity-50" : ""}`}>
+            <li key={group.label ?? `g${gi}`} className={`flex h-[38.39px] w-full items-center gap-2 pr-[var(--sidebar-inset)] ${locked ? "opacity-50" : ""}`}>
               <span aria-hidden className={`h-6 w-1 shrink-0 rounded-r-[4px] ${active && !locked ? "bg-nav-active" : "bg-transparent"}`} />
               <a
                 href="#"
@@ -287,7 +287,7 @@ function FlatSidebar({
                 }`}>{label}</span>
               </a>
               {locked && (
-                <span className="mr-3 flex h-[38.39px] w-[40px] shrink-0 items-center justify-center">
+                <span className="flex h-[38.39px] w-5 shrink-0 items-center justify-center">
                   <UserLock size={16} strokeWidth={1} className="text-nav-label" aria-label="You do not have access to this" />
                 </span>
               )}
@@ -466,7 +466,7 @@ export function Sidebar({
                   onClick={(e) => e.preventDefault()}
                   aria-disabled={!permitted || undefined}
                   title={only.label}
-                  className={`flex h-[38.39px] w-full items-center gap-2 ${!permitted ? "opacity-50" : ""}`}
+                  className={`flex h-[38.39px] w-full items-center gap-2 pr-[var(--sidebar-inset)] ${!permitted ? "opacity-50" : ""}`}
                 >
                   <span aria-hidden className={`h-6 w-1 shrink-0 rounded-r-[4px] ${active && permitted ? "bg-nav-active" : "bg-transparent"}`} />
                   <span className={`flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 ${active && permitted ? "bg-nav-active" : ""}`}>
@@ -474,7 +474,7 @@ export function Sidebar({
                     <span className={`min-w-0 flex-1 truncate text-[14px] tracking-[-0.01em] leading-6 ${active && permitted ? "font-bold text-white" : "font-semibold text-nav-label"}`}>{only.label}</span>
                   </span>
                   {!permitted && (
-                    <span className="mr-3 flex h-[38.39px] w-[40px] shrink-0 items-center justify-center">
+                    <span className="flex h-[38.39px] w-5 shrink-0 items-center justify-center">
                       <UserLock size={16} strokeWidth={1} className="text-nav-label" aria-label="You do not have access to this" />
                     </span>
                   )}
@@ -486,13 +486,13 @@ export function Sidebar({
 
             if (reachable === 0) {
               return (
-                <div key={group.label} className="flex h-[38.39px] w-full items-center gap-2 opacity-50">
+                <div key={group.label} className="flex h-[38.39px] w-full items-center gap-2 pr-[var(--sidebar-inset)] opacity-50">
                   <span aria-hidden className="h-6 w-1 shrink-0 rounded-r-[4px] bg-transparent" />
                   <span className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2">
                     {ParentIcon && <ParentIcon size={16} strokeWidth={1.33} className="shrink-0 text-nav-label" aria-hidden />}
                     <span className="min-w-0 flex-1 truncate text-[14px] font-semibold tracking-[-0.01em] leading-6 text-nav-label">{group.label}</span>
                   </span>
-                  <span className="mr-3 flex h-[38.39px] w-[40px] shrink-0 items-center justify-center">
+                  <span className="flex h-[38.39px] w-5 shrink-0 items-center justify-center">
                     <UserLock size={16} strokeWidth={1} className="text-nav-label" aria-label={`${group.label}: locked`} />
                   </span>
                 </div>
@@ -509,20 +509,20 @@ export function Sidebar({
                   onClick={() => toggle(group.label!)}
                   aria-expanded={isOpen}
                   aria-controls={panelId}
-                  className="flex h-[38.39px] w-full items-center gap-2 hover:bg-white/[0.04]"
+                  className="flex h-[38.39px] w-full items-center gap-2 pr-[var(--sidebar-inset)] hover:bg-white/[0.04]"
                 >
                   <span aria-hidden className="h-6 w-1 shrink-0 rounded-r-[4px] bg-transparent" />
                   <span className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2">
                     {ParentIcon && <ParentIcon size={16} strokeWidth={1.33} className="shrink-0 text-nav-label" aria-hidden />}
                     <span className="min-w-0 flex-1 truncate text-[14px] font-semibold tracking-[-0.01em] leading-6 text-nav-label">{group.label}</span>
                   </span>
-                  <span className="mr-3 flex h-[38.39px] w-[40px] shrink-0 items-center justify-center gap-1">
+                  <span className="flex h-[38.39px] w-5 shrink-0 items-center justify-center gap-1">
                     {!isOpen && <span className="text-[12px] leading-4 text-nav-label">{group.items.length}</span>}
                     <ChevronDown size={14} strokeWidth={1.67} aria-hidden className={`shrink-0 text-nav-label transition-transform duration-200 ${isOpen ? "" : "-rotate-90"}`} />
                   </span>
                 </button>
 
-                <ul id={panelId} hidden={!isOpen} className="ml-7 flex flex-col gap-2 border-l border-white/[0.08] py-1">
+                <ul id={panelId} hidden={!isOpen} className="ml-7 mr-[var(--sidebar-inset)] flex flex-col gap-2 border-l border-white/[0.08] py-1">
                   {group.items.map((item) => {
                     const permitted = granted.get(item.label);
                     const locked = !permitted;

@@ -221,3 +221,156 @@ export function AdminSettingsDenied() {
     </AppFrame>
   );
 }
+
+/* =====================================================================
+   6. USER SETTINGS (Screen #56)
+   Personal preferences, offline cache, and notifications (Marker / User)
+   ===================================================================== */
+
+export function UserSettings() {
+  const [saved, setSaved] = React.useState(false);
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
+
+  return (
+    <AppFrame
+      role={ROLES.lecturer}
+      activeLabel="Settings"
+      title="User Settings"
+      sub="Manage your personal preferences, local offline marking cache, and notification triggers"
+    >
+      <div className="flex flex-col gap-6">
+        {saved && (
+          <Notice tone="brand" title="Preferences updated">
+            Your personal settings and offline cache configurations have been saved.
+          </Notice>
+        )}
+
+        <form onSubmit={handleSave} className="flex flex-col gap-6">
+          {/* Section 1: Profile & Credentials */}
+          <Card>
+            <CardHeader
+              title="Personal profile & role assignment"
+              sub="Credentials managed through your institutional directory (LDAP/SSO)"
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Full name">
+                <Input defaultValue="Dr. Balogun Salami" disabled />
+              </Field>
+              <Field label="Institutional email">
+                <Input defaultValue="b.salami@yabatech.edu.ng" disabled />
+              </Field>
+              <Field label="Department / Faculty">
+                <Input defaultValue="Computer Science · School of Technology" disabled />
+              </Field>
+              <Field label="Active assigned roles">
+                <div className="flex items-center gap-2 pt-2">
+                  <Badge tone="brand" pill>Lecturer (Primary)</Badge>
+                  <Badge tone="neutral" pill>Moderator (Secondary)</Badge>
+                </div>
+              </Field>
+            </div>
+          </Card>
+
+          {/* Section 2: Offline Cache & Workspace Preferences */}
+          <Card>
+            <CardHeader
+              title="Marking workspace & offline cache"
+              sub="Configure local script pre-fetching to prevent marking interruptions during network drops"
+            />
+            <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <Field
+                  label="Offline script pre-fetch quota"
+                  hint="How many assigned scripts to keep cached locally in browser storage"
+                >
+                  <Select defaultValue="25">
+                    <option value="10">10 scripts (Low bandwidth / mobile hotspot)</option>
+                    <option value="25">25 scripts (Recommended for campus Wi-Fi)</option>
+                    <option value="50">50 scripts (Heavy marking sessions)</option>
+                    <option value="all">All assigned scripts</option>
+                  </Select>
+                </Field>
+                <Field
+                  label="Auto-save frequency"
+                  hint="Every keystroke is saved to local cache; this controls cloud sync frequency"
+                >
+                  <Select defaultValue="instant">
+                    <option value="instant">Instantaneous (sync on mark enter)</option>
+                    <option value="15s">Every 15 seconds</option>
+                    <option value="30s">Every 30 seconds</option>
+                  </Select>
+                </Field>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <Field
+                  label="Image scan rendering quality"
+                  hint="Higher quality increases zoom clarity; standard uses less storage"
+                >
+                  <Select defaultValue="balanced">
+                    <option value="performance">Standard (150 DPI · fast loading)</option>
+                    <option value="balanced">High definition (200 DPI · balanced)</option>
+                    <option value="maximum">Maximum detail (300 DPI · high fidelity)</option>
+                  </Select>
+                </Field>
+                <Field
+                  label="Thumbnail rail position in viewer"
+                  hint="Placement of the page thumbnail filmstrip"
+                >
+                  <Select defaultValue="left">
+                    <option value="left">Left vertical sidebar (Default)</option>
+                    <option value="bottom">Bottom horizontal rail</option>
+                  </Select>
+                </Field>
+              </div>
+
+              <div className="rounded-control bg-bg/80 p-3.5 flex items-center justify-between">
+                <div>
+                  <p className="text-caption font-semibold text-text">Local Cache Storage Usage</p>
+                  <p className="text-[11px] text-muted">Currently using 48.2 MB of 2.0 GB allocated browser space</p>
+                </div>
+                <Button variant="secondary" size="sm">
+                  Clear offline cache
+                </Button>
+              </div>
+            </div>
+          </Card>
+
+          {/* Section 3: Notification Preferences */}
+          <Card>
+            <CardHeader
+              title="Notifications & alert thresholds"
+              sub="Choose which examination events send in-app and email notices"
+            />
+            <div className="flex flex-col gap-3 text-caption">
+              {[
+                { label: "Teaching Assistant escalations", desc: "Notify me immediately when a TA flags an ambiguous question" },
+                { label: "Moderation returns", desc: "Notify me when a script is returned by the department moderator with written feedback" },
+                { label: "Session expiry reminders", desc: "Show an on-screen warning 3 minutes before automatic 15-minute inactivity sign-out" },
+                { label: "Exam submission deadlines", desc: "Daily summary of remaining unmarked scripts before Senate deadline" },
+              ].map((item, idx) => (
+                <label key={idx} className="flex items-start gap-3 rounded-control border border-border p-3 cursor-pointer hover:bg-bg/40">
+                  <input type="checkbox" defaultChecked className="mt-0.5 rounded border-border text-brand" />
+                  <div>
+                    <p className="font-semibold text-text">{item.label}</p>
+                    <p className="text-[11px] text-muted">{item.desc}</p>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </Card>
+
+          <div className="flex justify-end gap-3">
+            <Button variant="secondary">Reset to defaults</Button>
+            <Button type="submit" icon={Save}>Save preferences</Button>
+          </div>
+        </form>
+      </div>
+    </AppFrame>
+  );
+}
