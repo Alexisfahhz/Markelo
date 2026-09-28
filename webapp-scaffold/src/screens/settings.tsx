@@ -355,7 +355,7 @@ export function UserSettings() {
                 { label: "Exam submission deadlines", desc: "Daily summary of remaining unmarked scripts before Senate deadline" },
               ].map((item, idx) => (
                 <label key={idx} className="flex items-start gap-3 rounded-control border border-border p-3 cursor-pointer hover:bg-bg/40">
-                  <input type="checkbox" defaultChecked className="mt-0.5 rounded border-border text-brand" />
+                  <input type="checkbox" defaultChecked className="mt-0.5 rounded border-border-control text-brand" />
                   <div>
                     <p className="font-semibold text-text">{item.label}</p>
                     <p className="text-[11px] text-muted">{item.desc}</p>

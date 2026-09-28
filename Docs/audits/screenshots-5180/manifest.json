@@ -1,0 +1,149 @@
+[
+  {
+    "index": 1,
+    "id": "institution-setup",
+    "found": true,
+    "file": "01-institution-setup.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 2,
+    "id": "courses",
+    "found": true,
+    "file": "02-courses.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 3,
+    "id": "people-roles",
+    "found": true,
+    "file": "03-people-roles.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 4,
+    "id": "admin-settings",
+    "found": true,
+    "file": "04-admin-settings.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 5,
+    "id": "audit-trail",
+    "found": true,
+    "file": "05-audit-trail.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 6,
+    "id": "result-correction",
+    "found": true,
+    "file": "06-result-correction.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 7,
+    "id": "booklet-setup",
+    "found": true,
+    "file": "07-booklet-setup.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 8,
+    "id": "booklet-validation",
+    "found": true,
+    "file": "08-booklet-validation.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 9,
+    "id": "booklet-versions",
+    "found": true,
+    "file": "09-booklet-versions.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 10,
+    "id": "marking-assignment",
+    "found": true,
+    "file": "10-marking-assignment.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 11,
+    "id": "marking-progress",
+    "found": true,
+    "file": "11-marking-progress.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 12,
+    "id": "my-courses",
+    "found": true,
+    "file": "12-my-courses.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 13,
+    "id": "flagged-for-review",
+    "found": true,
+    "file": "13-flagged-for-review.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 14,
+    "id": "marking-interface",
+    "found": true,
+    "file": "14-marking-interface.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 15,
+    "id": "answer-viewer",
+    "found": true,
+    "file": "15-answer-viewer.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 16,
+    "id": "returned-scripts",
+    "found": true,
+    "file": "16-returned-scripts.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 17,
+    "id": "result-approval",
+    "found": true,
+    "file": "17-result-approval.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 18,
+    "id": "dispute-evidence",
+    "found": true,
+    "file": "18-dispute-evidence.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 19,
+    "id": "exam-performance",
+    "found": true,
+    "file": "19-exam-performance.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 20,
+    "id": "help-guidance",
+    "found": true,
+    "file": "20-help-guidance.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 21,
+    "id": "user-settings",
+    "found": true,
+    "file": "21-user-settings.png",
+    "consoleErrors": []
+  }
+]

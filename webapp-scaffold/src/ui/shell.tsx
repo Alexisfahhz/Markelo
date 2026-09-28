@@ -244,14 +244,14 @@ function FlatSidebar({
   const activeGroup = groupOf(activeLabel);
 
   return (
-    <nav className="flex w-[236px] shrink-0 flex-col bg-brand-dark">
-      {/* Logo + Working as — Figma: 136.77px top section */}
-      <div className="flex flex-col gap-4 px-[var(--sidebar-inset)] py-4">
-        <span className="inline-flex items-center gap-2">
+    <nav className="flex w-[236px] shrink-0 flex-col bg-brand-dark max-lg:w-[72px]">
+      {/* Logo + Working as — Figma: 136.77px top section. Tablet (768-1023): icon rail, IMPLEMENTATION_PLAN.md section 3. */}
+      <div className="flex flex-col gap-4 px-[var(--sidebar-inset)] py-4 max-lg:items-center max-lg:px-0">
+        <span className="inline-flex items-center gap-2" title="Markelo">
           <MarkeloMark className="h-6 w-auto text-nav-brand" />
-          <span className="text-[16px] font-extrabold leading-6 tracking-[0.01em] text-nav-brand">Markelo</span>
+          <span className="text-[16px] font-extrabold leading-6 tracking-[0.01em] text-nav-brand max-lg:hidden">Markelo</span>
         </span>
-        <div className="rounded-lg bg-white/[0.08] px-3 py-[7.28px]">
+        <div className="rounded-lg bg-white/[0.08] px-3 py-[7.28px] max-lg:hidden">
           <p className="text-[10px] font-semibold leading-4 tracking-[-0.01em] text-nav-label">WORKING AS</p>
           <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-white">{role.title}</p>
         </div>
@@ -269,25 +269,25 @@ function FlatSidebar({
             : activeLabel === label;
 
           return (
-            <li key={group.label ?? `g${gi}`} className={`flex h-[38.39px] w-full items-center gap-2 pr-[var(--sidebar-inset)] ${locked ? "opacity-50" : ""}`}>
-              <span aria-hidden className={`h-6 w-1 shrink-0 rounded-r-[4px] ${active && !locked ? "bg-nav-active" : "bg-transparent"}`} />
+            <li key={group.label ?? `g${gi}`} className={`flex h-[38.39px] w-full items-center gap-2 pr-[var(--sidebar-inset)] max-lg:justify-center max-lg:pr-0 ${locked ? "opacity-50" : ""}`}>
+              <span aria-hidden className={`h-6 w-1 shrink-0 rounded-r-[4px] max-lg:hidden ${active && !locked ? "bg-nav-active" : "bg-transparent"}`} />
               <a
                 href="#"
                 onClick={(e) => e.preventDefault()}
                 aria-current={active && !locked ? "page" : undefined}
                 aria-disabled={locked || undefined}
                 title={label}
-                className={`flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 ${
+                className={`flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 max-lg:flex-none max-lg:justify-center ${
                   active && !locked ? "bg-nav-active" : locked ? "" : "hover:bg-white/[0.06]"
                 }`}
               >
                 <Icon size={16} strokeWidth={1.33} className={`shrink-0 ${active && !locked ? "text-white" : "text-nav-label"}`} aria-hidden />
-                <span className={`min-w-0 flex-1 truncate text-[14px] tracking-[-0.01em] leading-6 ${
+                <span className={`min-w-0 flex-1 truncate text-[14px] tracking-[-0.01em] leading-6 max-lg:hidden ${
                   active && !locked ? "font-bold text-white" : "font-semibold text-nav-label"
                 }`}>{label}</span>
               </a>
               {locked && (
-                <span className="flex h-[38.39px] w-5 shrink-0 items-center justify-center">
+                <span className="flex h-[38.39px] w-5 shrink-0 items-center justify-center max-lg:hidden">
                   <UserLock size={16} strokeWidth={1} className="text-nav-label" aria-label="You do not have access to this" />
                 </span>
               )}
@@ -296,12 +296,13 @@ function FlatSidebar({
         })}
       </ul>
 
-      {/* Footer — Figma: 80.15px, border-t 0.15px #8FB4E0 */}
-      <div className="mt-auto flex flex-col gap-1 border-t border-nav-label/20 px-[var(--sidebar-inset)] py-3">
-        <div>{heldRoles && heldRoles.length > 1 && <RoleSwitcher current={role.key} held={heldRoles} />}</div>
-        <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-nav-label">SIGNED IN AS</p>
-        <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-nav-strong">{role.person}</p>
-        <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-white">{role.title}</p>
+      {/* Footer — Figma: 80.15px, border-t 0.15px #8FB4E0. Text collapses at tablet; the icon rail keeps only the divider. */}
+      <div className="mt-auto flex flex-col gap-1 border-t border-nav-label/20 px-[var(--sidebar-inset)] py-3 max-lg:items-center max-lg:px-2">
+        <div className="max-lg:hidden">{heldRoles && heldRoles.length > 1 && <RoleSwitcher current={role.key} held={heldRoles} />}</div>
+        <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-nav-label max-lg:hidden">SIGNED IN AS</p>
+        <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-nav-strong max-lg:hidden" title={role.person}>{role.person}</p>
+        <UserLock size={18} strokeWidth={1.5} className="hidden text-nav-label max-lg:block" aria-label={`Signed in as ${role.person}, ${role.title}`} />
+        <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-white max-lg:hidden">{role.title}</p>
       </div>
     </nav>
   );
@@ -437,13 +438,13 @@ export function Sidebar({
     wordmark and WORKING AS badge. Footer 80.15px with #FBFCFF name.
   */
   return (
-    <nav className="flex w-[236px] shrink-0 flex-col bg-brand-dark">
-      <div className="flex flex-col gap-4 px-[var(--sidebar-inset)] py-4">
-        <span className="inline-flex items-center gap-2">
+    <nav className="flex w-[236px] shrink-0 flex-col bg-brand-dark max-lg:w-[72px]">
+      <div className="flex flex-col gap-4 px-[var(--sidebar-inset)] py-4 max-lg:items-center max-lg:px-0">
+        <span className="inline-flex items-center gap-2" title="Markelo">
           <MarkeloMark className="h-6 w-auto text-nav-brand" />
-          <span className="text-[16px] font-extrabold leading-6 tracking-[0.01em] text-nav-brand">Markelo</span>
+          <span className="text-[16px] font-extrabold leading-6 tracking-[0.01em] text-nav-brand max-lg:hidden">Markelo</span>
         </span>
-        <div className="rounded-lg bg-white/[0.08] px-3 py-[7.28px]">
+        <div className="rounded-lg bg-white/[0.08] px-3 py-[7.28px] max-lg:hidden">
           <p className="text-[10px] font-semibold leading-4 tracking-[-0.01em] text-nav-label">WORKING AS</p>
           <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-white">{role.title}</p>
         </div>
@@ -466,15 +467,15 @@ export function Sidebar({
                   onClick={(e) => e.preventDefault()}
                   aria-disabled={!permitted || undefined}
                   title={only.label}
-                  className={`flex h-[38.39px] w-full items-center gap-2 pr-[var(--sidebar-inset)] ${!permitted ? "opacity-50" : ""}`}
+                  className={`flex h-[38.39px] w-full items-center gap-2 pr-[var(--sidebar-inset)] max-lg:justify-center max-lg:pr-0 ${!permitted ? "opacity-50" : ""}`}
                 >
-                  <span aria-hidden className={`h-6 w-1 shrink-0 rounded-r-[4px] ${active && permitted ? "bg-nav-active" : "bg-transparent"}`} />
-                  <span className={`flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 ${active && permitted ? "bg-nav-active" : ""}`}>
+                  <span aria-hidden className={`h-6 w-1 shrink-0 rounded-r-[4px] max-lg:hidden ${active && permitted ? "bg-nav-active" : "bg-transparent"}`} />
+                  <span className={`flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 max-lg:flex-none max-lg:justify-center ${active && permitted ? "bg-nav-active" : ""}`}>
                     <OnlyIcon size={16} strokeWidth={1.33} className={`shrink-0 ${active && permitted ? "text-white" : "text-nav-label"}`} aria-hidden />
-                    <span className={`min-w-0 flex-1 truncate text-[14px] tracking-[-0.01em] leading-6 ${active && permitted ? "font-bold text-white" : "font-semibold text-nav-label"}`}>{only.label}</span>
+                    <span className={`min-w-0 flex-1 truncate text-[14px] tracking-[-0.01em] leading-6 max-lg:hidden ${active && permitted ? "font-bold text-white" : "font-semibold text-nav-label"}`}>{only.label}</span>
                   </span>
                   {!permitted && (
-                    <span className="flex h-[38.39px] w-5 shrink-0 items-center justify-center">
+                    <span className="flex h-[38.39px] w-5 shrink-0 items-center justify-center max-lg:hidden">
                       <UserLock size={16} strokeWidth={1} className="text-nav-label" aria-label="You do not have access to this" />
                     </span>
                   )}
@@ -486,13 +487,13 @@ export function Sidebar({
 
             if (reachable === 0) {
               return (
-                <div key={group.label} className="flex h-[38.39px] w-full items-center gap-2 pr-[var(--sidebar-inset)] opacity-50">
-                  <span aria-hidden className="h-6 w-1 shrink-0 rounded-r-[4px] bg-transparent" />
-                  <span className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2">
+                <div key={group.label} className="flex h-[38.39px] w-full items-center gap-2 pr-[var(--sidebar-inset)] opacity-50 max-lg:justify-center max-lg:pr-0">
+                  <span aria-hidden className="h-6 w-1 shrink-0 rounded-r-[4px] bg-transparent max-lg:hidden" />
+                  <span className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 max-lg:flex-none max-lg:justify-center">
                     {ParentIcon && <ParentIcon size={16} strokeWidth={1.33} className="shrink-0 text-nav-label" aria-hidden />}
-                    <span className="min-w-0 flex-1 truncate text-[14px] font-semibold tracking-[-0.01em] leading-6 text-nav-label">{group.label}</span>
+                    <span className="min-w-0 flex-1 truncate text-[14px] font-semibold tracking-[-0.01em] leading-6 text-nav-label max-lg:hidden">{group.label}</span>
                   </span>
-                  <span className="flex h-[38.39px] w-5 shrink-0 items-center justify-center">
+                  <span className="flex h-[38.39px] w-5 shrink-0 items-center justify-center max-lg:hidden">
                     <UserLock size={16} strokeWidth={1} className="text-nav-label" aria-label={`${group.label}: locked`} />
                   </span>
                 </div>
@@ -509,20 +510,27 @@ export function Sidebar({
                   onClick={() => toggle(group.label!)}
                   aria-expanded={isOpen}
                   aria-controls={panelId}
-                  className="flex h-[38.39px] w-full items-center gap-2 pr-[var(--sidebar-inset)] hover:bg-white/[0.04]"
+                  title={group.label}
+                  className="flex h-[38.39px] w-full items-center gap-2 pr-[var(--sidebar-inset)] hover:bg-white/[0.04] max-lg:justify-center max-lg:pr-0"
                 >
-                  <span aria-hidden className="h-6 w-1 shrink-0 rounded-r-[4px] bg-transparent" />
-                  <span className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2">
+                  <span aria-hidden className="h-6 w-1 shrink-0 rounded-r-[4px] bg-transparent max-lg:hidden" />
+                  <span className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-2 max-lg:flex-none max-lg:justify-center">
                     {ParentIcon && <ParentIcon size={16} strokeWidth={1.33} className="shrink-0 text-nav-label" aria-hidden />}
-                    <span className="min-w-0 flex-1 truncate text-[14px] font-semibold tracking-[-0.01em] leading-6 text-nav-label">{group.label}</span>
+                    <span className="min-w-0 flex-1 truncate text-[14px] font-semibold tracking-[-0.01em] leading-6 text-nav-label max-lg:hidden">{group.label}</span>
                   </span>
-                  <span className="flex h-[38.39px] w-5 shrink-0 items-center justify-center gap-1">
+                  <span className="flex h-[38.39px] w-5 shrink-0 items-center justify-center gap-1 max-lg:hidden">
                     {!isOpen && <span className="text-[12px] leading-4 text-nav-label">{group.items.length}</span>}
                     <ChevronDown size={14} strokeWidth={1.67} aria-hidden className={`shrink-0 text-nav-label transition-transform duration-200 ${isOpen ? "" : "-rotate-90"}`} />
                   </span>
                 </button>
 
-                <ul id={panelId} hidden={!isOpen} className="ml-7 mr-[var(--sidebar-inset)] flex flex-col gap-2 border-l border-white/[0.08] py-1">
+                {/*
+                  Tablet (768-1023): no room for the flyout a real icon rail would need
+                  for nested items, so the panel stays closed regardless of `isOpen`.
+                  Assumed, his to override — see the audit doc for the alternative
+                  (a flyout) this skips.
+                */}
+                <ul id={panelId} hidden={!isOpen} className="ml-7 mr-[var(--sidebar-inset)] flex flex-col gap-2 border-l border-white/[0.08] py-1 max-lg:hidden">
                   {group.items.map((item) => {
                     const permitted = granted.get(item.label);
                     const locked = !permitted;
@@ -555,11 +563,12 @@ export function Sidebar({
         </div>
       </div>
 
-      <div className="mt-auto flex flex-col gap-1 border-t border-nav-label/20 px-[var(--sidebar-inset)] py-3">
-        <div>{heldRoles && heldRoles.length > 1 && <RoleSwitcher current={role.key} held={heldRoles} />}</div>
-        <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-nav-label">SIGNED IN AS</p>
-        <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-nav-strong">{role.person}</p>
-        <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-white">{role.title}</p>
+      <div className="mt-auto flex flex-col gap-1 border-t border-nav-label/20 px-[var(--sidebar-inset)] py-3 max-lg:items-center max-lg:px-2">
+        <div className="max-lg:hidden">{heldRoles && heldRoles.length > 1 && <RoleSwitcher current={role.key} held={heldRoles} />}</div>
+        <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-nav-label max-lg:hidden">SIGNED IN AS</p>
+        <p className="text-[14px] font-semibold leading-6 tracking-[-0.01em] text-nav-strong max-lg:hidden" title={role.person}>{role.person}</p>
+        <UserLock size={18} strokeWidth={1.5} className="hidden text-nav-label max-lg:block" aria-label={`Signed in as ${role.person}, ${role.title}`} />
+        <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-white max-lg:hidden">{role.title}</p>
       </div>
     </nav>
   );
@@ -601,7 +610,7 @@ export function TopBar({
       </div>
       <div className="flex items-center gap-4">
         <OfflineIndicator state={offline} />
-        <div className="text-right">
+        <div className="text-right max-lg:hidden">
           {/* Bold Body / Body Small: 12px / 600 / #1A1A1A */}
           <p className="text-[12px] font-semibold leading-4 tracking-[-0.01em] text-text">{INSTITUTION}</p>
           <p className="text-[12px] font-medium leading-4 tracking-[-0.01em] text-muted">{SESSION}</p>

@@ -1,0 +1,896 @@
+[
+  {
+    "index": 1,
+    "label": "Attention box",
+    "file": "001-attention-box.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 2,
+    "label": "Tooltip",
+    "file": "002-tooltip.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 3,
+    "label": "Sign in",
+    "file": "003-sign-in.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 4,
+    "label": "Sign in: signing in",
+    "file": "004-sign-in-signing-in.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 5,
+    "label": "Sign in: wrong details",
+    "file": "005-sign-in-wrong-details.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 6,
+    "label": "MFA check",
+    "file": "006-mfa-check.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 7,
+    "label": "Accept invitation",
+    "file": "007-accept-invitation.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 8,
+    "label": "Forgot password",
+    "file": "008-forgot-password.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 9,
+    "label": "Forgot password: sent",
+    "file": "009-forgot-password-sent.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 10,
+    "label": "No role assigned",
+    "file": "010-no-role-assigned.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 11,
+    "label": "Account suspended",
+    "file": "011-account-suspended.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 12,
+    "label": "Choose role",
+    "file": "012-choose-role.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 13,
+    "label": "Session about to expire",
+    "file": "013-session-about-to-expire.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 14,
+    "label": "Access revoked mid-work",
+    "file": "014-access-revoked-mid-work.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 15,
+    "label": "Welcome",
+    "file": "015-welcome.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 16,
+    "label": "Institution details",
+    "file": "016-institution-details.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 17,
+    "label": "Booklet prompt",
+    "file": "017-booklet-prompt.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 18,
+    "label": "Invite your team",
+    "file": "018-invite-your-team.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 19,
+    "label": "Done",
+    "file": "019-done.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 20,
+    "label": "Exam Officer: welcome",
+    "file": "020-exam-officer-welcome.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 21,
+    "label": "Exam Officer: first run",
+    "file": "021-exam-officer-first-run.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 22,
+    "label": "Lecturer: welcome",
+    "file": "022-lecturer-welcome.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 23,
+    "label": "Lecturer: anonymity",
+    "file": "023-lecturer-anonymity.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 24,
+    "label": "TA: welcome",
+    "file": "024-ta-welcome.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 25,
+    "label": "TA: anonymity",
+    "file": "025-ta-anonymity.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 26,
+    "label": "Moderator: welcome",
+    "file": "026-moderator-welcome.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 27,
+    "label": "Senior Mgmt: welcome",
+    "file": "027-senior-mgmt-welcome.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 28,
+    "label": "Done (any role)",
+    "file": "028-done-any-role.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 29,
+    "label": "Exam Officer",
+    "file": "029-exam-officer.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 30,
+    "label": "Lecturer",
+    "file": "030-lecturer.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 31,
+    "label": "Teaching Assistant",
+    "file": "031-teaching-assistant.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 32,
+    "label": "Moderator / HOD",
+    "file": "032-moderator-hod.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 33,
+    "label": "Institution Admin",
+    "file": "033-institution-admin.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 34,
+    "label": "Senior Management",
+    "file": "034-senior-management.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 35,
+    "label": "Institution setup: default",
+    "file": "035-institution-setup-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 36,
+    "label": "Courses: default",
+    "file": "036-courses-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 37,
+    "label": "Courses: empty",
+    "file": "037-courses-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 38,
+    "label": "Courses: loading",
+    "file": "038-courses-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 39,
+    "label": "Courses: error",
+    "file": "039-courses-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 40,
+    "label": "Courses: permission denied",
+    "file": "040-courses-permission-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 41,
+    "label": "People & roles: default",
+    "file": "041-people-roles-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 42,
+    "label": "People & roles: empty",
+    "file": "042-people-roles-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 43,
+    "label": "People & roles: loading",
+    "file": "043-people-roles-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 44,
+    "label": "People & roles: error",
+    "file": "044-people-roles-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 45,
+    "label": "People & roles: denied",
+    "file": "045-people-roles-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 46,
+    "label": "Booklet setup: default",
+    "file": "046-booklet-setup-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 47,
+    "label": "Booklet setup: empty",
+    "file": "047-booklet-setup-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 48,
+    "label": "Booklet setup: loading",
+    "file": "048-booklet-setup-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 49,
+    "label": "Booklet setup: error",
+    "file": "049-booklet-setup-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 50,
+    "label": "Booklet setup: denied",
+    "file": "050-booklet-setup-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 51,
+    "label": "Booklet validation: default",
+    "file": "051-booklet-validation-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 52,
+    "label": "Booklet validation: empty",
+    "file": "052-booklet-validation-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 53,
+    "label": "Booklet validation: loading",
+    "file": "053-booklet-validation-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 54,
+    "label": "Booklet validation: error",
+    "file": "054-booklet-validation-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 55,
+    "label": "Booklet validation: denied",
+    "file": "055-booklet-validation-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 56,
+    "label": "Booklet versions: default",
+    "file": "056-booklet-versions-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 57,
+    "label": "Booklet versions: empty",
+    "file": "057-booklet-versions-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 58,
+    "label": "Booklet versions: loading",
+    "file": "058-booklet-versions-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 59,
+    "label": "Booklet versions: error",
+    "file": "059-booklet-versions-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 60,
+    "label": "Booklet versions: denied",
+    "file": "060-booklet-versions-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 61,
+    "label": "Audit trail: default",
+    "file": "061-audit-trail-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 62,
+    "label": "Audit trail: empty",
+    "file": "062-audit-trail-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 63,
+    "label": "Audit trail: loading",
+    "file": "063-audit-trail-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 64,
+    "label": "Audit trail: error",
+    "file": "064-audit-trail-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 65,
+    "label": "Audit trail: denied",
+    "file": "065-audit-trail-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 66,
+    "label": "Result correction: default",
+    "file": "066-result-correction-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 67,
+    "label": "Result correction: editing one",
+    "file": "067-result-correction-editing-one.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 68,
+    "label": "Result correction: empty",
+    "file": "068-result-correction-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 69,
+    "label": "Result correction: loading",
+    "file": "069-result-correction-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 70,
+    "label": "Result correction: error",
+    "file": "070-result-correction-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 71,
+    "label": "Result correction: denied",
+    "file": "071-result-correction-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 72,
+    "label": "Admin settings: default",
+    "file": "072-admin-settings-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 73,
+    "label": "Admin settings: empty",
+    "file": "073-admin-settings-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 74,
+    "label": "Admin settings: loading",
+    "file": "074-admin-settings-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 75,
+    "label": "Admin settings: error",
+    "file": "075-admin-settings-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 76,
+    "label": "Admin settings: denied",
+    "file": "076-admin-settings-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 77,
+    "label": "Exam creation: default",
+    "file": "077-exam-creation-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 78,
+    "label": "Exam creation: empty",
+    "file": "078-exam-creation-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 79,
+    "label": "Exam creation: loading",
+    "file": "079-exam-creation-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 80,
+    "label": "Exam creation: error",
+    "file": "080-exam-creation-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 81,
+    "label": "Exam creation: denied",
+    "file": "081-exam-creation-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 82,
+    "label": "Marking scheme: default",
+    "file": "082-marking-scheme-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 83,
+    "label": "Marking scheme: empty",
+    "file": "083-marking-scheme-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 84,
+    "label": "Marking scheme: loading",
+    "file": "084-marking-scheme-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 85,
+    "label": "Marking scheme: error",
+    "file": "085-marking-scheme-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 86,
+    "label": "Marking scheme: denied",
+    "file": "086-marking-scheme-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 87,
+    "label": "Student data: default",
+    "file": "087-student-data-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 88,
+    "label": "Student data: empty",
+    "file": "088-student-data-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 89,
+    "label": "Student data: loading",
+    "file": "089-student-data-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 90,
+    "label": "Student data: error",
+    "file": "090-student-data-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 91,
+    "label": "Student data: denied",
+    "file": "091-student-data-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 92,
+    "label": "Identity registry: default",
+    "file": "092-identity-registry-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 93,
+    "label": "Identity registry: empty",
+    "file": "093-identity-registry-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 94,
+    "label": "Identity registry: loading",
+    "file": "094-identity-registry-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 95,
+    "label": "Identity registry: error",
+    "file": "095-identity-registry-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 96,
+    "label": "Identity registry: closed",
+    "file": "096-identity-registry-closed.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 97,
+    "label": "Identity registry: denied",
+    "file": "097-identity-registry-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 98,
+    "label": "Result processing: default",
+    "file": "098-result-processing-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 99,
+    "label": "Result processing: empty",
+    "file": "099-result-processing-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 100,
+    "label": "Result processing: loading",
+    "file": "100-result-processing-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 101,
+    "label": "Result processing: error",
+    "file": "101-result-processing-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 102,
+    "label": "Result processing: denied",
+    "file": "102-result-processing-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 103,
+    "label": "Scan batch upload: default",
+    "file": "103-scan-batch-upload-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 104,
+    "label": "Scan batch upload: empty",
+    "file": "104-scan-batch-upload-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 105,
+    "label": "Scan batch upload: uploading",
+    "file": "105-scan-batch-upload-uploading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 106,
+    "label": "Scan batch upload: error",
+    "file": "106-scan-batch-upload-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 107,
+    "label": "Scan batch upload: denied",
+    "file": "107-scan-batch-upload-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 108,
+    "label": "Scan batch upload: booklet preview",
+    "file": "108-scan-batch-upload-booklet-preview.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 109,
+    "label": "Integrity report: processing",
+    "file": "109-integrity-report-processing.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 110,
+    "label": "Integrity report: complete",
+    "file": "110-integrity-report-complete.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 111,
+    "label": "Integrity report: empty",
+    "file": "111-integrity-report-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 112,
+    "label": "Integrity report: starting",
+    "file": "112-integrity-report-starting.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 113,
+    "label": "Integrity report: stopped",
+    "file": "113-integrity-report-stopped.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 114,
+    "label": "Integrity report: denied",
+    "file": "114-integrity-report-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 115,
+    "label": "Marking assignment: default",
+    "file": "115-marking-assignment-default.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 116,
+    "label": "Marking assignment: empty",
+    "file": "116-marking-assignment-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 117,
+    "label": "Marking assignment: loading",
+    "file": "117-marking-assignment-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 118,
+    "label": "Marking assignment: error",
+    "file": "118-marking-assignment-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 119,
+    "label": "Marking assignment: denied",
+    "file": "119-marking-assignment-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 120,
+    "label": "Marking progress: team (Lecturer)",
+    "file": "120-marking-progress-team-lecturer.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 121,
+    "label": "Marking progress: your pace (TA)",
+    "file": "121-marking-progress-your-pace-ta.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 122,
+    "label": "Marking progress: empty",
+    "file": "122-marking-progress-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 123,
+    "label": "Marking progress: loading",
+    "file": "123-marking-progress-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 124,
+    "label": "Marking progress: error",
+    "file": "124-marking-progress-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 125,
+    "label": "Marking progress: denied",
+    "file": "125-marking-progress-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 126,
+    "label": "Exception queue: pilot mode",
+    "file": "126-exception-queue-pilot-mode.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 127,
+    "label": "Exception queue: normal mode",
+    "file": "127-exception-queue-normal-mode.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 128,
+    "label": "Exception queue: resolve one",
+    "file": "128-exception-queue-resolve-one.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 129,
+    "label": "Exception queue: empty",
+    "file": "129-exception-queue-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 130,
+    "label": "Exception queue: loading",
+    "file": "130-exception-queue-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 131,
+    "label": "Exception queue: error",
+    "file": "131-exception-queue-error.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 132,
+    "label": "Exception queue: denied",
+    "file": "132-exception-queue-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 133,
+    "label": "Moderation: side by side",
+    "file": "133-moderation-side-by-side.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 134,
+    "label": "Moderation: marks changed",
+    "file": "134-moderation-marks-changed.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 135,
+    "label": "Moderation: return to marker",
+    "file": "135-moderation-return-to-marker.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 136,
+    "label": "Moderation: empty",
+    "file": "136-moderation-empty.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 137,
+    "label": "Moderation: loading",
+    "file": "137-moderation-loading.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 138,
+    "label": "Moderation: not saved",
+    "file": "138-moderation-not-saved.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 139,
+    "label": "Moderation: denied",
+    "file": "139-moderation-denied.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 140,
+    "label": "My courses (Lecturer)",
+    "file": "140-my-courses-lecturer.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 141,
+    "label": "Flagged for review (TA)",
+    "file": "141-flagged-for-review-ta.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 142,
+    "label": "Marking interface",
+    "file": "142-marking-interface.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 143,
+    "label": "Answer viewer",
+    "file": "143-answer-viewer.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 144,
+    "label": "Returned scripts",
+    "file": "144-returned-scripts.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 145,
+    "label": "Result approval",
+    "file": "145-result-approval.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 146,
+    "label": "Dispute evidence",
+    "file": "146-dispute-evidence.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 147,
+    "label": "Exam performance",
+    "file": "147-exam-performance.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 148,
+    "label": "Help & guidance",
+    "file": "148-help-guidance.png",
+    "consoleErrors": []
+  },
+  {
+    "index": 149,
+    "label": "User settings",
+    "file": "149-user-settings.png",
+    "consoleErrors": []
+  }
+]
