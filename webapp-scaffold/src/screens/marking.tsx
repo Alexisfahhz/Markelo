@@ -223,9 +223,18 @@ export function FlaggedForReview() {
 export const SCRIPT_INFO = { id: "MK-000245", course: "CSC 401, first semester exam", pages: 8 };
 
 /*
+  This student's recorded CA, out of CA_WEIGHT (30). Read-only here: CA is
+  entered upstream of Markelo (student-data upload or a Lecturer-entry
+  screen, still his open question), Markelo only displays it alongside the
+  exam mark so both screens can show a true CA + Exam overall, not just the
+  exam component.
+*/
+export const CA_SCORE = 24;
+
+/*
   Sums to EXAM_WEIGHT (70), matching the Marking Scheme Setup this script's
-  exam was confirmed against (exam.tsx ROWS). Continuous Assessment makes up
-  the other CA_WEIGHT (30) outside Markelo; see roles.ts.
+  exam was confirmed against (exam.tsx ROWS). Combined with CA_SCORE above,
+  CA_SCORE + this total is the student's overall (see AnswerViewer).
 */
 export const INITIAL_MARKS = [
   { q: 1, max: 15, mark: 13 as number | "" },
@@ -689,7 +698,7 @@ function MarkingSidebar({
   const answeredCount = marks.filter((s) => s.mark !== "").length;
 
   return (
-    <div className="flex w-[407px] shrink-0 flex-col gap-4 max-lg:w-full">
+    <div className="flex h-full w-[407px] shrink-0 flex-col gap-4 max-lg:h-auto max-lg:w-full">
       <Card pad={false} className="flex min-h-32 flex-col justify-between gap-1 p-4">
         <span className="uppercase-label">Running total</span>
         <div className="flex items-end justify-between">
@@ -721,7 +730,17 @@ function MarkingSidebar({
         </div>
       </Card>
 
-      <div className="grid grid-cols-2 gap-3">
+      <Card pad={false} className="flex min-h-32 flex-col justify-between gap-1 p-4">
+        <span className="uppercase-label">Continuous assessment</span>
+        <div className="flex items-end justify-between">
+          <span className="text-title font-bold tabular-nums text-text">
+            {CA_SCORE} <span className="text-body font-normal text-muted">/ {CA_WEIGHT}</span>
+          </span>
+          <Badge tone="neutral">Recorded upstream</Badge>
+        </div>
+      </Card>
+
+      <div className="mt-auto grid grid-cols-2 gap-3">
         <Button variant="secondary" icon={Save}>Save draft</Button>
         <Button icon={Send} disabled={answeredCount < marks.length}>Submit script</Button>
       </div>
@@ -988,11 +1007,17 @@ export function AnswerViewer() {
                 <div className="flex flex-col gap-2.5">
                   <div className="rounded-control bg-bg p-3">
                     <div className="flex items-center justify-between text-caption text-muted">
-                      <span>Total score</span>
-                      <span className="font-semibold text-text">{COMPLETED_SCORE_TOTAL} / {EXAM_WEIGHT}</span>
+                      <span>Overall score</span>
+                      <span className="font-semibold text-text">
+                        {CA_SCORE + COMPLETED_SCORE_TOTAL} / {CA_WEIGHT + EXAM_WEIGHT}
+                      </span>
                     </div>
                     <p className="text-title font-bold text-brand">Grade: A</p>
-                    <Progress value={COMPLETED_SCORE_TOTAL} max={EXAM_WEIGHT} />
+                    <Progress value={CA_SCORE + COMPLETED_SCORE_TOTAL} max={CA_WEIGHT + EXAM_WEIGHT} />
+                    <div className="mt-1.5 flex items-center justify-between text-[11px] text-muted">
+                      <span>CA {CA_SCORE} / {CA_WEIGHT}</span>
+                      <span>Exam {COMPLETED_SCORE_TOTAL} / {EXAM_WEIGHT}</span>
+                    </div>
                   </div>
 
                   <div className="divide-y divide-border text-caption">
