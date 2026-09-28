@@ -1,8 +1,8 @@
 /*
   Marking flow screens:
-    1. My Courses (Lecturer) — Courses taught, exam state, scheme status, marking progress.
-    2. Flagged for Review (TA) — Questions flagged by TA for Lecturer guidance.
-    3. Marking Interface (Lecturer / TA) — Anonymised Script ID marking canvas with document viewer,
+    1. My Courses (Lecturer). Courses taught, exam state, scheme status, marking progress.
+    2. Flagged for Review (TA). Questions flagged by TA for Lecturer guidance.
+    3. Marking Interface (Lecturer / TA). Anonymised Script ID marking canvas with document viewer,
        zoom/rotate, page rail, question-by-question scoring and running total.
 */
 import React, { useState } from "react";
@@ -19,7 +19,7 @@ import {
   Td,
   Input,
 } from "../ui/kit";
-import { ROLES } from "../roles";
+import { ROLES, CA_WEIGHT, EXAM_WEIGHT } from "../roles";
 import {
   Check,
   EyeOff,
@@ -219,15 +219,38 @@ export function FlaggedForReview() {
 
 export const SCRIPT_INFO = { id: "MK-000245", course: "CSC 401, first semester exam", pages: 8 };
 
+/*
+  Sums to EXAM_WEIGHT (70), matching the Marking Scheme Setup this script's
+  exam was confirmed against (exam.tsx ROWS). Continuous Assessment makes up
+  the other CA_WEIGHT (30) outside Markelo; see roles.ts.
+*/
 export const INITIAL_MARKS = [
-  { q: 1, max: 20, mark: 18 as number | "" },
-  { q: 2, max: 15, mark: 15 as number | "" },
-  { q: 3, max: 15, mark: "" as number | "" },
-  { q: 4, max: 20, mark: "" as number | "" },
-  { q: 5, max: 15, mark: "" as number | "" },
-  { q: 6, max: 15, mark: "" as number | "" },
+  { q: 1, max: 15, mark: 13 as number | "" },
+  { q: 2, max: 10, mark: 10 as number | "" },
+  { q: 3, max: 10, mark: "" as number | "" },
+  { q: 4, max: 15, mark: "" as number | "" },
+  { q: 5, max: 10, mark: "" as number | "" },
+  { q: 6, max: 10, mark: "" as number | "" },
 ];
 const MAX_TOTAL = INITIAL_MARKS.reduce((acc, t) => acc + t.max, 0);
+
+/*
+  Answer Viewer's read-only summary for the same script (MK-000245), already
+  fully marked and submitted. Topics match QUESTION_PROMPTS below; maxes
+  match INITIAL_MARKS above, both now EXAM_WEIGHT (70) total. Previously this
+  list was a separate, disconnected 5-question fixture that summed to 90, not
+  100 or 70; recalibrated and reconciled to 6 questions here so the two views
+  of the same script agree.
+*/
+const COMPLETED_SCORE = [
+  { q: "Question 1", max: 15, mark: 13, topic: "Scheduling Algorithms" },
+  { q: "Question 2", max: 10, mark: 9, topic: "Deadlock Handling" },
+  { q: "Question 3", max: 10, mark: 8, topic: "Memory Management" },
+  { q: "Question 4", max: 15, mark: 13, topic: "File Systems" },
+  { q: "Question 5", max: 10, mark: 9, topic: "Synchronization" },
+  { q: "Question 6", max: 10, mark: 8, topic: "Security & Access Control" },
+];
+const COMPLETED_SCORE_TOTAL = COMPLETED_SCORE.reduce((acc, t) => acc + t.mark, 0);
 
 const QUESTION_PROMPTS: Record<number, { title: string; prompt: string }> = {
   1: {
@@ -432,7 +455,7 @@ function ScriptViewer({
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-card border border-border bg-bg shadow-2xs">
-      {/* Top status & script header — minimal, quiet, non-competing */}
+      {/* Top status & script header: minimal, quiet, non-competing */}
       <div className="flex items-center justify-between border-b border-border bg-white px-4 py-2.5">
         <div className="flex items-center gap-2.5">
           <ScriptId id={SCRIPT_INFO.id} />
@@ -465,7 +488,7 @@ function ScriptViewer({
         <PageCanvas page={currentPage} zoom={zoom} rotate={rotate} />
       </div>
 
-      {/* Redesigned Bottom Navigation & Control Deck — 2-Tier High-UX Architecture */}
+      {/* Redesigned Bottom Navigation & Control Deck, 2-Tier High-UX Architecture */}
       <div className="border-t border-border bg-white flex flex-col divide-y divide-border/60">
         {/* Tier 1: Centralized Booklet Page Navigation */}
         <div className="flex items-center justify-center px-4 py-2.5 bg-bg/30">
@@ -948,20 +971,14 @@ export function AnswerViewer() {
                   <div className="rounded-control bg-bg p-3">
                     <div className="flex items-center justify-between text-caption text-muted">
                       <span>Total score</span>
-                      <span className="font-semibold text-text">75 / 100</span>
+                      <span className="font-semibold text-text">{COMPLETED_SCORE_TOTAL} / {EXAM_WEIGHT}</span>
                     </div>
                     <p className="text-title font-bold text-brand">Grade: A</p>
-                    <Progress value={75} max={100} />
+                    <Progress value={COMPLETED_SCORE_TOTAL} max={EXAM_WEIGHT} />
                   </div>
 
                   <div className="divide-y divide-border text-caption">
-                    {[
-                      { q: "Question 1", max: 20, mark: 18, topic: "Context-free grammars" },
-                      { q: "Question 2", max: 15, mark: 14, topic: "First and Follow sets" },
-                      { q: "Question 3", max: 15, mark: 12, topic: "Shift-reduce parsing" },
-                      { q: "Question 4", max: 20, mark: 16, topic: "Type inference algorithm" },
-                      { q: "Question 5", max: 20, mark: 15, topic: "Target code generation" },
-                    ].map((item, idx) => (
+                    {COMPLETED_SCORE.map((item, idx) => (
                       <div key={idx} className="flex items-center justify-between py-1.5">
                         <div>
                           <p className="font-semibold text-text">{item.q}</p>

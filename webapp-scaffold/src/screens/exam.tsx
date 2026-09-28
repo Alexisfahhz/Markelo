@@ -22,22 +22,31 @@ import { AppFrame } from "../ui/shell";
 import {
   Button, Card, CardHeader, Badge, Notice, Input, Field, Select, EmptyState,
 } from "../ui/kit";
-import { ROLES } from "../roles";
+import { ROLES, CA_WEIGHT, EXAM_WEIGHT } from "../roles";
 import { ListChecks, Plus, X, Check, RotateCcw, CircleCheck, Building2, CalendarDays, User } from "lucide-react";
 
 type Row = { q: number; max: number | ""; invalid?: string };
 
+/*
+  Sums to EXAM_WEIGHT (70), not 100. The institution's Continuous Assessment
+  (tests, assignments, attendance, tracked outside Markelo) makes up the
+  other CA_WEIGHT (30); see roles.ts for the split and why. A marker's
+  entered total (Marking Interface) needs no separate scaling before
+  Result Processing's CA + Exam = Total formula, since this scheme already
+  is the exam's 70-point allocation.
+*/
 const ROWS: Row[] = [
-  { q: 1, max: 20 },
-  { q: 2, max: 15 },
-  { q: 3, max: 15 },
-  { q: 4, max: 20 },
-  { q: 5, max: 15 },
-  { q: 6, max: 15 },
+  { q: 1, max: 15 },
+  { q: 2, max: 10 },
+  { q: 3, max: 10 },
+  { q: 4, max: 15 },
+  { q: 5, max: 10 },
+  { q: 6, max: 10 },
 ];
 
 const TOTAL = ROWS.reduce((sum, r) => sum + (typeof r.max === "number" ? r.max : 0), 0);
 const HAS_INVALID = ROWS.some((r) => r.invalid);
+const OFF_TARGET = !HAS_INVALID && TOTAL !== EXAM_WEIGHT;
 
 function QuestionRow({ row }: { row: Row }) {
   return (
@@ -254,7 +263,9 @@ function MarkingSchemeSetupDefault() {
         <div className="flex flex-1 flex-col gap-6 px-8 py-6 max-lg:max-w-none" style={{ maxWidth: "min(703px, 100%)" }}>
           <Notice tone="brand" title="No rubric builder in V1">
             Set only the question number and its maximum mark. Marking cannot begin until every
-            question has a mark greater than zero.
+            question has a mark greater than zero. This exam's questions should total {EXAM_WEIGHT}
+            marks: Continuous Assessment covers the other {CA_WEIGHT}, tracked outside Markelo and
+            combined with this exam's mark at Result Processing.
           </Notice>
           <Card>
             <CardHeader
@@ -275,8 +286,18 @@ function MarkingSchemeSetupDefault() {
               than zero.
             </Notice>
           )}
+          {OFF_TARGET && (
+            <Notice tone="warning" title={`This scheme totals ${TOTAL}, not the exam's ${EXAM_WEIGHT}`}>
+              Questions can still be confirmed at a different total if this exam genuinely needs one,
+              but check with your Institution Admin first: Result Processing's CA + Exam formula
+              expects this exam's mark to fit inside {EXAM_WEIGHT}.
+            </Notice>
+          )}
           <div className="flex items-center justify-between">
-            <p className="text-body text-muted">Total across all questions: <span className="font-medium text-text tabular-nums">{TOTAL} marks</span></p>
+            <p className="text-body text-muted">
+              Total across all questions: <span className="font-medium text-text tabular-nums">{TOTAL} marks</span>
+              <span className="text-caption"> (exam weight {EXAM_WEIGHT}, CA weight {CA_WEIGHT})</span>
+            </p>
             <div className="flex items-center gap-3">
               <Button variant="secondary">Cancel</Button>
               <Button icon={Check} disabled={HAS_INVALID}>Confirm scheme</Button>

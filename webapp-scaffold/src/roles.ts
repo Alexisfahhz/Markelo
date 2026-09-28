@@ -265,3 +265,23 @@ export const NAV_GROUPS: NavGroup[] = [
 
 export const INSTITUTION = "Yaba College of Technology";
 export const SESSION = "2025/2026 · First Semester";
+
+/*
+  Grading weight, institution-wide default (his decision, 2026-09-28: "go
+  with option 1, 30/70 default"). Nigerian tertiary convention: Continuous
+  Assessment (tests, assignments, attendance, collected before the exam,
+  outside Markelo) plus a final written Exam, summing to 100. The exam's own
+  marking scheme is set to total EXAM_WEIGHT directly (Marking Scheme Setup,
+  Marking Interface), so a marker's entered total needs no separate scaling
+  step before Result Processing's "CA plus Exam equals Total" formula. See
+  Docs/audits/2026-09-28-audit-to-9.md, Finding 1's follow-up, for the gap
+  this closes: the marking scheme previously summed to 100 with no defined
+  relationship to the CA+Exam=Total formula already in use everywhere else
+  (Result Processing, Result Correction, Moderation all already assumed a
+  70-point exam).
+
+  V1: one fixed split for the whole institution, not per-course. A per-course
+  override is a future decision, not built here.
+*/
+export const CA_WEIGHT = 30;
+export const EXAM_WEIGHT = 70;
