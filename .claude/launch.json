@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "webapp-scaffold",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "webapp-scaffold"],
+      "port": 5179
+    },
+    {
+      "name": "prototype-flow",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "prototype-flow"],
+      "port": 5180
+    },
+    {
+      "name": "design-system-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "design-system-preview"],
+      "port": 5178
+    }
+  ]
+}

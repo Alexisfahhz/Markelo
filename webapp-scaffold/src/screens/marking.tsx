@@ -38,6 +38,9 @@ import {
   Send,
   MessageSquareWarning,
   CircleCheckBig,
+  ChevronDown,
+  PanelRightOpen,
+  PanelRightClose,
 } from "lucide-react";
 
 /* =====================================================================
@@ -810,13 +813,13 @@ export function AnswerViewer() {
         </div>
 
         {/* Viewer Workspace */}
-        <div className="flex min-h-0 flex-1 gap-4">
+        <div className="flex min-h-0 flex-1 gap-4 max-lg:flex-col">
           {/* Main Document Inspection Stage */}
           <div className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-card border border-border bg-white shadow-sm">
             {/* Control Bar */}
-            <div className="flex items-center justify-between border-b border-border bg-bg/50 px-4 py-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-border bg-bg/50 px-4 py-2.5">
               {/* Page Navigator */}
-              <div className="flex items-center gap-2">
+              <div className="flex shrink-0 items-center gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -824,7 +827,7 @@ export function AnswerViewer() {
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage <= 1}
                 />
-                <span className="text-caption font-semibold text-text">
+                <span className="whitespace-nowrap text-caption font-semibold text-text">
                   Page {currentPage} of {SCRIPT_INFO.pages}
                 </span>
                 <Button
@@ -834,38 +837,52 @@ export function AnswerViewer() {
                   onClick={() => setCurrentPage((p) => Math.min(SCRIPT_INFO.pages, p + 1))}
                   disabled={currentPage >= SCRIPT_INFO.pages}
                 />
-                <span className="mx-2 h-4 w-px bg-border" />
-                {/* Jump to question */}
-                <div className="flex items-center gap-1">
-                  <span className="text-caption text-muted mr-1">Jump to:</span>
-                  {[1, 2, 3, 4, 5].map((q) => (
-                    <button
-                      key={q}
-                      onClick={() => setCurrentPage(q + 1)}
-                      className={`h-6 px-2 rounded text-caption font-semibold transition-colors ${
-                        currentPage === q + 1
-                          ? "bg-brand text-white"
-                          : "bg-white text-muted border border-border hover:border-brand hover:text-brand"
-                      }`}
+                <span className="mx-2 h-4 w-px shrink-0 bg-border" />
+                {/* Jump to question: one compact select instead of six separate pill
+                    buttons, which is what was crowding this bar out at 768-1440px. */}
+                <div className="flex shrink-0 items-center gap-1.5">
+                  <span className="whitespace-nowrap text-caption text-muted">Jump to</span>
+                  <div className="relative">
+                    <select
+                      aria-label="Jump to question"
+                      value={
+                        currentPage === 1
+                          ? "cover"
+                          : currentPage >= 2 && currentPage <= 6
+                            ? `q${currentPage - 1}`
+                            : ""
+                      }
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (v === "cover") setCurrentPage(1);
+                        else if (v) setCurrentPage(Number(v.slice(1)) + 1);
+                      }}
+                      className="h-8 appearance-none rounded-control border border-border bg-white py-0 pl-2.5 pr-7 text-caption font-semibold text-text outline-none transition-colors hover:border-brand focus:border-brand"
                     >
-                      Q{q}
-                    </button>
-                  ))}
-                  <button
-                    onClick={() => setCurrentPage(1)}
-                    className={`h-6 px-2 rounded text-caption font-semibold transition-colors ${
-                      currentPage === 1
-                        ? "bg-brand text-white"
-                        : "bg-white text-muted border border-border hover:border-brand hover:text-brand"
-                    }`}
-                  >
-                    Cover
-                  </button>
+                      {(currentPage < 1 || currentPage > 6) && (
+                        <option value="" disabled>
+                          Jump to…
+                        </option>
+                      )}
+                      <option value="cover">Cover</option>
+                      <option value="q1">Q1</option>
+                      <option value="q2">Q2</option>
+                      <option value="q3">Q3</option>
+                      <option value="q4">Q4</option>
+                      <option value="q5">Q5</option>
+                    </select>
+                    <ChevronDown
+                      size={13}
+                      strokeWidth={2}
+                      aria-hidden
+                      className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-muted"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Canvas Controls */}
-              <div className="flex items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-1.5">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -873,7 +890,7 @@ export function AnswerViewer() {
                   onClick={() => handleZoom(-15)}
                   title="Zoom out"
                 />
-                <span className="w-12 text-center text-caption font-medium text-text">
+                <span className="w-12 shrink-0 text-center text-caption font-medium text-text">
                   {zoom}%
                 </span>
                 <Button
@@ -883,7 +900,7 @@ export function AnswerViewer() {
                   onClick={() => handleZoom(15)}
                   title="Zoom in"
                 />
-                <span className="mx-1 h-4 w-px bg-border" />
+                <span className="mx-1 h-4 w-px shrink-0 bg-border" />
                 <Button
                   variant="ghost"
                   size="sm"
@@ -901,14 +918,15 @@ export function AnswerViewer() {
                   }}
                   title="Reset view"
                 />
-                <span className="mx-1 h-4 w-px bg-border" />
+                <span className="mx-1 h-4 w-px shrink-0 bg-border" />
                 <Button
                   variant={showInspector ? "primary" : "secondary"}
                   size="sm"
+                  icon={showInspector ? PanelRightClose : PanelRightOpen}
                   onClick={() => setShowInspector((s) => !s)}
-                >
-                  {showInspector ? "Hide audit panel" : "Show audit panel"}
-                </Button>
+                  title={showInspector ? "Hide audit panel" : "Show audit panel"}
+                  aria-label={showInspector ? "Hide audit panel" : "Show audit panel"}
+                />
               </div>
             </div>
 
@@ -961,7 +979,7 @@ export function AnswerViewer() {
 
           {/* Right Audit Inspector Drawer */}
           {showInspector && (
-            <div className="w-80 shrink-0 flex flex-col gap-3 overflow-y-auto">
+            <div className="w-80 shrink-0 flex flex-col gap-3 overflow-y-auto max-lg:w-full">
               <Card>
                 <CardHeader
                   title="Marks summary"
