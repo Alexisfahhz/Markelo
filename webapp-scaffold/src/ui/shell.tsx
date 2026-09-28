@@ -245,7 +245,7 @@ function FlatSidebar({
 
   return (
     <nav className="flex w-[236px] shrink-0 flex-col bg-brand-dark max-lg:w-[72px]">
-      {/* Logo + Working as — Figma: 136.77px top section. Tablet (768-1023): icon rail, IMPLEMENTATION_PLAN.md section 3. */}
+      {/* Logo + Working as. Figma: 136.77px top section. Tablet (768-1023): icon rail, IMPLEMENTATION_PLAN.md section 3. */}
       <div className="flex flex-col gap-4 px-[var(--sidebar-inset)] py-4 max-lg:items-center max-lg:px-0">
         <span className="inline-flex items-center gap-2" title="Markelo">
           <MarkeloMark className="h-6 w-auto text-nav-brand" />
@@ -257,7 +257,7 @@ function FlatSidebar({
         </div>
       </div>
 
-      {/* Nav items — Figma: 38.39px rows, 8px gap */}
+      {/* Nav items. Figma: 38.39px rows, 8px gap */}
       <ul className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-0">
         {NAV_GROUPS.map((group, gi) => {
           const label = group.label ?? group.items[0].label;
@@ -296,7 +296,7 @@ function FlatSidebar({
         })}
       </ul>
 
-      {/* Footer — Figma: 80.15px, border-t 0.15px #8FB4E0. Text collapses at tablet; the icon rail keeps only the divider. */}
+      {/* Footer. Figma: 80.15px, border-t 0.15px #8FB4E0. Text collapses at tablet; the icon rail keeps only the divider. */}
       <div className="mt-auto flex flex-col gap-1 border-t border-nav-label/20 px-[var(--sidebar-inset)] py-3 max-lg:items-center max-lg:px-2">
         <div className="max-lg:hidden">{heldRoles && heldRoles.length > 1 && <RoleSwitcher current={role.key} held={heldRoles} />}</div>
         <p className="text-[10px] font-medium leading-4 tracking-[0.01em] text-nav-label max-lg:hidden">SIGNED IN AS</p>
@@ -527,7 +527,7 @@ export function Sidebar({
                 {/*
                   Tablet (768-1023): no room for the flyout a real icon rail would need
                   for nested items, so the panel stays closed regardless of `isOpen`.
-                  Assumed, his to override — see the audit doc for the alternative
+                  Assumed, his to override. See the audit doc for the alternative
                   (a flyout) this skips.
                 */}
                 <ul id={panelId} hidden={!isOpen} className="ml-7 mr-[var(--sidebar-inset)] flex flex-col gap-2 border-l border-white/[0.08] py-1 max-lg:hidden">
