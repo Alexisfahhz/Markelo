@@ -310,7 +310,7 @@ function QuestionRow({
   return (
     <div
       onClick={onSelect}
-      className={`group flex items-center justify-between border-b border-border py-2.5 px-2 transition-colors cursor-pointer last:border-0 rounded-sm ${
+      className={`group flex items-center justify-between border-b border-border py-1 px-2 transition-colors cursor-pointer last:border-0 rounded-sm ${
         isActive
           ? "bg-brand-light/50 border-l-2 border-l-brand"
           : "hover:bg-bg/60"
@@ -331,7 +331,7 @@ function QuestionRow({
           max={max}
           value={value}
           invalid={invalid}
-          className="w-20 text-right tabular-nums"
+          className="h-8! w-20 text-right tabular-nums"
           aria-label={`Mark for question ${q}, out of ${max}`}
           onChange={(e) => {
             const val = e.target.value;
@@ -999,7 +999,7 @@ export function AnswerViewer() {
           {/* Right Audit Inspector Drawer */}
           {showInspector && (
             <div className="w-80 shrink-0 flex flex-col gap-3 overflow-y-auto max-lg:w-full">
-              <Card>
+              <Card className="shrink-0">
                 <CardHeader
                   title="Marks summary"
                   sub="Official recorded scores for this script"
@@ -1036,7 +1036,7 @@ export function AnswerViewer() {
                 </div>
               </Card>
 
-              <Card>
+              <Card className="shrink-0">
                 <CardHeader title="Audit & verification" />
                 <div className="flex flex-col gap-2 text-caption">
                   <div className="flex justify-between py-1 border-b border-border/50">
