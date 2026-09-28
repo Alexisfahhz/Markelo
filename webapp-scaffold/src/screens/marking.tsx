@@ -711,11 +711,11 @@ function MarkingSidebar({
         </div>
       </Card>
 
-      <Card pad={false}>
-        <div className="p-6 pb-2">
+      <Card pad={false} className="flex min-h-0 flex-1 flex-col">
+        <div className="shrink-0 p-6 pb-2">
           <CardHeader title="Marks" sub="Never more than a question's own maximum" />
         </div>
-        <div className="px-4 pb-2">
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-2">
           {marks.map((item) => (
             <QuestionRow
               key={item.q}
