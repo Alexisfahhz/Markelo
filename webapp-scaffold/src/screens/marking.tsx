@@ -310,7 +310,7 @@ function QuestionRow({
   return (
     <div
       onClick={onSelect}
-      className={`group flex items-center justify-between border-b border-border py-1 px-2 transition-colors cursor-pointer last:border-0 ${
+      className={`group flex shrink-0 items-center justify-between border-b border-border py-1 px-2 transition-colors cursor-pointer last:border-0 ${
         isActive
           ? "bg-brand-light/50 border-l-2 border-l-brand"
           : "hover:bg-bg/60"
@@ -715,7 +715,7 @@ function MarkingSidebar({
         <div className="shrink-0 p-6 pb-2">
           <CardHeader title="Marks" sub="Never more than a question's own maximum" />
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-2">
+        <div className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-4 pb-2">
           {marks.map((item) => (
             <QuestionRow
               key={item.q}
