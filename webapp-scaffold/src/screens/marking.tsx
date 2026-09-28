@@ -310,7 +310,7 @@ function QuestionRow({
   return (
     <div
       onClick={onSelect}
-      className={`group flex items-center justify-between border-b border-border py-1 px-2 transition-colors cursor-pointer last:border-0 rounded-sm ${
+      className={`group flex items-center justify-between border-b border-border py-1 px-2 transition-colors cursor-pointer last:border-0 ${
         isActive
           ? "bg-brand-light/50 border-l-2 border-l-brand"
           : "hover:bg-bg/60"
