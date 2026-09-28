@@ -1,6 +1,6 @@
 # Markelo, Session Start Prompt
 
-**Last updated:** 28 July 2026
+**Last updated:** 28 September 2026
 **Purpose:** paste the block below into a new session with any model, including a
 free one, to start or continue the Markelo web app build.
 
@@ -15,9 +15,9 @@ You are picking up the Markelo web app design build.
 
 Read these three files in this order before doing anything else:
 
-1. /Users/KingFizzy/Downloads/Fahhz/Markelo/IMPLEMENTATION_PLAN.md
-2. /Users/KingFizzy/Downloads/Fahhz/Markelo/PROGRESS.md  (read the LAST entry, it tells you what the previous agent actually finished and what it did not)
-3. /Users/KingFizzy/Downloads/Fahhz/Markelo/Docs/2026-07-27-week-plan-and-assignments.md
+1. ~/Desktop/Projects/Markelo/IMPLEMENTATION_PLAN.md
+2. ~/Desktop/Projects/Markelo/PROGRESS.md  (read the LAST entry, it tells you what the previous agent actually finished and what it did not)
+3. ~/Desktop/Projects/Markelo/Docs/2026-07-27-week-plan-and-assignments.md
 
 The implementation plan is authoritative.
 
@@ -44,15 +44,22 @@ Sources:
 - There is no Word reader here. Extract a .docx with the Python snippet in
   section 2 of the implementation plan.
 
-Layout. Markelo is DESKTOP ONLY:
+Layout. Markelo supports desktop AND one tablet breakpoint (reversed from
+desktop-only on 10 August 2026; see IMPLEMENTATION_PLAN.md section 3):
 
-- No breakpoints. No tablet layout. No mobile layout. Never propose responsive
-  behaviour.
-- Full-canvas screens (sign-in, onboarding) use the Desktop Grid: 12 columns,
-  Stretch, 120px margin, 24px gutter. Class `.page-grid` with `.col-1`…`.col-12`.
-- App screens sit inside the app shell. The sidebar is fixed chrome at 236px and
-  is OUTSIDE every grid. The content region beside it uses a 32px inset, not the
-  120px page margin. Class `.content-grid`.
+- Desktop is 1024px and up: 12 columns, Stretch, 120px margin, 24px gutter.
+  Tablet is 768px to 1023px: 8 columns, 32px margin, 24px gutter (unchanged).
+  Phones remain out of scope; never add a third breakpoint.
+- Full-canvas screens (sign-in, onboarding) use the Desktop Grid at desktop
+  width and the tablet values above at 768-1023px. Class `.page-grid` with
+  `.col-1`…`.col-12`.
+- App screens sit inside the app shell. The sidebar is 236px at desktop and
+  collapses to a 72px icon rail at tablet (`max-lg:w-[72px]` in
+  `webapp-scaffold/src/ui/shell.tsx`); it is OUTSIDE every grid at both widths.
+  The content region beside it uses a 32px inset, not the 120px page margin.
+  Class `.content-grid`.
+- Authoring rule: the codebase is desktop-first. Add `max-lg:` overrides for
+  tablet. Never rewrite existing classes into a mobile-first order.
 - Add `data-grid` temporarily to check alignment against Figma, then remove it.
   It must never be left on a finished screen.
 
@@ -78,9 +85,10 @@ permission-denied. A screen with only a default state is 20% done, not done.
 Register every new screen in the GROUPS array in webapp-scaffold/src/App.tsx.
 
 Before you say a screen is done, run:
-  cd /Users/KingFizzy/Downloads/Fahhz/Markelo/webapp-scaffold && npx tsc --noEmit
+  cd ~/Desktop/Projects/Markelo/webapp-scaffold && npx tsc --noEmit
 and open it at http://localhost:5179 to confirm it renders with no console
-errors. If you did not run these, say you did not run them.
+errors, at both 1440px and 768px. If you did not run these, say you did not
+run them.
 
 When you stop, append an entry to PROGRESS.md in the format given in section 9
 of the implementation plan. Be honest in the "Verified" and "Not done / blocked"
@@ -93,6 +101,20 @@ Tell me which phase you are starting and what you plan to build, then begin.
 ## Copy to here
 
 ---
+
+## What changed on 28 September 2026
+
+Found stale during the 2026-09-28 audit-to-9 session (ts-dev, orchestrated run). This file had not
+been updated since the plan changed under it:
+
+- **Paths rewritten** from `/Users/KingFizzy/Downloads/Fahhz/Markelo/...` to
+  `~/Desktop/Projects/Markelo/...`, this Mac's actual layout.
+- **"DESKTOP ONLY" was wrong and has been removed.** IMPLEMENTATION_PLAN.md section 3 reversed
+  that on 10 August 2026: Markelo now supports desktop and one tablet breakpoint, 768-1023px,
+  sidebar collapsing to a 72px icon rail. This file kept telling every new session the opposite of
+  the plan's real, decided rule for seven weeks. It is very likely why the sidebar's tablet
+  collapse was never built: see `Docs/audits/2026-09-28-audit-to-9.md`, Finding 1.
+- **tsc check now also asks for a 768px look**, matching the corrected layout section above.
 
 ## What changed on 28 July
 

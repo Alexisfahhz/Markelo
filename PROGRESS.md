@@ -2305,3 +2305,71 @@ the one-flow-at-a-time pattern every previous canvas swap used.
 - `prototype-flow/verify.mjs`: All 21 screens PASS geometry (1440x1024), trigger point transitions PASS, 0 floating navs, 0 JS errors.
 - Visual inspection: Captured and verified screenshots for all 4 new screens in `verify/`.
 - Dev servers running: 5179 (Webapp Scaffold) and 5180 (Prototype Flow).
+
+---
+
+## 2026-09-28, Claude Sonnet 5 (ts-dev, orchestrated run, high effort)
+
+**Phase:** Audit to 9/10 (his instruction, opened the run): re-verify the 56-screen suite and the
+21-screen 5180 flow against IMPLEMENTATION_PLAN.md, rate it, fix what fails.
+
+**Built / fixed:**
+- `webapp-scaffold/src/ui/shell.tsx`: added the 768-1023px tablet breakpoint decided in section 3
+  on 10 August, never implemented before this session. Sidebar (`FlatSidebar` and the tree
+  `Sidebar`) now collapses from 236px to a 72px icon rail at `max-lg`; wordmark text, "WORKING AS,"
+  nav labels, and the "SIGNED IN AS" footer collapse behind `max-lg:hidden`, leaving centered icons
+  with native `title=` tooltips. `TopBar`'s institution/session block also hides at `max-lg`. Both
+  apps share this component (`prototype-flow` imports it live), so the fix covers 5179 and 5180.
+- `webapp-scaffold/src/screens/settings.tsx`: fixed a checkbox using `border-border` (#CCCCCC,
+  1.61:1) instead of `border-border-control` (#8A8A8A, 3.45:1), a WCAG 2.2 SC 1.4.11 failure the
+  plan names by number.
+- `START_PROMPT.md`: rewrote every path to this Mac's layout (`~/Desktop/Projects/Markelo`, not
+  `/Users/KingFizzy/Downloads/Fahhz/Markelo`) and replaced the stale "DESKTOP ONLY" section with
+  the actual, decided tablet breakpoint. That file had been telling every new session the opposite
+  of the plan's real rule since 10 August, which is very likely why the sidebar collapse was never
+  built.
+- `Docs/audits/2026-09-28-audit-to-9.md`: full audit report, methodology, per-area scorecard,
+  and three open questions for him. `Docs/audits/screenshots-5179/` (149 files) and
+  `Docs/audits/screenshots-5180/` (21 files): a screenshot of every harness state and every
+  artboard, committed as evidence.
+
+**Stories satisfied:** none new; this was an audit and fix session, not new screen work.
+
+**Verified:**
+- `webapp-scaffold`: `npx tsc --noEmit` exit 0, before and after both fixes.
+- `prototype-flow`: `npm run build` (`tsc -b && vite build`) exit 0, before and after.
+- `prototype-flow/verify.mjs`: all 21 screens PASS (order, geometry 1440x1024, 0 floating navs,
+  0 JS errors), before and after.
+- Screenshotted and personally reviewed all 149 webapp-scaffold harness states and all 21
+  prototype-flow artboards at 1440px. Grepped 100% of source (not sampled) for `data-grid`
+  leftovers, `@tabler` imports, raw hex/px outside tokens, student-identity leakage on
+  marking-facing screens, AI-suggested-a-mark language, and the border-control WCAG rule.
+- Spot-checked the 768px breakpoint before and after the sidebar fix on the Exam Officer dashboard
+  and the Marking interface (the densest, highest-stakes screen); confirmed the before-state was
+  genuinely broken (stat cards crushed illegible, marks panel unusable) and the after-state is
+  clean.
+- The three non-negotiable rules in section 0 (no student identity to markers, AI never suggests a
+  mark, no invented evidence): full pass, no exceptions found anywhere in either app.
+
+**Assumptions made:**
+- The tree sidebar's expandable nested groups (Institution Admin's sub-items) stay closed at
+  tablet width rather than growing a flyout menu, since there is no room for one at 72px and
+  building a flyout is a design decision, not a mechanical fix. Assumed, his to override.
+- Did not invent a named token for the raw-pixel magic numbers found in `studentdata.tsx`,
+  `scanning.tsx`, `admin.tsx`, and `exam.tsx` (`calc(100vh - 120px)`, `min(703px, 100%)`, no
+  backing token). Section 4 of the plan says naming a one-off value is his call, not mine, so this
+  is reported in the audit doc rather than fixed.
+- Did not restructure the Exception Queue's identity-reveal screen to route through Identity
+  Registry, even though the two components do the same audited, officer-only thing in parallel.
+  Compliant as built; whether to unify them is an architecture call, reported as a question.
+
+**Not done / blocked:**
+- Not pushed to `origin`, no Vercel deploy: out of scope per the task order (step 6), the
+  orchestrator's to request once he says yes.
+- `design-system-preview` (port 5178, a separate older app, out of this audit's scope) still
+  imports `@tabler/icons-react` in its own source, not just `node_modules`. Reported, not touched:
+  it is explicitly not the product per section 3.
+- Three open questions above are his only to answer; nothing further will move on them until he
+  does.
+
+Full detail: `Docs/audits/2026-09-28-audit-to-9.md`.
