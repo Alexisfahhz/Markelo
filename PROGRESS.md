@@ -2373,3 +2373,48 @@ the one-flow-at-a-time pattern every previous canvas swap used.
   does.
 
 Full detail: `Docs/audits/2026-09-28-audit-to-9.md`.
+
+---
+
+## 2026-09-28 (session 2), Claude Sonnet 5
+
+**Phase:** Grading model fix, raised directly by him after the audit session above: Nigerian
+tertiary institutions grade CA (30, tests/assignments/attendance, tracked outside Markelo) plus a
+written Exam (70), summing to 100. His decision: "go with option 1, 30/70 default" (recalibrate
+the exam's own marking scheme to 70, rather than keep it at 100 and scale down later).
+
+**Built:**
+- `roles.ts`: added `CA_WEIGHT` (30) and `EXAM_WEIGHT` (70) as the one named source every screen
+  now imports, instead of a bare 70 with no token backing it.
+- `exam.tsx` (Marking Scheme Setup): `ROWS` rescaled from 20/15/15/20/15/15 (=100) to
+  15/10/10/15/10/10 (=70), same six questions. Added a visible notice stating the CA/Exam split,
+  and a warning if a scheme's total drifts from `EXAM_WEIGHT`, matching the screen's existing
+  missing-max-mark warning pattern.
+- `marking.tsx`: `INITIAL_MARKS` (the live Marking Interface for MK-000245) rescaled to match;
+  sample already-entered marks adjusted proportionally. The Answer Viewer's read-only summary for
+  the same script was a separate, disconnected fixture that summed to 90 (not 100, not 70) with
+  topics that didn't match the actual question prompts either. Fixed alongside the recalibration
+  so both views of the same script now agree, in marks and in which topic is which question.
+
+**Stories satisfied:** none new; a mock-data and copy correction, not new screen work.
+
+**Verified:**
+- `webapp-scaffold`: `npx tsc --noEmit` exit 0.
+- `prototype-flow`: `npm run build` exit 0; `verify.mjs` all PASS (both apps import these screens
+  live, so one edit covers 5179 and 5180).
+- Visually confirmed at 1440px: Marking Scheme Setup shows "6 questions, 70 marks" with the new
+  notice and no false warning; Marking Interface shows "RUNNING TOTAL 23/70"; Answer Viewer shows
+  "60/70, Grade A" with all six questions' topics and marks matching the Marking Interface's own
+  question prompts.
+
+**Assumptions made:**
+- 30/70 is one fixed split for the whole institution, not per-course. A per-course override (some
+  institutions weight postgrad or practical-heavy courses differently) is a future decision, noted
+  in `roles.ts`'s comment, not built here.
+- Did not touch `studentdata.tsx` (Result Processing), `admin.tsx` (Result Correction), or
+  `triage.tsx` (Moderation side-by-side): checked all three first, and their mock CA/Exam values
+  already fit the 30/70 model (CA values 0-30, Exam values 0-70) before this session touched
+  anything. Only the exam's own marking scheme and the Marking Interface were wrong.
+
+**Not done / blocked:** none for this piece. Local commit only, not pushed, same as the audit
+session above.
